@@ -1,0 +1,3 @@
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\HybridPBR.dir/objects.a
+C:\mingw64\bin\ar.exe qc CMakeFiles\HybridPBR.dir/objects.a @CMakeFiles\HybridPBR.dir\objects1.rsp
+C:\mingw64\bin\g++.exe -g -Wl,--whole-archive CMakeFiles\HybridPBR.dir/objects.a -Wl,--no-whole-archive -o bin\HybridPBR.exe -Wl,--out-implib,lib\libHybridPBR.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\HybridPBR.dir\linkLibs.rsp

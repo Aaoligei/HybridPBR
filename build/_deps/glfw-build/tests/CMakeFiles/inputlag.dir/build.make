@@ -126,7 +126,7 @@ bin/inputlag.exe: _deps/glfw-build/tests/CMakeFiles/inputlag.dir/inputlag.c.obj
 bin/inputlag.exe: _deps/glfw-build/tests/CMakeFiles/inputlag.dir/__/deps/getopt.c.obj
 bin/inputlag.exe: _deps/glfw-build/tests/CMakeFiles/inputlag.dir/__/deps/glad_gl.c.obj
 bin/inputlag.exe: _deps/glfw-build/tests/CMakeFiles/inputlag.dir/build.make
-bin/inputlag.exe: lib/libglfw3.a
+bin/inputlag.exe: lib/libglfw3d.a
 bin/inputlag.exe: _deps/glfw-build/tests/CMakeFiles/inputlag.dir/linkLibs.rsp
 bin/inputlag.exe: _deps/glfw-build/tests/CMakeFiles/inputlag.dir/objects1.rsp
 bin/inputlag.exe: _deps/glfw-build/tests/CMakeFiles/inputlag.dir/link.txt

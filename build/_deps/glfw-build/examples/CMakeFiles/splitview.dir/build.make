@@ -116,7 +116,7 @@ bin/splitview.exe: _deps/glfw-build/examples/CMakeFiles/splitview.dir/splitview.
 bin/splitview.exe: _deps/glfw-build/examples/CMakeFiles/splitview.dir/glfw.rc.obj
 bin/splitview.exe: _deps/glfw-build/examples/CMakeFiles/splitview.dir/__/deps/glad_gl.c.obj
 bin/splitview.exe: _deps/glfw-build/examples/CMakeFiles/splitview.dir/build.make
-bin/splitview.exe: lib/libglfw3.a
+bin/splitview.exe: lib/libglfw3d.a
 bin/splitview.exe: _deps/glfw-build/examples/CMakeFiles/splitview.dir/linkLibs.rsp
 bin/splitview.exe: _deps/glfw-build/examples/CMakeFiles/splitview.dir/objects1.rsp
 bin/splitview.exe: _deps/glfw-build/examples/CMakeFiles/splitview.dir/link.txt

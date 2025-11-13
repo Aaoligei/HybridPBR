@@ -109,7 +109,7 @@ cursor_EXTERNAL_OBJECTS =
 bin/cursor.exe: _deps/glfw-build/tests/CMakeFiles/cursor.dir/cursor.c.obj
 bin/cursor.exe: _deps/glfw-build/tests/CMakeFiles/cursor.dir/__/deps/glad_gl.c.obj
 bin/cursor.exe: _deps/glfw-build/tests/CMakeFiles/cursor.dir/build.make
-bin/cursor.exe: lib/libglfw3.a
+bin/cursor.exe: lib/libglfw3d.a
 bin/cursor.exe: _deps/glfw-build/tests/CMakeFiles/cursor.dir/linkLibs.rsp
 bin/cursor.exe: _deps/glfw-build/tests/CMakeFiles/cursor.dir/objects1.rsp
 bin/cursor.exe: _deps/glfw-build/tests/CMakeFiles/cursor.dir/link.txt

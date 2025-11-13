@@ -150,7 +150,7 @@ bin/particles.exe: _deps/glfw-build/examples/CMakeFiles/particles.dir/__/deps/ti
 bin/particles.exe: _deps/glfw-build/examples/CMakeFiles/particles.dir/__/deps/getopt.c.obj
 bin/particles.exe: _deps/glfw-build/examples/CMakeFiles/particles.dir/__/deps/glad_gl.c.obj
 bin/particles.exe: _deps/glfw-build/examples/CMakeFiles/particles.dir/build.make
-bin/particles.exe: lib/libglfw3.a
+bin/particles.exe: lib/libglfw3d.a
 bin/particles.exe: _deps/glfw-build/examples/CMakeFiles/particles.dir/linkLibs.rsp
 bin/particles.exe: _deps/glfw-build/examples/CMakeFiles/particles.dir/objects1.rsp
 bin/particles.exe: _deps/glfw-build/examples/CMakeFiles/particles.dir/link.txt

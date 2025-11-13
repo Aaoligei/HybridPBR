@@ -143,7 +143,7 @@ bin/glfwinfo.exe: _deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/__/deps/getopt.
 bin/glfwinfo.exe: _deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/__/deps/glad_gl.c.obj
 bin/glfwinfo.exe: _deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/__/deps/glad_vulkan.c.obj
 bin/glfwinfo.exe: _deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/build.make
-bin/glfwinfo.exe: lib/libglfw3.a
+bin/glfwinfo.exe: lib/libglfw3d.a
 bin/glfwinfo.exe: _deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/linkLibs.rsp
 bin/glfwinfo.exe: _deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/objects1.rsp
 bin/glfwinfo.exe: _deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/link.txt

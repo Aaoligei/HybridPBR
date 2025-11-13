@@ -109,7 +109,7 @@ title_EXTERNAL_OBJECTS =
 bin/title.exe: _deps/glfw-build/tests/CMakeFiles/title.dir/title.c.obj
 bin/title.exe: _deps/glfw-build/tests/CMakeFiles/title.dir/__/deps/glad_gl.c.obj
 bin/title.exe: _deps/glfw-build/tests/CMakeFiles/title.dir/build.make
-bin/title.exe: lib/libglfw3.a
+bin/title.exe: lib/libglfw3d.a
 bin/title.exe: _deps/glfw-build/tests/CMakeFiles/title.dir/linkLibs.rsp
 bin/title.exe: _deps/glfw-build/tests/CMakeFiles/title.dir/objects1.rsp
 bin/title.exe: _deps/glfw-build/tests/CMakeFiles/title.dir/link.txt

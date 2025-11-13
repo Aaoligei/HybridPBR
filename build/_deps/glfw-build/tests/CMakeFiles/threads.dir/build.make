@@ -126,7 +126,7 @@ bin/threads.exe: _deps/glfw-build/tests/CMakeFiles/threads.dir/threads.c.obj
 bin/threads.exe: _deps/glfw-build/tests/CMakeFiles/threads.dir/__/deps/tinycthread.c.obj
 bin/threads.exe: _deps/glfw-build/tests/CMakeFiles/threads.dir/__/deps/glad_gl.c.obj
 bin/threads.exe: _deps/glfw-build/tests/CMakeFiles/threads.dir/build.make
-bin/threads.exe: lib/libglfw3.a
+bin/threads.exe: lib/libglfw3d.a
 bin/threads.exe: _deps/glfw-build/tests/CMakeFiles/threads.dir/linkLibs.rsp
 bin/threads.exe: _deps/glfw-build/tests/CMakeFiles/threads.dir/objects1.rsp
 bin/threads.exe: _deps/glfw-build/tests/CMakeFiles/threads.dir/link.txt

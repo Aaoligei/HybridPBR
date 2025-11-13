@@ -1,4 +1,6 @@
 #include "Timer.h"
+#include "utils/Logger.h"
+#include <cmath> 
 
 namespace HybridPBR {
     
@@ -34,6 +36,7 @@ namespace HybridPBR {
             fps = frameCount / fpsUpdateTime;
             frameCount = 0;
             fpsUpdateTime = 0.0f;
+            
         }
     }
 

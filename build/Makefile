@@ -86,7 +86,7 @@ rebuild_cache/fast: rebuild_cache
 
 # Special rule for the target list_install_components
 list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"Unspecified\""
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"Unspecified\" \"assimp-dev\" \"libassimp5.2.4-dev\""
 .PHONY : list_install_components
 
 # Special rule for the target list_install_components
@@ -615,6 +615,200 @@ glad/fast:
 	$(MAKE) $(MAKESILENT) -f _deps\glad-build\CMakeFiles\glad.dir\build.make _deps/glad-build/CMakeFiles/glad.dir/build
 .PHONY : glad/fast
 
+#=============================================================================
+# Target rules for targets named zlibstatic
+
+# Build rule for target.
+zlibstatic: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 zlibstatic
+.PHONY : zlibstatic
+
+# fast build rule for target.
+zlibstatic/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\assimp-build\contrib\zlib\CMakeFiles\zlibstatic.dir\build.make _deps/assimp-build/contrib/zlib/CMakeFiles/zlibstatic.dir/build
+.PHONY : zlibstatic/fast
+
+#=============================================================================
+# Target rules for targets named assimp
+
+# Build rule for target.
+assimp: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 assimp
+.PHONY : assimp
+
+# fast build rule for target.
+assimp/fast:
+	$(MAKE) $(MAKESILENT) -f _deps\assimp-build\code\CMakeFiles\assimp.dir\build.make _deps/assimp-build/code/CMakeFiles/assimp.dir/build
+.PHONY : assimp/fast
+
+_deps/imgui-src/backends/imgui_impl_glfw.obj: _deps/imgui-src/backends/imgui_impl_glfw.cpp.obj
+.PHONY : _deps/imgui-src/backends/imgui_impl_glfw.obj
+
+# target to build an object file
+_deps/imgui-src/backends/imgui_impl_glfw.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.obj
+.PHONY : _deps/imgui-src/backends/imgui_impl_glfw.cpp.obj
+
+_deps/imgui-src/backends/imgui_impl_glfw.i: _deps/imgui-src/backends/imgui_impl_glfw.cpp.i
+.PHONY : _deps/imgui-src/backends/imgui_impl_glfw.i
+
+# target to preprocess a source file
+_deps/imgui-src/backends/imgui_impl_glfw.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.i
+.PHONY : _deps/imgui-src/backends/imgui_impl_glfw.cpp.i
+
+_deps/imgui-src/backends/imgui_impl_glfw.s: _deps/imgui-src/backends/imgui_impl_glfw.cpp.s
+.PHONY : _deps/imgui-src/backends/imgui_impl_glfw.s
+
+# target to generate assembly for a file
+_deps/imgui-src/backends/imgui_impl_glfw.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.s
+.PHONY : _deps/imgui-src/backends/imgui_impl_glfw.cpp.s
+
+_deps/imgui-src/backends/imgui_impl_opengl3.obj: _deps/imgui-src/backends/imgui_impl_opengl3.cpp.obj
+.PHONY : _deps/imgui-src/backends/imgui_impl_opengl3.obj
+
+# target to build an object file
+_deps/imgui-src/backends/imgui_impl_opengl3.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.obj
+.PHONY : _deps/imgui-src/backends/imgui_impl_opengl3.cpp.obj
+
+_deps/imgui-src/backends/imgui_impl_opengl3.i: _deps/imgui-src/backends/imgui_impl_opengl3.cpp.i
+.PHONY : _deps/imgui-src/backends/imgui_impl_opengl3.i
+
+# target to preprocess a source file
+_deps/imgui-src/backends/imgui_impl_opengl3.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.i
+.PHONY : _deps/imgui-src/backends/imgui_impl_opengl3.cpp.i
+
+_deps/imgui-src/backends/imgui_impl_opengl3.s: _deps/imgui-src/backends/imgui_impl_opengl3.cpp.s
+.PHONY : _deps/imgui-src/backends/imgui_impl_opengl3.s
+
+# target to generate assembly for a file
+_deps/imgui-src/backends/imgui_impl_opengl3.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.s
+.PHONY : _deps/imgui-src/backends/imgui_impl_opengl3.cpp.s
+
+_deps/imgui-src/imgui.obj: _deps/imgui-src/imgui.cpp.obj
+.PHONY : _deps/imgui-src/imgui.obj
+
+# target to build an object file
+_deps/imgui-src/imgui.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui.cpp.obj
+.PHONY : _deps/imgui-src/imgui.cpp.obj
+
+_deps/imgui-src/imgui.i: _deps/imgui-src/imgui.cpp.i
+.PHONY : _deps/imgui-src/imgui.i
+
+# target to preprocess a source file
+_deps/imgui-src/imgui.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui.cpp.i
+.PHONY : _deps/imgui-src/imgui.cpp.i
+
+_deps/imgui-src/imgui.s: _deps/imgui-src/imgui.cpp.s
+.PHONY : _deps/imgui-src/imgui.s
+
+# target to generate assembly for a file
+_deps/imgui-src/imgui.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui.cpp.s
+.PHONY : _deps/imgui-src/imgui.cpp.s
+
+_deps/imgui-src/imgui_demo.obj: _deps/imgui-src/imgui_demo.cpp.obj
+.PHONY : _deps/imgui-src/imgui_demo.obj
+
+# target to build an object file
+_deps/imgui-src/imgui_demo.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_demo.cpp.obj
+.PHONY : _deps/imgui-src/imgui_demo.cpp.obj
+
+_deps/imgui-src/imgui_demo.i: _deps/imgui-src/imgui_demo.cpp.i
+.PHONY : _deps/imgui-src/imgui_demo.i
+
+# target to preprocess a source file
+_deps/imgui-src/imgui_demo.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_demo.cpp.i
+.PHONY : _deps/imgui-src/imgui_demo.cpp.i
+
+_deps/imgui-src/imgui_demo.s: _deps/imgui-src/imgui_demo.cpp.s
+.PHONY : _deps/imgui-src/imgui_demo.s
+
+# target to generate assembly for a file
+_deps/imgui-src/imgui_demo.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_demo.cpp.s
+.PHONY : _deps/imgui-src/imgui_demo.cpp.s
+
+_deps/imgui-src/imgui_draw.obj: _deps/imgui-src/imgui_draw.cpp.obj
+.PHONY : _deps/imgui-src/imgui_draw.obj
+
+# target to build an object file
+_deps/imgui-src/imgui_draw.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_draw.cpp.obj
+.PHONY : _deps/imgui-src/imgui_draw.cpp.obj
+
+_deps/imgui-src/imgui_draw.i: _deps/imgui-src/imgui_draw.cpp.i
+.PHONY : _deps/imgui-src/imgui_draw.i
+
+# target to preprocess a source file
+_deps/imgui-src/imgui_draw.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_draw.cpp.i
+.PHONY : _deps/imgui-src/imgui_draw.cpp.i
+
+_deps/imgui-src/imgui_draw.s: _deps/imgui-src/imgui_draw.cpp.s
+.PHONY : _deps/imgui-src/imgui_draw.s
+
+# target to generate assembly for a file
+_deps/imgui-src/imgui_draw.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_draw.cpp.s
+.PHONY : _deps/imgui-src/imgui_draw.cpp.s
+
+_deps/imgui-src/imgui_tables.obj: _deps/imgui-src/imgui_tables.cpp.obj
+.PHONY : _deps/imgui-src/imgui_tables.obj
+
+# target to build an object file
+_deps/imgui-src/imgui_tables.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_tables.cpp.obj
+.PHONY : _deps/imgui-src/imgui_tables.cpp.obj
+
+_deps/imgui-src/imgui_tables.i: _deps/imgui-src/imgui_tables.cpp.i
+.PHONY : _deps/imgui-src/imgui_tables.i
+
+# target to preprocess a source file
+_deps/imgui-src/imgui_tables.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_tables.cpp.i
+.PHONY : _deps/imgui-src/imgui_tables.cpp.i
+
+_deps/imgui-src/imgui_tables.s: _deps/imgui-src/imgui_tables.cpp.s
+.PHONY : _deps/imgui-src/imgui_tables.s
+
+# target to generate assembly for a file
+_deps/imgui-src/imgui_tables.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_tables.cpp.s
+.PHONY : _deps/imgui-src/imgui_tables.cpp.s
+
+_deps/imgui-src/imgui_widgets.obj: _deps/imgui-src/imgui_widgets.cpp.obj
+.PHONY : _deps/imgui-src/imgui_widgets.obj
+
+# target to build an object file
+_deps/imgui-src/imgui_widgets.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_widgets.cpp.obj
+.PHONY : _deps/imgui-src/imgui_widgets.cpp.obj
+
+_deps/imgui-src/imgui_widgets.i: _deps/imgui-src/imgui_widgets.cpp.i
+.PHONY : _deps/imgui-src/imgui_widgets.i
+
+# target to preprocess a source file
+_deps/imgui-src/imgui_widgets.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_widgets.cpp.i
+.PHONY : _deps/imgui-src/imgui_widgets.cpp.i
+
+_deps/imgui-src/imgui_widgets.s: _deps/imgui-src/imgui_widgets.cpp.s
+.PHONY : _deps/imgui-src/imgui_widgets.s
+
+# target to generate assembly for a file
+_deps/imgui-src/imgui_widgets.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_widgets.cpp.s
+.PHONY : _deps/imgui-src/imgui_widgets.cpp.s
+
 src/core/Application.obj: src/core/Application.cpp.obj
 .PHONY : src/core/Application.obj
 
@@ -735,6 +929,54 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/rendering/ImGuiComponentManager.obj: src/rendering/ImGuiComponentManager.cpp.obj
+.PHONY : src/rendering/ImGuiComponentManager.obj
+
+# target to build an object file
+src/rendering/ImGuiComponentManager.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.obj
+.PHONY : src/rendering/ImGuiComponentManager.cpp.obj
+
+src/rendering/ImGuiComponentManager.i: src/rendering/ImGuiComponentManager.cpp.i
+.PHONY : src/rendering/ImGuiComponentManager.i
+
+# target to preprocess a source file
+src/rendering/ImGuiComponentManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.i
+.PHONY : src/rendering/ImGuiComponentManager.cpp.i
+
+src/rendering/ImGuiComponentManager.s: src/rendering/ImGuiComponentManager.cpp.s
+.PHONY : src/rendering/ImGuiComponentManager.s
+
+# target to generate assembly for a file
+src/rendering/ImGuiComponentManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.s
+.PHONY : src/rendering/ImGuiComponentManager.cpp.s
+
+src/rendering/ImGuiManager.obj: src/rendering/ImGuiManager.cpp.obj
+.PHONY : src/rendering/ImGuiManager.obj
+
+# target to build an object file
+src/rendering/ImGuiManager.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/ImGuiManager.cpp.obj
+.PHONY : src/rendering/ImGuiManager.cpp.obj
+
+src/rendering/ImGuiManager.i: src/rendering/ImGuiManager.cpp.i
+.PHONY : src/rendering/ImGuiManager.i
+
+# target to preprocess a source file
+src/rendering/ImGuiManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/ImGuiManager.cpp.i
+.PHONY : src/rendering/ImGuiManager.cpp.i
+
+src/rendering/ImGuiManager.s: src/rendering/ImGuiManager.cpp.s
+.PHONY : src/rendering/ImGuiManager.s
+
+# target to generate assembly for a file
+src/rendering/ImGuiManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/ImGuiManager.cpp.s
+.PHONY : src/rendering/ImGuiManager.cpp.s
+
 src/rendering/Shader.obj: src/rendering/Shader.cpp.obj
 .PHONY : src/rendering/Shader.obj
 
@@ -758,6 +1000,270 @@ src/rendering/Shader.s: src/rendering/Shader.cpp.s
 src/rendering/Shader.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/Shader.cpp.s
 .PHONY : src/rendering/Shader.cpp.s
+
+src/rendering/common/Light.obj: src/rendering/common/Light.cpp.obj
+.PHONY : src/rendering/common/Light.obj
+
+# target to build an object file
+src/rendering/common/Light.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/Light.cpp.obj
+.PHONY : src/rendering/common/Light.cpp.obj
+
+src/rendering/common/Light.i: src/rendering/common/Light.cpp.i
+.PHONY : src/rendering/common/Light.i
+
+# target to preprocess a source file
+src/rendering/common/Light.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/Light.cpp.i
+.PHONY : src/rendering/common/Light.cpp.i
+
+src/rendering/common/Light.s: src/rendering/common/Light.cpp.s
+.PHONY : src/rendering/common/Light.s
+
+# target to generate assembly for a file
+src/rendering/common/Light.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/Light.cpp.s
+.PHONY : src/rendering/common/Light.cpp.s
+
+src/rendering/common/Material.obj: src/rendering/common/Material.cpp.obj
+.PHONY : src/rendering/common/Material.obj
+
+# target to build an object file
+src/rendering/common/Material.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/Material.cpp.obj
+.PHONY : src/rendering/common/Material.cpp.obj
+
+src/rendering/common/Material.i: src/rendering/common/Material.cpp.i
+.PHONY : src/rendering/common/Material.i
+
+# target to preprocess a source file
+src/rendering/common/Material.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/Material.cpp.i
+.PHONY : src/rendering/common/Material.cpp.i
+
+src/rendering/common/Material.s: src/rendering/common/Material.cpp.s
+.PHONY : src/rendering/common/Material.s
+
+# target to generate assembly for a file
+src/rendering/common/Material.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/Material.cpp.s
+.PHONY : src/rendering/common/Material.cpp.s
+
+src/rendering/common/Texture.obj: src/rendering/common/Texture.cpp.obj
+.PHONY : src/rendering/common/Texture.obj
+
+# target to build an object file
+src/rendering/common/Texture.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.obj
+.PHONY : src/rendering/common/Texture.cpp.obj
+
+src/rendering/common/Texture.i: src/rendering/common/Texture.cpp.i
+.PHONY : src/rendering/common/Texture.i
+
+# target to preprocess a source file
+src/rendering/common/Texture.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.i
+.PHONY : src/rendering/common/Texture.cpp.i
+
+src/rendering/common/Texture.s: src/rendering/common/Texture.cpp.s
+.PHONY : src/rendering/common/Texture.s
+
+# target to generate assembly for a file
+src/rendering/common/Texture.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.s
+.PHONY : src/rendering/common/Texture.cpp.s
+
+src/rendering/rasterization/Camera.obj: src/rendering/rasterization/Camera.cpp.obj
+.PHONY : src/rendering/rasterization/Camera.obj
+
+# target to build an object file
+src/rendering/rasterization/Camera.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.obj
+.PHONY : src/rendering/rasterization/Camera.cpp.obj
+
+src/rendering/rasterization/Camera.i: src/rendering/rasterization/Camera.cpp.i
+.PHONY : src/rendering/rasterization/Camera.i
+
+# target to preprocess a source file
+src/rendering/rasterization/Camera.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.i
+.PHONY : src/rendering/rasterization/Camera.cpp.i
+
+src/rendering/rasterization/Camera.s: src/rendering/rasterization/Camera.cpp.s
+.PHONY : src/rendering/rasterization/Camera.s
+
+# target to generate assembly for a file
+src/rendering/rasterization/Camera.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.s
+.PHONY : src/rendering/rasterization/Camera.cpp.s
+
+src/rendering/rasterization/Mesh.obj: src/rendering/rasterization/Mesh.cpp.obj
+.PHONY : src/rendering/rasterization/Mesh.obj
+
+# target to build an object file
+src/rendering/rasterization/Mesh.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Mesh.cpp.obj
+.PHONY : src/rendering/rasterization/Mesh.cpp.obj
+
+src/rendering/rasterization/Mesh.i: src/rendering/rasterization/Mesh.cpp.i
+.PHONY : src/rendering/rasterization/Mesh.i
+
+# target to preprocess a source file
+src/rendering/rasterization/Mesh.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Mesh.cpp.i
+.PHONY : src/rendering/rasterization/Mesh.cpp.i
+
+src/rendering/rasterization/Mesh.s: src/rendering/rasterization/Mesh.cpp.s
+.PHONY : src/rendering/rasterization/Mesh.s
+
+# target to generate assembly for a file
+src/rendering/rasterization/Mesh.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Mesh.cpp.s
+.PHONY : src/rendering/rasterization/Mesh.cpp.s
+
+src/rendering/rasterization/Rasterizer.obj: src/rendering/rasterization/Rasterizer.cpp.obj
+.PHONY : src/rendering/rasterization/Rasterizer.obj
+
+# target to build an object file
+src/rendering/rasterization/Rasterizer.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Rasterizer.cpp.obj
+.PHONY : src/rendering/rasterization/Rasterizer.cpp.obj
+
+src/rendering/rasterization/Rasterizer.i: src/rendering/rasterization/Rasterizer.cpp.i
+.PHONY : src/rendering/rasterization/Rasterizer.i
+
+# target to preprocess a source file
+src/rendering/rasterization/Rasterizer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Rasterizer.cpp.i
+.PHONY : src/rendering/rasterization/Rasterizer.cpp.i
+
+src/rendering/rasterization/Rasterizer.s: src/rendering/rasterization/Rasterizer.cpp.s
+.PHONY : src/rendering/rasterization/Rasterizer.s
+
+# target to generate assembly for a file
+src/rendering/rasterization/Rasterizer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Rasterizer.cpp.s
+.PHONY : src/rendering/rasterization/Rasterizer.cpp.s
+
+src/resources/ModelLoader.obj: src/resources/ModelLoader.cpp.obj
+.PHONY : src/resources/ModelLoader.obj
+
+# target to build an object file
+src/resources/ModelLoader.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.obj
+.PHONY : src/resources/ModelLoader.cpp.obj
+
+src/resources/ModelLoader.i: src/resources/ModelLoader.cpp.i
+.PHONY : src/resources/ModelLoader.i
+
+# target to preprocess a source file
+src/resources/ModelLoader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.i
+.PHONY : src/resources/ModelLoader.cpp.i
+
+src/resources/ModelLoader.s: src/resources/ModelLoader.cpp.s
+.PHONY : src/resources/ModelLoader.s
+
+# target to generate assembly for a file
+src/resources/ModelLoader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.s
+.PHONY : src/resources/ModelLoader.cpp.s
+
+src/resources/ResourceManager.obj: src/resources/ResourceManager.cpp.obj
+.PHONY : src/resources/ResourceManager.obj
+
+# target to build an object file
+src/resources/ResourceManager.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/resources/ResourceManager.cpp.obj
+.PHONY : src/resources/ResourceManager.cpp.obj
+
+src/resources/ResourceManager.i: src/resources/ResourceManager.cpp.i
+.PHONY : src/resources/ResourceManager.i
+
+# target to preprocess a source file
+src/resources/ResourceManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/resources/ResourceManager.cpp.i
+.PHONY : src/resources/ResourceManager.cpp.i
+
+src/resources/ResourceManager.s: src/resources/ResourceManager.cpp.s
+.PHONY : src/resources/ResourceManager.s
+
+# target to generate assembly for a file
+src/resources/ResourceManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/resources/ResourceManager.cpp.s
+.PHONY : src/resources/ResourceManager.cpp.s
+
+src/scene/Scene.obj: src/scene/Scene.cpp.obj
+.PHONY : src/scene/Scene.obj
+
+# target to build an object file
+src/scene/Scene.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/scene/Scene.cpp.obj
+.PHONY : src/scene/Scene.cpp.obj
+
+src/scene/Scene.i: src/scene/Scene.cpp.i
+.PHONY : src/scene/Scene.i
+
+# target to preprocess a source file
+src/scene/Scene.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/scene/Scene.cpp.i
+.PHONY : src/scene/Scene.cpp.i
+
+src/scene/Scene.s: src/scene/Scene.cpp.s
+.PHONY : src/scene/Scene.s
+
+# target to generate assembly for a file
+src/scene/Scene.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/scene/Scene.cpp.s
+.PHONY : src/scene/Scene.cpp.s
+
+src/scene/SceneNode.obj: src/scene/SceneNode.cpp.obj
+.PHONY : src/scene/SceneNode.obj
+
+# target to build an object file
+src/scene/SceneNode.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/scene/SceneNode.cpp.obj
+.PHONY : src/scene/SceneNode.cpp.obj
+
+src/scene/SceneNode.i: src/scene/SceneNode.cpp.i
+.PHONY : src/scene/SceneNode.i
+
+# target to preprocess a source file
+src/scene/SceneNode.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/scene/SceneNode.cpp.i
+.PHONY : src/scene/SceneNode.cpp.i
+
+src/scene/SceneNode.s: src/scene/SceneNode.cpp.s
+.PHONY : src/scene/SceneNode.s
+
+# target to generate assembly for a file
+src/scene/SceneNode.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/scene/SceneNode.cpp.s
+.PHONY : src/scene/SceneNode.cpp.s
+
+src/scene/Transform.obj: src/scene/Transform.cpp.obj
+.PHONY : src/scene/Transform.obj
+
+# target to build an object file
+src/scene/Transform.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/scene/Transform.cpp.obj
+.PHONY : src/scene/Transform.cpp.obj
+
+src/scene/Transform.i: src/scene/Transform.cpp.i
+.PHONY : src/scene/Transform.i
+
+# target to preprocess a source file
+src/scene/Transform.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/scene/Transform.cpp.i
+.PHONY : src/scene/Transform.cpp.i
+
+src/scene/Transform.s: src/scene/Transform.cpp.s
+.PHONY : src/scene/Transform.s
+
+# target to generate assembly for a file
+src/scene/Transform.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/scene/Transform.cpp.s
+.PHONY : src/scene/Transform.cpp.s
 
 src/utils/FileIO.obj: src/utils/FileIO.cpp.obj
 .PHONY : src/utils/FileIO.obj
@@ -847,6 +1353,7 @@ help:
 	@echo ... uninstall
 	@echo ... update_mappings
 	@echo ... HybridPBR
+	@echo ... assimp
 	@echo ... boing
 	@echo ... clipboard
 	@echo ... cursor
@@ -878,6 +1385,28 @@ help:
 	@echo ... triangle-vulkan
 	@echo ... wave
 	@echo ... windows
+	@echo ... zlibstatic
+	@echo ... _deps/imgui-src/backends/imgui_impl_glfw.obj
+	@echo ... _deps/imgui-src/backends/imgui_impl_glfw.i
+	@echo ... _deps/imgui-src/backends/imgui_impl_glfw.s
+	@echo ... _deps/imgui-src/backends/imgui_impl_opengl3.obj
+	@echo ... _deps/imgui-src/backends/imgui_impl_opengl3.i
+	@echo ... _deps/imgui-src/backends/imgui_impl_opengl3.s
+	@echo ... _deps/imgui-src/imgui.obj
+	@echo ... _deps/imgui-src/imgui.i
+	@echo ... _deps/imgui-src/imgui.s
+	@echo ... _deps/imgui-src/imgui_demo.obj
+	@echo ... _deps/imgui-src/imgui_demo.i
+	@echo ... _deps/imgui-src/imgui_demo.s
+	@echo ... _deps/imgui-src/imgui_draw.obj
+	@echo ... _deps/imgui-src/imgui_draw.i
+	@echo ... _deps/imgui-src/imgui_draw.s
+	@echo ... _deps/imgui-src/imgui_tables.obj
+	@echo ... _deps/imgui-src/imgui_tables.i
+	@echo ... _deps/imgui-src/imgui_tables.s
+	@echo ... _deps/imgui-src/imgui_widgets.obj
+	@echo ... _deps/imgui-src/imgui_widgets.i
+	@echo ... _deps/imgui-src/imgui_widgets.s
 	@echo ... src/core/Application.obj
 	@echo ... src/core/Application.i
 	@echo ... src/core/Application.s
@@ -893,9 +1422,48 @@ help:
 	@echo ... src/main.obj
 	@echo ... src/main.i
 	@echo ... src/main.s
+	@echo ... src/rendering/ImGuiComponentManager.obj
+	@echo ... src/rendering/ImGuiComponentManager.i
+	@echo ... src/rendering/ImGuiComponentManager.s
+	@echo ... src/rendering/ImGuiManager.obj
+	@echo ... src/rendering/ImGuiManager.i
+	@echo ... src/rendering/ImGuiManager.s
 	@echo ... src/rendering/Shader.obj
 	@echo ... src/rendering/Shader.i
 	@echo ... src/rendering/Shader.s
+	@echo ... src/rendering/common/Light.obj
+	@echo ... src/rendering/common/Light.i
+	@echo ... src/rendering/common/Light.s
+	@echo ... src/rendering/common/Material.obj
+	@echo ... src/rendering/common/Material.i
+	@echo ... src/rendering/common/Material.s
+	@echo ... src/rendering/common/Texture.obj
+	@echo ... src/rendering/common/Texture.i
+	@echo ... src/rendering/common/Texture.s
+	@echo ... src/rendering/rasterization/Camera.obj
+	@echo ... src/rendering/rasterization/Camera.i
+	@echo ... src/rendering/rasterization/Camera.s
+	@echo ... src/rendering/rasterization/Mesh.obj
+	@echo ... src/rendering/rasterization/Mesh.i
+	@echo ... src/rendering/rasterization/Mesh.s
+	@echo ... src/rendering/rasterization/Rasterizer.obj
+	@echo ... src/rendering/rasterization/Rasterizer.i
+	@echo ... src/rendering/rasterization/Rasterizer.s
+	@echo ... src/resources/ModelLoader.obj
+	@echo ... src/resources/ModelLoader.i
+	@echo ... src/resources/ModelLoader.s
+	@echo ... src/resources/ResourceManager.obj
+	@echo ... src/resources/ResourceManager.i
+	@echo ... src/resources/ResourceManager.s
+	@echo ... src/scene/Scene.obj
+	@echo ... src/scene/Scene.i
+	@echo ... src/scene/Scene.s
+	@echo ... src/scene/SceneNode.obj
+	@echo ... src/scene/SceneNode.i
+	@echo ... src/scene/SceneNode.s
+	@echo ... src/scene/Transform.obj
+	@echo ... src/scene/Transform.i
+	@echo ... src/scene/Transform.s
 	@echo ... src/utils/FileIO.obj
 	@echo ... src/utils/FileIO.i
 	@echo ... src/utils/FileIO.s

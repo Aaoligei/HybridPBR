@@ -109,7 +109,7 @@ icon_EXTERNAL_OBJECTS =
 bin/icon.exe: _deps/glfw-build/tests/CMakeFiles/icon.dir/icon.c.obj
 bin/icon.exe: _deps/glfw-build/tests/CMakeFiles/icon.dir/__/deps/glad_gl.c.obj
 bin/icon.exe: _deps/glfw-build/tests/CMakeFiles/icon.dir/build.make
-bin/icon.exe: lib/libglfw3.a
+bin/icon.exe: lib/libglfw3d.a
 bin/icon.exe: _deps/glfw-build/tests/CMakeFiles/icon.dir/linkLibs.rsp
 bin/icon.exe: _deps/glfw-build/tests/CMakeFiles/icon.dir/objects1.rsp
 bin/icon.exe: _deps/glfw-build/tests/CMakeFiles/icon.dir/link.txt

@@ -109,7 +109,7 @@ triangle__vulkan_EXTERNAL_OBJECTS =
 bin/triangle-vulkan.exe: _deps/glfw-build/tests/CMakeFiles/triangle-vulkan.dir/triangle-vulkan.c.obj
 bin/triangle-vulkan.exe: _deps/glfw-build/tests/CMakeFiles/triangle-vulkan.dir/__/deps/glad_vulkan.c.obj
 bin/triangle-vulkan.exe: _deps/glfw-build/tests/CMakeFiles/triangle-vulkan.dir/build.make
-bin/triangle-vulkan.exe: lib/libglfw3.a
+bin/triangle-vulkan.exe: lib/libglfw3d.a
 bin/triangle-vulkan.exe: _deps/glfw-build/tests/CMakeFiles/triangle-vulkan.dir/linkLibs.rsp
 bin/triangle-vulkan.exe: _deps/glfw-build/tests/CMakeFiles/triangle-vulkan.dir/objects1.rsp
 bin/triangle-vulkan.exe: _deps/glfw-build/tests/CMakeFiles/triangle-vulkan.dir/link.txt

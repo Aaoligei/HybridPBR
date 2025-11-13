@@ -109,7 +109,7 @@ timeout_EXTERNAL_OBJECTS =
 bin/timeout.exe: _deps/glfw-build/tests/CMakeFiles/timeout.dir/timeout.c.obj
 bin/timeout.exe: _deps/glfw-build/tests/CMakeFiles/timeout.dir/__/deps/glad_gl.c.obj
 bin/timeout.exe: _deps/glfw-build/tests/CMakeFiles/timeout.dir/build.make
-bin/timeout.exe: lib/libglfw3.a
+bin/timeout.exe: lib/libglfw3d.a
 bin/timeout.exe: _deps/glfw-build/tests/CMakeFiles/timeout.dir/linkLibs.rsp
 bin/timeout.exe: _deps/glfw-build/tests/CMakeFiles/timeout.dir/objects1.rsp
 bin/timeout.exe: _deps/glfw-build/tests/CMakeFiles/timeout.dir/link.txt

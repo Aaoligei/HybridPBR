@@ -1,3 +1,3 @@
 file(REMOVE_RECURSE
-  "../../../lib/libglfw3.a"
+  "../../../lib/libglfw3d.a"
 )

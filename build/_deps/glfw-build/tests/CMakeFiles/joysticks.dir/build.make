@@ -109,7 +109,7 @@ joysticks_EXTERNAL_OBJECTS =
 bin/joysticks.exe: _deps/glfw-build/tests/CMakeFiles/joysticks.dir/joysticks.c.obj
 bin/joysticks.exe: _deps/glfw-build/tests/CMakeFiles/joysticks.dir/__/deps/glad_gl.c.obj
 bin/joysticks.exe: _deps/glfw-build/tests/CMakeFiles/joysticks.dir/build.make
-bin/joysticks.exe: lib/libglfw3.a
+bin/joysticks.exe: lib/libglfw3d.a
 bin/joysticks.exe: _deps/glfw-build/tests/CMakeFiles/joysticks.dir/linkLibs.rsp
 bin/joysticks.exe: _deps/glfw-build/tests/CMakeFiles/joysticks.dir/objects1.rsp
 bin/joysticks.exe: _deps/glfw-build/tests/CMakeFiles/joysticks.dir/link.txt

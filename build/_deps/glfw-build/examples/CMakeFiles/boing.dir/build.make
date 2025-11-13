@@ -116,7 +116,7 @@ bin/boing.exe: _deps/glfw-build/examples/CMakeFiles/boing.dir/boing.c.obj
 bin/boing.exe: _deps/glfw-build/examples/CMakeFiles/boing.dir/glfw.rc.obj
 bin/boing.exe: _deps/glfw-build/examples/CMakeFiles/boing.dir/__/deps/glad_gl.c.obj
 bin/boing.exe: _deps/glfw-build/examples/CMakeFiles/boing.dir/build.make
-bin/boing.exe: lib/libglfw3.a
+bin/boing.exe: lib/libglfw3d.a
 bin/boing.exe: _deps/glfw-build/examples/CMakeFiles/boing.dir/linkLibs.rsp
 bin/boing.exe: _deps/glfw-build/examples/CMakeFiles/boing.dir/objects1.rsp
 bin/boing.exe: _deps/glfw-build/examples/CMakeFiles/boing.dir/link.txt

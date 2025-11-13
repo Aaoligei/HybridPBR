@@ -126,7 +126,7 @@ bin/clipboard.exe: _deps/glfw-build/tests/CMakeFiles/clipboard.dir/clipboard.c.o
 bin/clipboard.exe: _deps/glfw-build/tests/CMakeFiles/clipboard.dir/__/deps/getopt.c.obj
 bin/clipboard.exe: _deps/glfw-build/tests/CMakeFiles/clipboard.dir/__/deps/glad_gl.c.obj
 bin/clipboard.exe: _deps/glfw-build/tests/CMakeFiles/clipboard.dir/build.make
-bin/clipboard.exe: lib/libglfw3.a
+bin/clipboard.exe: lib/libglfw3d.a
 bin/clipboard.exe: _deps/glfw-build/tests/CMakeFiles/clipboard.dir/linkLibs.rsp
 bin/clipboard.exe: _deps/glfw-build/tests/CMakeFiles/clipboard.dir/objects1.rsp
 bin/clipboard.exe: _deps/glfw-build/tests/CMakeFiles/clipboard.dir/link.txt

@@ -12,6 +12,11 @@ namespace HybridPBR {
         std::string title = "HybridPBR Renderer";
         bool vsync = true;
         bool fullscreen = false;
+
+        WindowConfig() = default;
+        WindowConfig(int width, int height, std::string title, bool vsync, bool fullscreen)
+            : width(width), height(height), title(std::move(title)), 
+              vsync(vsync), fullscreen(fullscreen) {};
     };
 
     class Window {

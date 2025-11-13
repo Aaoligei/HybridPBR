@@ -109,7 +109,7 @@ tearing_EXTERNAL_OBJECTS =
 bin/tearing.exe: _deps/glfw-build/tests/CMakeFiles/tearing.dir/tearing.c.obj
 bin/tearing.exe: _deps/glfw-build/tests/CMakeFiles/tearing.dir/__/deps/glad_gl.c.obj
 bin/tearing.exe: _deps/glfw-build/tests/CMakeFiles/tearing.dir/build.make
-bin/tearing.exe: lib/libglfw3.a
+bin/tearing.exe: lib/libglfw3d.a
 bin/tearing.exe: _deps/glfw-build/tests/CMakeFiles/tearing.dir/linkLibs.rsp
 bin/tearing.exe: _deps/glfw-build/tests/CMakeFiles/tearing.dir/objects1.rsp
 bin/tearing.exe: _deps/glfw-build/tests/CMakeFiles/tearing.dir/link.txt

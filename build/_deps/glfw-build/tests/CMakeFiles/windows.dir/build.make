@@ -126,7 +126,7 @@ bin/windows.exe: _deps/glfw-build/tests/CMakeFiles/windows.dir/windows.c.obj
 bin/windows.exe: _deps/glfw-build/tests/CMakeFiles/windows.dir/__/deps/getopt.c.obj
 bin/windows.exe: _deps/glfw-build/tests/CMakeFiles/windows.dir/__/deps/glad_gl.c.obj
 bin/windows.exe: _deps/glfw-build/tests/CMakeFiles/windows.dir/build.make
-bin/windows.exe: lib/libglfw3.a
+bin/windows.exe: lib/libglfw3d.a
 bin/windows.exe: _deps/glfw-build/tests/CMakeFiles/windows.dir/linkLibs.rsp
 bin/windows.exe: _deps/glfw-build/tests/CMakeFiles/windows.dir/objects1.rsp
 bin/windows.exe: _deps/glfw-build/tests/CMakeFiles/windows.dir/link.txt

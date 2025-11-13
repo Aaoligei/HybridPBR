@@ -960,3 +960,212 @@ events:
         
       exitCode: 0
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "build/_deps/assimp-src/contrib/zlib/CMakeLists.txt:35 (check_include_file)"
+    checks:
+      - "Looking for sys/types.h"
+    directories:
+      source: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-sl2j68"
+      binary: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-sl2j68"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "-fno-strict-aliasing -fPIC "
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/assimp-src/cmake-modules"
+    buildResult:
+      variable: "HAVE_SYS_TYPES_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-sl2j68'
+        
+        Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/mingw64/bin/mingw32-make.exe -f Makefile cmTC_7cf6a/fast
+        C:/mingw64/bin/mingw32-make.exe  -f CMakeFiles\\cmTC_7cf6a.dir\\build.make CMakeFiles/cmTC_7cf6a.dir/build
+        mingw32-make[1]: Entering directory 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-sl2j68'
+        Building C object CMakeFiles/cmTC_7cf6a.dir/CheckIncludeFile.c.obj
+        C:\\mingw64\\bin\\gcc.exe   -fno-strict-aliasing -fPIC   -std=gnu99 -o CMakeFiles\\cmTC_7cf6a.dir\\CheckIncludeFile.c.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\build\\CMakeFiles\\CMakeScratch\\TryCompile-sl2j68\\CheckIncludeFile.c
+        Linking C executable cmTC_7cf6a.exe
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E cmake_link_script CMakeFiles\\cmTC_7cf6a.dir\\link.txt --verbose=1
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f CMakeFiles\\cmTC_7cf6a.dir/objects.a
+        C:\\mingw64\\bin\\ar.exe qc CMakeFiles\\cmTC_7cf6a.dir/objects.a @CMakeFiles\\cmTC_7cf6a.dir\\objects1.rsp
+        C:\\mingw64\\bin\\gcc.exe -fno-strict-aliasing -fPIC   -Wl,--whole-archive CMakeFiles\\cmTC_7cf6a.dir/objects.a -Wl,--no-whole-archive -o cmTC_7cf6a.exe -Wl,--out-implib,libcmTC_7cf6a.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\\cmTC_7cf6a.dir\\linkLibs.rsp
+        mingw32-make[1]: Leaving directory 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-sl2j68'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "build/_deps/assimp-src/contrib/zlib/CMakeLists.txt:36 (check_include_file)"
+    checks:
+      - "Looking for stdint.h"
+    directories:
+      source: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-zwu03j"
+      binary: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-zwu03j"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "-fno-strict-aliasing -fPIC "
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/assimp-src/cmake-modules"
+    buildResult:
+      variable: "HAVE_STDINT_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-zwu03j'
+        
+        Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/mingw64/bin/mingw32-make.exe -f Makefile cmTC_b035f/fast
+        C:/mingw64/bin/mingw32-make.exe  -f CMakeFiles\\cmTC_b035f.dir\\build.make CMakeFiles/cmTC_b035f.dir/build
+        mingw32-make[1]: Entering directory 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-zwu03j'
+        Building C object CMakeFiles/cmTC_b035f.dir/CheckIncludeFile.c.obj
+        C:\\mingw64\\bin\\gcc.exe   -fno-strict-aliasing -fPIC   -std=gnu99 -o CMakeFiles\\cmTC_b035f.dir\\CheckIncludeFile.c.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\build\\CMakeFiles\\CMakeScratch\\TryCompile-zwu03j\\CheckIncludeFile.c
+        Linking C executable cmTC_b035f.exe
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E cmake_link_script CMakeFiles\\cmTC_b035f.dir\\link.txt --verbose=1
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f CMakeFiles\\cmTC_b035f.dir/objects.a
+        C:\\mingw64\\bin\\ar.exe qc CMakeFiles\\cmTC_b035f.dir/objects.a @CMakeFiles\\cmTC_b035f.dir\\objects1.rsp
+        C:\\mingw64\\bin\\gcc.exe -fno-strict-aliasing -fPIC   -Wl,--whole-archive CMakeFiles\\cmTC_b035f.dir/objects.a -Wl,--no-whole-archive -o cmTC_b035f.exe -Wl,--out-implib,libcmTC_b035f.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\\cmTC_b035f.dir\\linkLibs.rsp
+        mingw32-make[1]: Leaving directory 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-zwu03j'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "build/_deps/assimp-src/contrib/zlib/CMakeLists.txt:37 (check_include_file)"
+    checks:
+      - "Looking for stddef.h"
+    directories:
+      source: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-jkp2yb"
+      binary: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-jkp2yb"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "-fno-strict-aliasing -fPIC "
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/assimp-src/cmake-modules"
+    buildResult:
+      variable: "HAVE_STDDEF_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-jkp2yb'
+        
+        Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/mingw64/bin/mingw32-make.exe -f Makefile cmTC_12372/fast
+        C:/mingw64/bin/mingw32-make.exe  -f CMakeFiles\\cmTC_12372.dir\\build.make CMakeFiles/cmTC_12372.dir/build
+        mingw32-make[1]: Entering directory 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-jkp2yb'
+        Building C object CMakeFiles/cmTC_12372.dir/CheckIncludeFile.c.obj
+        C:\\mingw64\\bin\\gcc.exe   -fno-strict-aliasing -fPIC   -std=gnu99 -o CMakeFiles\\cmTC_12372.dir\\CheckIncludeFile.c.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\build\\CMakeFiles\\CMakeScratch\\TryCompile-jkp2yb\\CheckIncludeFile.c
+        Linking C executable cmTC_12372.exe
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E cmake_link_script CMakeFiles\\cmTC_12372.dir\\link.txt --verbose=1
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f CMakeFiles\\cmTC_12372.dir/objects.a
+        C:\\mingw64\\bin\\ar.exe qc CMakeFiles\\cmTC_12372.dir/objects.a @CMakeFiles\\cmTC_12372.dir\\objects1.rsp
+        C:\\mingw64\\bin\\gcc.exe -fno-strict-aliasing -fPIC   -Wl,--whole-archive CMakeFiles\\cmTC_12372.dir/objects.a -Wl,--no-whole-archive -o cmTC_12372.exe -Wl,--out-implib,libcmTC_12372.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\\cmTC_12372.dir\\linkLibs.rsp
+        mingw32-make[1]: Leaving directory 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-jkp2yb'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.30/Modules/CheckTypeSize.cmake:147 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.30/Modules/CheckTypeSize.cmake:272 (__check_type_size_impl)"
+      - "build/_deps/assimp-src/contrib/zlib/CMakeLists.txt:55 (check_type_size)"
+    checks:
+      - "Check size of off64_t"
+    directories:
+      source: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-mbrtv0"
+      binary: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-mbrtv0"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "-fno-strict-aliasing -fPIC "
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/assimp-src/cmake-modules"
+    buildResult:
+      variable: "HAVE_OFF64_T"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-mbrtv0'
+        
+        Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/mingw64/bin/mingw32-make.exe -f Makefile cmTC_51fc0/fast
+        C:/mingw64/bin/mingw32-make.exe  -f CMakeFiles\\cmTC_51fc0.dir\\build.make CMakeFiles/cmTC_51fc0.dir/build
+        mingw32-make[1]: Entering directory 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-mbrtv0'
+        Building C object CMakeFiles/cmTC_51fc0.dir/OFF64_T.c.obj
+        C:\\mingw64\\bin\\gcc.exe -DHAVE_STDDEF_H -DHAVE_STDINT_H -DHAVE_SYS_TYPES_H -D_LARGEFILE64_SOURCE=1  -fno-strict-aliasing -fPIC   -std=gnu99 -o CMakeFiles\\cmTC_51fc0.dir\\OFF64_T.c.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\build\\CMakeFiles\\CMakeScratch\\TryCompile-mbrtv0\\OFF64_T.c
+        Linking C executable cmTC_51fc0.exe
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E cmake_link_script CMakeFiles\\cmTC_51fc0.dir\\link.txt --verbose=1
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f CMakeFiles\\cmTC_51fc0.dir/objects.a
+        C:\\mingw64\\bin\\ar.exe qc CMakeFiles\\cmTC_51fc0.dir/objects.a @CMakeFiles\\cmTC_51fc0.dir\\objects1.rsp
+        C:\\mingw64\\bin\\gcc.exe -fno-strict-aliasing -fPIC   -Wl,--whole-archive CMakeFiles\\cmTC_51fc0.dir/objects.a -Wl,--no-whole-archive -o cmTC_51fc0.exe -Wl,--out-implib,libcmTC_51fc0.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\\cmTC_51fc0.dir\\linkLibs.rsp
+        mingw32-make[1]: Leaving directory 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-mbrtv0'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.30/Modules/CheckFunctionExists.cmake:86 (try_compile)"
+      - "build/_deps/assimp-src/contrib/zlib/CMakeLists.txt:64 (check_function_exists)"
+    checks:
+      - "Looking for fseeko"
+    directories:
+      source: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-dwd87r"
+      binary: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-dwd87r"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "-fno-strict-aliasing -fPIC "
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/assimp-src/cmake-modules"
+    buildResult:
+      variable: "HAVE_FSEEKO"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-dwd87r'
+        
+        Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/mingw64/bin/mingw32-make.exe -f Makefile cmTC_2b7c2/fast
+        C:/mingw64/bin/mingw32-make.exe  -f CMakeFiles\\cmTC_2b7c2.dir\\build.make CMakeFiles/cmTC_2b7c2.dir/build
+        mingw32-make[1]: Entering directory 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-dwd87r'
+        Building C object CMakeFiles/cmTC_2b7c2.dir/CheckFunctionExists.c.obj
+        C:\\mingw64\\bin\\gcc.exe   -fno-strict-aliasing -fPIC  -DCHECK_FUNCTION_EXISTS=fseeko -std=gnu99 -o CMakeFiles\\cmTC_2b7c2.dir\\CheckFunctionExists.c.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\build\\CMakeFiles\\CMakeScratch\\TryCompile-dwd87r\\CheckFunctionExists.c
+        Linking C executable cmTC_2b7c2.exe
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E cmake_link_script CMakeFiles\\cmTC_2b7c2.dir\\link.txt --verbose=1
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f CMakeFiles\\cmTC_2b7c2.dir/objects.a
+        C:\\mingw64\\bin\\ar.exe qc CMakeFiles\\cmTC_2b7c2.dir/objects.a @CMakeFiles\\cmTC_2b7c2.dir\\objects1.rsp
+        C:\\mingw64\\bin\\gcc.exe -fno-strict-aliasing -fPIC  -DCHECK_FUNCTION_EXISTS=fseeko -Wl,--whole-archive CMakeFiles\\cmTC_2b7c2.dir/objects.a -Wl,--no-whole-archive -o cmTC_2b7c2.exe -Wl,--out-implib,libcmTC_2b7c2.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\\cmTC_2b7c2.dir\\linkLibs.rsp
+        mingw32-make[1]: Leaving directory 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-dwd87r'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.30/Modules/CheckIncludeFile.cmake:90 (try_compile)"
+      - "build/_deps/assimp-src/contrib/zlib/CMakeLists.txt:72 (check_include_file)"
+    checks:
+      - "Looking for unistd.h"
+    directories:
+      source: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-unhrrf"
+      binary: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-unhrrf"
+    cmakeVariables:
+      CMAKE_C_FLAGS: "-fno-strict-aliasing -fPIC "
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_MODULE_PATH: "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/assimp-src/cmake-modules"
+    buildResult:
+      variable: "Z_HAVE_UNISTD_H"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-unhrrf'
+        
+        Run Build Command(s): "C:/Program Files/CMake/bin/cmake.exe" -E env VERBOSE=1 C:/mingw64/bin/mingw32-make.exe -f Makefile cmTC_f66ba/fast
+        C:/mingw64/bin/mingw32-make.exe  -f CMakeFiles\\cmTC_f66ba.dir\\build.make CMakeFiles/cmTC_f66ba.dir/build
+        mingw32-make[1]: Entering directory 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-unhrrf'
+        Building C object CMakeFiles/cmTC_f66ba.dir/CheckIncludeFile.c.obj
+        C:\\mingw64\\bin\\gcc.exe   -fno-strict-aliasing -fPIC   -std=gnu99 -o CMakeFiles\\cmTC_f66ba.dir\\CheckIncludeFile.c.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\build\\CMakeFiles\\CMakeScratch\\TryCompile-unhrrf\\CheckIncludeFile.c
+        Linking C executable cmTC_f66ba.exe
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E cmake_link_script CMakeFiles\\cmTC_f66ba.dir\\link.txt --verbose=1
+        "C:\\Program Files\\CMake\\bin\\cmake.exe" -E rm -f CMakeFiles\\cmTC_f66ba.dir/objects.a
+        C:\\mingw64\\bin\\ar.exe qc CMakeFiles\\cmTC_f66ba.dir/objects.a @CMakeFiles\\cmTC_f66ba.dir\\objects1.rsp
+        C:\\mingw64\\bin\\gcc.exe -fno-strict-aliasing -fPIC   -Wl,--whole-archive CMakeFiles\\cmTC_f66ba.dir/objects.a -Wl,--no-whole-archive -o cmTC_f66ba.exe -Wl,--out-implib,libcmTC_f66ba.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\\cmTC_f66ba.dir\\linkLibs.rsp
+        mingw32-make[1]: Leaving directory 'C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/CMakeFiles/CMakeScratch/TryCompile-unhrrf'
+        
+      exitCode: 0
+...

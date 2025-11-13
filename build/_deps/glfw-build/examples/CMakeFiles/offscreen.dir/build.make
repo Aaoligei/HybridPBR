@@ -116,7 +116,7 @@ bin/offscreen.exe: _deps/glfw-build/examples/CMakeFiles/offscreen.dir/offscreen.
 bin/offscreen.exe: _deps/glfw-build/examples/CMakeFiles/offscreen.dir/glfw.rc.obj
 bin/offscreen.exe: _deps/glfw-build/examples/CMakeFiles/offscreen.dir/__/deps/glad_gl.c.obj
 bin/offscreen.exe: _deps/glfw-build/examples/CMakeFiles/offscreen.dir/build.make
-bin/offscreen.exe: lib/libglfw3.a
+bin/offscreen.exe: lib/libglfw3d.a
 bin/offscreen.exe: _deps/glfw-build/examples/CMakeFiles/offscreen.dir/linkLibs.rsp
 bin/offscreen.exe: _deps/glfw-build/examples/CMakeFiles/offscreen.dir/objects1.rsp
 bin/offscreen.exe: _deps/glfw-build/examples/CMakeFiles/offscreen.dir/link.txt

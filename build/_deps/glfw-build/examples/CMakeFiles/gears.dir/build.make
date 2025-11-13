@@ -116,7 +116,7 @@ bin/gears.exe: _deps/glfw-build/examples/CMakeFiles/gears.dir/gears.c.obj
 bin/gears.exe: _deps/glfw-build/examples/CMakeFiles/gears.dir/glfw.rc.obj
 bin/gears.exe: _deps/glfw-build/examples/CMakeFiles/gears.dir/__/deps/glad_gl.c.obj
 bin/gears.exe: _deps/glfw-build/examples/CMakeFiles/gears.dir/build.make
-bin/gears.exe: lib/libglfw3.a
+bin/gears.exe: lib/libglfw3d.a
 bin/gears.exe: _deps/glfw-build/examples/CMakeFiles/gears.dir/linkLibs.rsp
 bin/gears.exe: _deps/glfw-build/examples/CMakeFiles/gears.dir/objects1.rsp
 bin/gears.exe: _deps/glfw-build/examples/CMakeFiles/gears.dir/link.txt

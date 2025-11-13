@@ -109,7 +109,7 @@ gamma_EXTERNAL_OBJECTS =
 bin/gamma.exe: _deps/glfw-build/tests/CMakeFiles/gamma.dir/gamma.c.obj
 bin/gamma.exe: _deps/glfw-build/tests/CMakeFiles/gamma.dir/__/deps/glad_gl.c.obj
 bin/gamma.exe: _deps/glfw-build/tests/CMakeFiles/gamma.dir/build.make
-bin/gamma.exe: lib/libglfw3.a
+bin/gamma.exe: lib/libglfw3d.a
 bin/gamma.exe: _deps/glfw-build/tests/CMakeFiles/gamma.dir/linkLibs.rsp
 bin/gamma.exe: _deps/glfw-build/tests/CMakeFiles/gamma.dir/objects1.rsp
 bin/gamma.exe: _deps/glfw-build/tests/CMakeFiles/gamma.dir/link.txt

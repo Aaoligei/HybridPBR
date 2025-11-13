@@ -126,7 +126,7 @@ bin/msaa.exe: _deps/glfw-build/tests/CMakeFiles/msaa.dir/msaa.c.obj
 bin/msaa.exe: _deps/glfw-build/tests/CMakeFiles/msaa.dir/__/deps/getopt.c.obj
 bin/msaa.exe: _deps/glfw-build/tests/CMakeFiles/msaa.dir/__/deps/glad_gl.c.obj
 bin/msaa.exe: _deps/glfw-build/tests/CMakeFiles/msaa.dir/build.make
-bin/msaa.exe: lib/libglfw3.a
+bin/msaa.exe: lib/libglfw3d.a
 bin/msaa.exe: _deps/glfw-build/tests/CMakeFiles/msaa.dir/linkLibs.rsp
 bin/msaa.exe: _deps/glfw-build/tests/CMakeFiles/msaa.dir/objects1.rsp
 bin/msaa.exe: _deps/glfw-build/tests/CMakeFiles/msaa.dir/link.txt

@@ -109,7 +109,7 @@ opacity_EXTERNAL_OBJECTS =
 bin/opacity.exe: _deps/glfw-build/tests/CMakeFiles/opacity.dir/opacity.c.obj
 bin/opacity.exe: _deps/glfw-build/tests/CMakeFiles/opacity.dir/__/deps/glad_gl.c.obj
 bin/opacity.exe: _deps/glfw-build/tests/CMakeFiles/opacity.dir/build.make
-bin/opacity.exe: lib/libglfw3.a
+bin/opacity.exe: lib/libglfw3d.a
 bin/opacity.exe: _deps/glfw-build/tests/CMakeFiles/opacity.dir/linkLibs.rsp
 bin/opacity.exe: _deps/glfw-build/tests/CMakeFiles/opacity.dir/objects1.rsp
 bin/opacity.exe: _deps/glfw-build/tests/CMakeFiles/opacity.dir/link.txt

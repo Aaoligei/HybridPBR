@@ -126,7 +126,7 @@ bin/empty.exe: _deps/glfw-build/tests/CMakeFiles/empty.dir/empty.c.obj
 bin/empty.exe: _deps/glfw-build/tests/CMakeFiles/empty.dir/__/deps/tinycthread.c.obj
 bin/empty.exe: _deps/glfw-build/tests/CMakeFiles/empty.dir/__/deps/glad_gl.c.obj
 bin/empty.exe: _deps/glfw-build/tests/CMakeFiles/empty.dir/build.make
-bin/empty.exe: lib/libglfw3.a
+bin/empty.exe: lib/libglfw3d.a
 bin/empty.exe: _deps/glfw-build/tests/CMakeFiles/empty.dir/linkLibs.rsp
 bin/empty.exe: _deps/glfw-build/tests/CMakeFiles/empty.dir/objects1.rsp
 bin/empty.exe: _deps/glfw-build/tests/CMakeFiles/empty.dir/link.txt

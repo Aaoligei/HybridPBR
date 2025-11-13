@@ -116,7 +116,7 @@ bin/wave.exe: _deps/glfw-build/examples/CMakeFiles/wave.dir/wave.c.obj
 bin/wave.exe: _deps/glfw-build/examples/CMakeFiles/wave.dir/glfw.rc.obj
 bin/wave.exe: _deps/glfw-build/examples/CMakeFiles/wave.dir/__/deps/glad_gl.c.obj
 bin/wave.exe: _deps/glfw-build/examples/CMakeFiles/wave.dir/build.make
-bin/wave.exe: lib/libglfw3.a
+bin/wave.exe: lib/libglfw3d.a
 bin/wave.exe: _deps/glfw-build/examples/CMakeFiles/wave.dir/linkLibs.rsp
 bin/wave.exe: _deps/glfw-build/examples/CMakeFiles/wave.dir/objects1.rsp
 bin/wave.exe: _deps/glfw-build/examples/CMakeFiles/wave.dir/link.txt

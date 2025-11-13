@@ -109,7 +109,7 @@ reopen_EXTERNAL_OBJECTS =
 bin/reopen.exe: _deps/glfw-build/tests/CMakeFiles/reopen.dir/reopen.c.obj
 bin/reopen.exe: _deps/glfw-build/tests/CMakeFiles/reopen.dir/__/deps/glad_gl.c.obj
 bin/reopen.exe: _deps/glfw-build/tests/CMakeFiles/reopen.dir/build.make
-bin/reopen.exe: lib/libglfw3.a
+bin/reopen.exe: lib/libglfw3d.a
 bin/reopen.exe: _deps/glfw-build/tests/CMakeFiles/reopen.dir/linkLibs.rsp
 bin/reopen.exe: _deps/glfw-build/tests/CMakeFiles/reopen.dir/objects1.rsp
 bin/reopen.exe: _deps/glfw-build/tests/CMakeFiles/reopen.dir/link.txt

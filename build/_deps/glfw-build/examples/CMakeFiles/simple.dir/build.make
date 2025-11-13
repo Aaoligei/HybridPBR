@@ -116,7 +116,7 @@ bin/simple.exe: _deps/glfw-build/examples/CMakeFiles/simple.dir/simple.c.obj
 bin/simple.exe: _deps/glfw-build/examples/CMakeFiles/simple.dir/glfw.rc.obj
 bin/simple.exe: _deps/glfw-build/examples/CMakeFiles/simple.dir/__/deps/glad_gl.c.obj
 bin/simple.exe: _deps/glfw-build/examples/CMakeFiles/simple.dir/build.make
-bin/simple.exe: lib/libglfw3.a
+bin/simple.exe: lib/libglfw3d.a
 bin/simple.exe: _deps/glfw-build/examples/CMakeFiles/simple.dir/linkLibs.rsp
 bin/simple.exe: _deps/glfw-build/examples/CMakeFiles/simple.dir/objects1.rsp
 bin/simple.exe: _deps/glfw-build/examples/CMakeFiles/simple.dir/link.txt

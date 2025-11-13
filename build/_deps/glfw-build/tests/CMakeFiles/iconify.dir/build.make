@@ -126,7 +126,7 @@ bin/iconify.exe: _deps/glfw-build/tests/CMakeFiles/iconify.dir/iconify.c.obj
 bin/iconify.exe: _deps/glfw-build/tests/CMakeFiles/iconify.dir/__/deps/getopt.c.obj
 bin/iconify.exe: _deps/glfw-build/tests/CMakeFiles/iconify.dir/__/deps/glad_gl.c.obj
 bin/iconify.exe: _deps/glfw-build/tests/CMakeFiles/iconify.dir/build.make
-bin/iconify.exe: lib/libglfw3.a
+bin/iconify.exe: lib/libglfw3d.a
 bin/iconify.exe: _deps/glfw-build/tests/CMakeFiles/iconify.dir/linkLibs.rsp
 bin/iconify.exe: _deps/glfw-build/tests/CMakeFiles/iconify.dir/objects1.rsp
 bin/iconify.exe: _deps/glfw-build/tests/CMakeFiles/iconify.dir/link.txt

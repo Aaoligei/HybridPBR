@@ -116,7 +116,7 @@ bin/sharing.exe: _deps/glfw-build/examples/CMakeFiles/sharing.dir/sharing.c.obj
 bin/sharing.exe: _deps/glfw-build/examples/CMakeFiles/sharing.dir/glfw.rc.obj
 bin/sharing.exe: _deps/glfw-build/examples/CMakeFiles/sharing.dir/__/deps/glad_gl.c.obj
 bin/sharing.exe: _deps/glfw-build/examples/CMakeFiles/sharing.dir/build.make
-bin/sharing.exe: lib/libglfw3.a
+bin/sharing.exe: lib/libglfw3d.a
 bin/sharing.exe: _deps/glfw-build/examples/CMakeFiles/sharing.dir/linkLibs.rsp
 bin/sharing.exe: _deps/glfw-build/examples/CMakeFiles/sharing.dir/objects1.rsp
 bin/sharing.exe: _deps/glfw-build/examples/CMakeFiles/sharing.dir/link.txt

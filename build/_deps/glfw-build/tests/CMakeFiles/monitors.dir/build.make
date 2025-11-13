@@ -126,7 +126,7 @@ bin/monitors.exe: _deps/glfw-build/tests/CMakeFiles/monitors.dir/monitors.c.obj
 bin/monitors.exe: _deps/glfw-build/tests/CMakeFiles/monitors.dir/__/deps/getopt.c.obj
 bin/monitors.exe: _deps/glfw-build/tests/CMakeFiles/monitors.dir/__/deps/glad_gl.c.obj
 bin/monitors.exe: _deps/glfw-build/tests/CMakeFiles/monitors.dir/build.make
-bin/monitors.exe: lib/libglfw3.a
+bin/monitors.exe: lib/libglfw3d.a
 bin/monitors.exe: _deps/glfw-build/tests/CMakeFiles/monitors.dir/linkLibs.rsp
 bin/monitors.exe: _deps/glfw-build/tests/CMakeFiles/monitors.dir/objects1.rsp
 bin/monitors.exe: _deps/glfw-build/tests/CMakeFiles/monitors.dir/link.txt

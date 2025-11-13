@@ -126,7 +126,7 @@ bin/events.exe: _deps/glfw-build/tests/CMakeFiles/events.dir/events.c.obj
 bin/events.exe: _deps/glfw-build/tests/CMakeFiles/events.dir/__/deps/getopt.c.obj
 bin/events.exe: _deps/glfw-build/tests/CMakeFiles/events.dir/__/deps/glad_gl.c.obj
 bin/events.exe: _deps/glfw-build/tests/CMakeFiles/events.dir/build.make
-bin/events.exe: lib/libglfw3.a
+bin/events.exe: lib/libglfw3d.a
 bin/events.exe: _deps/glfw-build/tests/CMakeFiles/events.dir/linkLibs.rsp
 bin/events.exe: _deps/glfw-build/tests/CMakeFiles/events.dir/objects1.rsp
 bin/events.exe: _deps/glfw-build/tests/CMakeFiles/events.dir/link.txt

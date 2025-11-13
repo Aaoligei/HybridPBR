@@ -116,7 +116,7 @@ bin/heightmap.exe: _deps/glfw-build/examples/CMakeFiles/heightmap.dir/heightmap.
 bin/heightmap.exe: _deps/glfw-build/examples/CMakeFiles/heightmap.dir/glfw.rc.obj
 bin/heightmap.exe: _deps/glfw-build/examples/CMakeFiles/heightmap.dir/__/deps/glad_gl.c.obj
 bin/heightmap.exe: _deps/glfw-build/examples/CMakeFiles/heightmap.dir/build.make
-bin/heightmap.exe: lib/libglfw3.a
+bin/heightmap.exe: lib/libglfw3d.a
 bin/heightmap.exe: _deps/glfw-build/examples/CMakeFiles/heightmap.dir/linkLibs.rsp
 bin/heightmap.exe: _deps/glfw-build/examples/CMakeFiles/heightmap.dir/objects1.rsp
 bin/heightmap.exe: _deps/glfw-build/examples/CMakeFiles/heightmap.dir/link.txt

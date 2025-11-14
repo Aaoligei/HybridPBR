@@ -3,6 +3,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include "../rendering/common/Texture.h"
 
 namespace HybridPBR {
 
@@ -23,12 +24,13 @@ namespace HybridPBR {
         // 初始化Assimp导入器
         Assimp::Importer importer;
         
-        // 导入模型
+        // 导入模型 - 添加更多处理选项以确保UV正确
         const aiScene* scene = importer.ReadFile(filepath, 
             aiProcess_Triangulate | 
             aiProcess_FlipUVs | 
             aiProcess_GenNormals | 
-            aiProcess_CalcTangentSpace);
+            aiProcess_CalcTangentSpace |
+            aiProcess_PreTransformVertices); // 添加预变换以确保正确处理
         
         // 检查是否有错误
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
@@ -86,11 +88,15 @@ namespace HybridPBR {
                 vertex.normal = AssimpToGLM(mesh->mNormals[i]);
             }
             
-            // 纹理坐标
-            if (mesh->mTextureCoords[0]) {
-                vertex.texcoord = AssimpToGLM(mesh->mTextureCoords[0][i]);
-            } else {
-                vertex.texcoord = glm::vec2(0.0f, 0.0f);
+            // 纹理坐标 - 更安全的处理方式
+            vertex.texcoord = glm::vec2(0.0f, 0.0f); // 默认值
+            if (mesh->mTextureCoords[0] != nullptr && mesh->mNumUVComponents[0] >= 2) {
+                // 确保我们有有效的纹理坐标和足够的组件
+                vertex.texcoord = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+                
+                // 检查是否需要翻转V坐标（取决于纹理的坐标系统）
+                // OpenGL的纹理坐标系统原点在左下角，而很多模型格式原点在左上角
+                vertex.texcoord.y = 1.0f - vertex.texcoord.y;
             }
             
             // 切线和副切线
@@ -152,10 +158,93 @@ namespace HybridPBR {
             properties.roughness = 0.5f;
         }
         
-        // TODO: 加载纹理
-        // 这里可以添加纹理加载逻辑
+        // 加载纹理
+        LoadMaterialTextures(material, resultMaterial, directory);
         
         return resultMaterial;
+    }
+    
+    void ModelLoader::LoadMaterialTextures(aiMaterial* aiMat, std::shared_ptr<Material> material, const std::string& directory) {
+        // 加载漫反射纹理
+        auto diffuseTexture = LoadTextureFromMaterial(aiMat, directory, aiTextureType_DIFFUSE, TextureType::DIFFUSE);
+        if (diffuseTexture) {
+            material->SetTexture(TextureType::DIFFUSE, diffuseTexture);
+        }
+        
+        // 加载法线纹理
+        auto normalTexture = LoadTextureFromMaterial(aiMat, directory, aiTextureType_NORMALS, TextureType::NORMAL);
+        if (normalTexture) {
+            material->SetTexture(TextureType::NORMAL, normalTexture);
+        }
+        
+        // 加载金属度纹理
+        auto metallicTexture = LoadTextureFromMaterial(aiMat, directory, aiTextureType_METALNESS, TextureType::METALLIC);
+        if (metallicTexture) {
+            material->SetTexture(TextureType::METALLIC, metallicTexture);
+        }
+        
+        // 加载粗糙度纹理
+        auto roughnessTexture = LoadTextureFromMaterial(aiMat, directory, aiTextureType_DIFFUSE_ROUGHNESS, TextureType::ROUGHNESS);
+        if (roughnessTexture) {
+            material->SetTexture(TextureType::ROUGHNESS, roughnessTexture);
+        }
+        
+        // 加载环境光遮蔽纹理
+        auto aoTexture = LoadTextureFromMaterial(aiMat, directory, aiTextureType_AMBIENT_OCCLUSION, TextureType::AMBIENT_OCCLUSION);
+        if (aoTexture) {
+            material->SetTexture(TextureType::AMBIENT_OCCLUSION, aoTexture);
+        }
+        
+        // 加载自发光纹理
+        auto emissiveTexture = LoadTextureFromMaterial(aiMat, directory, aiTextureType_EMISSIVE, TextureType::EMISSIVE);
+        if (emissiveTexture) {
+            material->SetTexture(TextureType::EMISSIVE, emissiveTexture);
+        }
+    }
+    
+    std::shared_ptr<Texture> ModelLoader::LoadTextureFromMaterial(aiMaterial* aiMat, const std::string& directory, 
+                                                                 aiTextureType aiType, TextureType type) {
+        // 检查是否有这种类型的纹理
+        if (aiMat->GetTextureCount(aiType) == 0) {
+            return nullptr;
+        }
+        
+        // 获取第一个纹理
+        aiString str;
+        if (aiMat->GetTexture(aiType, 0, &str) != AI_SUCCESS) {
+            return nullptr;
+        }
+        
+        // 处理纹理路径
+        std::string filename = str.C_Str();
+        std::string filepath;
+        
+        // 如果是相对路径，则拼接目录
+        if (filename[0] == '.' || filename[0] == '/' || filename[0] == '\\') {
+            filepath = directory + "/" + filename;
+        } else {
+            // 检查文件是否在模型目录中
+            filepath = directory + "/" + filename;
+            if (!std::filesystem::exists(filepath)) {
+                filepath = filename; // 使用原始路径
+            }
+        }
+        
+        // 检查文件是否存在
+        if (!std::filesystem::exists(filepath)) {
+            LOG_WARNING("Texture file not found: " + filepath);
+            return nullptr;
+        }
+        
+        // 创建并加载纹理
+        auto texture = std::make_shared<Texture>();
+        if (texture->LoadFromFile(filepath, type)) {
+            LOG_INFO("Successfully loaded texture: " + filepath);
+            return texture;
+        } else {
+            LOG_WARNING("Failed to load texture: " + filepath);
+            return nullptr;
+        }
     }
     
     glm::vec3 ModelLoader::AssimpToGLM(aiVector3D vec) {

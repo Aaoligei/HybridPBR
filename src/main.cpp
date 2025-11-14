@@ -145,7 +145,7 @@ public:
         
         // 尝试加载模型
         auto modelResult = HybridPBR::ModelLoader::LoadFromFile(HybridPBR::FileIO::GetAssetsPath()
-                                                                             + "models/monkey.obj");
+                                                                             + "models/mid_century_lounge_chair_4k.gltf/mid_century_lounge_chair_4k.gltf");
         if (modelResult.success && !modelResult.meshes.empty()) {
             // 使用加载的模型
             auto mesh = modelResult.meshes[0];
@@ -157,7 +157,7 @@ public:
             auto modelNode = scene->CreateNode("Model");
             modelNode->SetMesh(mesh);
             modelNode->SetMaterial(material);
-        } else {
+            
             // 创建测试网格
             auto cubeMesh = std::make_shared<HybridPBR::Mesh>("TestCube");
             cubeMesh->GenerateCube(1.0f);
@@ -168,15 +168,17 @@ public:
             props.metallic = 0.1f;
             props.roughness = 0.5f;
             
-            auto material = HybridPBR::ResourceManager::GetInstance().CreateMaterial("RedMaterial", props);
+            auto materialcube = HybridPBR::ResourceManager::GetInstance().CreateMaterial("RedMaterial", props);
             
             // 创建场景节点
             auto cubeNode = scene->CreateNode("Cube");
             auto Transform = cubeNode->GetTransform();
 
             cubeNode->SetMesh(cubeMesh);
-            cubeNode->SetMaterial(material);
+            cubeNode->SetMaterial(materialcube);
             cubeNode->GetTransform().SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+        } else {
+           
         }
         
         // 创建光源
@@ -216,21 +218,26 @@ public:
     
     void OnRender() override {
         rasterizer->Render(*scene);
-        
-        // 显示渲染统计
-        auto stats = rasterizer->GetStats();
-        if (GetTimer().GetDeltaTime() > 0) {
-            // 可以在这里显示FPS和渲染统计
-        }
+
     }
 
     void OnImGuiRender() override {
-        // 使用新的ImGui组件系统
+        ImGui::SetWindowFontScale(1.5f);
+        // 显示渲染统计
+        auto stats = rasterizer->GetStats();
+        ImGui::Begin("Renderer Stats");
+        ImGui::Text("Renderer Stats");
+        ImGui::Text("Draw calls: %d", stats.drawCalls);
+        ImGui::Text("Triangles: %d", stats.triangleCount);
+        ImGui::Text("Vertices: %d", stats.vertexCount);
+        ImGui::End();
+
         auto componentManager = imguiManager->GetComponentManager();
         
         componentManager->ShowSceneStats(scene);
         componentManager->ShowSceneHierarchy(scene);
-        componentManager->ShowTransformEditor(componentManager->GetSelectedNode());
+        componentManager->ShowInspector(componentManager->GetSelectedNode());
+        componentManager->ShowLightHierarchy(scene);
 
     }
     

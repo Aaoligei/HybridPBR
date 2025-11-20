@@ -10,7 +10,11 @@
 #include "utils/Logger.h"
 #include "resources/ModelLoader.h"
 #include "rendering/ImGuiManager.h"
-#include"rendering/ImGuiComponentManager.h"
+#include "rendering/ImGuiComponentManager.h"
+#include "pbr/IBL.h"
+#include "pbr/PBRMaterial.h"
+
+ 
 
 class TestApp : public HybridPBR::Application {
 public:
@@ -127,6 +131,115 @@ public:
         windowConfig.vsync = false;
         windowConfig.fullscreen = false;
     }
+    
+    void CreatePBRTestSpheres() {
+        // 创建不同金属度和粗糙度的测试球体
+        std::vector<glm::vec2> materialParams = {
+            {0.0f, 0.1f},  // 非金属，光滑
+            {0.0f, 0.5f},  // 非金属，中等粗糙
+            {0.0f, 0.9f},  // 非金属，粗糙
+            {1.0f, 0.1f},  // 金属，光滑
+            {1.0f, 0.5f},  // 金属，中等粗糙
+            {1.0f, 0.9f}   // 金属，粗糙
+        };
+        
+        std::vector<glm::vec3> colors = {
+            {0.8f, 0.2f, 0.2f},  // 红
+            {0.2f, 0.8f, 0.2f},  // 绿
+            {0.2f, 0.2f, 0.8f},  // 蓝
+            {0.8f, 0.8f, 0.2f},  // 黄
+            {0.8f, 0.2f, 0.8f},  // 紫
+            {0.2f, 0.8f, 0.8f}   // 青
+        };
+        
+        int gridSize = 3;
+        float spacing = 2.5f;
+        auto sphere_shader=HybridPBR::ShaderManager::GetInstance().LoadShader("SphereShader",
+            HybridPBR::FileIO::GetAssetsPath() +"shaders/basic.vert", 
+             HybridPBR::FileIO::GetAssetsPath() +"shaders/basic.frag");
+            
+        HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_basecolor.png",HybridPBR::TextureType::DIFFUSE);
+        HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_normal.png",HybridPBR::TextureType::NORMAL);
+        HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_metallic.png",HybridPBR::TextureType::METALLIC);
+        HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_roughness.png",HybridPBR::TextureType::ROUGHNESS);
+        HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_ambientocclusion.png",HybridPBR::TextureType::AMBIENT_OCCLUSION);
+
+
+        for (int i = 0; i < materialParams.size(); ++i) {
+            auto sphereMesh = std::make_shared<HybridPBR::Mesh>("Sphere_" + std::to_string(i));
+            sphereMesh->GenerateSphere(1.0f, 32);
+            
+            HybridPBR::MaterialProperties props;
+            props.albedo = glm::vec4(colors[i], 1.0f);
+            props.metallic = materialParams[i].x;
+            props.roughness = materialParams[i].y;
+            props.ambientOcclusion = 1.0f;
+            props.customShaderName = "SphereShader";
+            props.shaderType = HybridPBR::ShaderType::CUSTOM;
+            
+            auto pbrMaterial = std::make_shared<HybridPBR::PBRMaterial>("PBR_Sphere_" + std::to_string(i), props);
+            pbrMaterial->SetTexture(HybridPBR::TextureType::DIFFUSE,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_basecolor.png"));
+            pbrMaterial->SetTexture(HybridPBR::TextureType::NORMAL,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_normal.png"));
+            pbrMaterial->SetTexture(HybridPBR::TextureType::METALLIC,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_metallic.png"));
+            pbrMaterial->SetTexture(HybridPBR::TextureType::ROUGHNESS,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_roughness.png"));
+            pbrMaterial->SetTexture(HybridPBR::TextureType::AMBIENT_OCCLUSION,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_ambientocclusion.png"));
+
+            
+            int row = i / gridSize;
+            int col = i % gridSize;
+            
+            float x = (col - gridSize / 2.0f + 0.5f) * spacing;
+            float y = (row - gridSize / 2.0f + 0.5f) * spacing;
+            
+            auto sphereNode = scene->CreateNode("Sphere_" + std::to_string(i));
+            sphereNode->SetMesh(sphereMesh);
+            sphereNode->SetMaterial(pbrMaterial);
+            sphereNode->GetTransform().SetPosition(glm::vec3(x, y, 0.0f));
+
+        }
+         // 创建一个立方体作为对比
+            auto cubeMesh = std::make_shared<HybridPBR::Mesh>("Cube");
+            cubeMesh->GenerateCube(1.0f);
+            
+            HybridPBR::MaterialProperties props;
+            props.albedo = glm::vec4(0.2f, 0.7f, 0.3f, 1.0f);
+            props.metallic = 0.5f;
+            props.roughness = 0.3f;
+            props.ambientOcclusion = 1.0f;
+            props.customShaderName = "SphereShader";
+            props.shaderType = HybridPBR::ShaderType::CUSTOM;
+            
+            auto cubeMaterial = std::make_shared<HybridPBR::PBRMaterial>("PBR_Cube", props);
+            cubeMaterial->SetTexture(HybridPBR::TextureType::DIFFUSE,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_basecolor.png"));
+            cubeMaterial->SetTexture(HybridPBR::TextureType::NORMAL,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_normal.png"));
+            cubeMaterial->SetTexture(HybridPBR::TextureType::METALLIC,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_metallic.png"));
+            cubeMaterial->SetTexture(HybridPBR::TextureType::ROUGHNESS,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_roughness.png"));
+            cubeMaterial->SetTexture(HybridPBR::TextureType::AMBIENT_OCCLUSION,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_ambientocclusion.png"));
+
+            
+            auto cubeNode = scene->CreateNode("Cube");
+            cubeNode->SetMesh(cubeMesh);
+            cubeNode->SetMaterial(cubeMaterial);
+            cubeNode->GetTransform().SetPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+    }
+    void LoadModels() {
+         // 尝试加载模型
+        auto modelResult = HybridPBR::ModelLoader::LoadFromFile(HybridPBR::FileIO::GetAssetsPath()
+         + "models/mid_century_lounge_chair_4k.gltf/mid_century_lounge_chair_4k.gltf");
+        if (modelResult.success && !modelResult.meshes.empty()) {
+            // 使用加载的模型
+            auto mesh = modelResult.meshes[0];
+            auto material = modelResult.materials.empty() ? 
+                HybridPBR::ResourceManager::GetInstance().CreateMaterial("Default", HybridPBR::MaterialProperties{}) : 
+                modelResult.materials[0];
+            material->SetShaderType(HybridPBR::ShaderType::PBR);
+            // 创建场景节点
+            auto modelNode = scene->CreateNode("Model");
+            modelNode->SetMesh(mesh);
+            modelNode->SetMaterial(material);
+            modelNode->GetTransform().SetPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+        } 
+    }
     bool OnInitialize() override {
         // 创建光栅化渲染器
         rasterizer = std::make_unique<HybridPBR::Rasterizer>();
@@ -138,55 +251,28 @@ public:
         scene = std::make_unique<HybridPBR::Scene>();
         
         // 创建主相机
-        auto camera = std::make_shared<HybridPBR::Camera>();
+        camera = std::make_shared<HybridPBR::Camera>();
         camera->SetPerspective(45.0f, GetWindow().GetAspectRatio(), 0.1f, 100.0f);
         camera->SetPosition(glm::vec3(0.0f, 0.0f, 5.0f));
         scene->SetMainCamera(camera);
-        
-        // 尝试加载模型
-        auto modelResult = HybridPBR::ModelLoader::LoadFromFile(HybridPBR::FileIO::GetAssetsPath()
-                                                                             + "models/mid_century_lounge_chair_4k.gltf/mid_century_lounge_chair_4k.gltf");
-        if (modelResult.success && !modelResult.meshes.empty()) {
-            // 使用加载的模型
-            auto mesh = modelResult.meshes[0];
-            auto material = modelResult.materials.empty() ? 
-                HybridPBR::ResourceManager::GetInstance().CreateMaterial("Default", HybridPBR::MaterialProperties{}) : 
-                modelResult.materials[0];
-                
-            // 创建场景节点
-            auto modelNode = scene->CreateNode("Model");
-            modelNode->SetMesh(mesh);
-            modelNode->SetMaterial(material);
-            
-            // 创建测试网格
-            auto cubeMesh = std::make_shared<HybridPBR::Mesh>("TestCube");
-            cubeMesh->GenerateCube(1.0f);
-            
-            // 创建材质
-            HybridPBR::MaterialProperties props;
-            props.albedo = glm::vec4(0.8f, 0.2f, 0.2f, 1.0f);
-            props.metallic = 0.1f;
-            props.roughness = 0.5f;
-            
-            auto materialcube = HybridPBR::ResourceManager::GetInstance().CreateMaterial("RedMaterial", props);
-            
-            // 创建场景节点
-            auto cubeNode = scene->CreateNode("Cube");
-            auto Transform = cubeNode->GetTransform();
 
-            cubeNode->SetMesh(cubeMesh);
-            cubeNode->SetMaterial(materialcube);
-            cubeNode->GetTransform().SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-        } else {
-           
-        }
+        // 初始化相机控制器
+        cameraController = std::make_unique<HybridPBR::CameraController>(camera.get());
+        cameraController->SetMovementSpeed(0.05f);
+        cameraController->SetMouseSensitivity(0.1f);
+        cameraController->SetZoomSensitivity(0.3f);
+
+        // 创建PBR材质测试球体
+        CreatePBRTestSpheres();
         
+        // 加载3D模型
+        //LoadModels();
         // 创建光源
         auto light = std::make_shared<HybridPBR::Light>(HybridPBR::LightType::DIRECTIONAL, "MainLight");
         light->SetDirection(glm::vec3(-0.5f, -1.0f, -0.5f));
         HybridPBR::LightProperties lightProps;
         lightProps.color = glm::vec3(1.0f, 1.0f, 0.9f);
-        lightProps.intensity = 1.0f;
+        lightProps.intensity = 10.0f;
         light->SetProperties(lightProps);
         scene->AddLight(light);
         
@@ -197,6 +283,12 @@ public:
     }
     
     void OnUpdate(float deltaTime) override {
+        
+        // 更新相机控制器
+        if (cameraController) {
+            cameraController->Update(deltaTime);
+        }
+        
         // 旋转模型
         if (auto modelNode = scene->FindNode("Model")) {
             auto rotation = modelNode->GetTransform().GetRotation();
@@ -230,6 +322,11 @@ public:
         ImGui::Text("Draw calls: %d", stats.drawCalls);
         ImGui::Text("Triangles: %d", stats.triangleCount);
         ImGui::Text("Vertices: %d", stats.vertexCount);
+        if(ImGui::CollapsingHeader("Render Passes")){
+            for(auto passName : rasterizer->GetRenderPassNames()){
+                ImGui::Text("%s", passName.c_str());
+            }
+        }
         ImGui::End();
 
         auto componentManager = imguiManager->GetComponentManager();
@@ -248,10 +345,11 @@ public:
 private:
     std::unique_ptr<HybridPBR::Rasterizer> rasterizer;
     std::unique_ptr<HybridPBR::Scene> scene;
+    std::shared_ptr<HybridPBR::Camera> camera;
     float rotationSpeed;
     
-};
 
+};
 
 int main() {
     ThreeDApp app;

@@ -929,6 +929,78 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/pbr/BRDF.obj: src/pbr/BRDF.cpp.obj
+.PHONY : src/pbr/BRDF.obj
+
+# target to build an object file
+src/pbr/BRDF.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/pbr/BRDF.cpp.obj
+.PHONY : src/pbr/BRDF.cpp.obj
+
+src/pbr/BRDF.i: src/pbr/BRDF.cpp.i
+.PHONY : src/pbr/BRDF.i
+
+# target to preprocess a source file
+src/pbr/BRDF.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/pbr/BRDF.cpp.i
+.PHONY : src/pbr/BRDF.cpp.i
+
+src/pbr/BRDF.s: src/pbr/BRDF.cpp.s
+.PHONY : src/pbr/BRDF.s
+
+# target to generate assembly for a file
+src/pbr/BRDF.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/pbr/BRDF.cpp.s
+.PHONY : src/pbr/BRDF.cpp.s
+
+src/pbr/IBL.obj: src/pbr/IBL.cpp.obj
+.PHONY : src/pbr/IBL.obj
+
+# target to build an object file
+src/pbr/IBL.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/pbr/IBL.cpp.obj
+.PHONY : src/pbr/IBL.cpp.obj
+
+src/pbr/IBL.i: src/pbr/IBL.cpp.i
+.PHONY : src/pbr/IBL.i
+
+# target to preprocess a source file
+src/pbr/IBL.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/pbr/IBL.cpp.i
+.PHONY : src/pbr/IBL.cpp.i
+
+src/pbr/IBL.s: src/pbr/IBL.cpp.s
+.PHONY : src/pbr/IBL.s
+
+# target to generate assembly for a file
+src/pbr/IBL.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/pbr/IBL.cpp.s
+.PHONY : src/pbr/IBL.cpp.s
+
+src/pbr/PBRMaterial.obj: src/pbr/PBRMaterial.cpp.obj
+.PHONY : src/pbr/PBRMaterial.obj
+
+# target to build an object file
+src/pbr/PBRMaterial.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/pbr/PBRMaterial.cpp.obj
+.PHONY : src/pbr/PBRMaterial.cpp.obj
+
+src/pbr/PBRMaterial.i: src/pbr/PBRMaterial.cpp.i
+.PHONY : src/pbr/PBRMaterial.i
+
+# target to preprocess a source file
+src/pbr/PBRMaterial.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/pbr/PBRMaterial.cpp.i
+.PHONY : src/pbr/PBRMaterial.cpp.i
+
+src/pbr/PBRMaterial.s: src/pbr/PBRMaterial.cpp.s
+.PHONY : src/pbr/PBRMaterial.s
+
+# target to generate assembly for a file
+src/pbr/PBRMaterial.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/pbr/PBRMaterial.cpp.s
+.PHONY : src/pbr/PBRMaterial.cpp.s
+
 src/rendering/ImGuiComponentManager.obj: src/rendering/ImGuiComponentManager.cpp.obj
 .PHONY : src/rendering/ImGuiComponentManager.obj
 
@@ -1000,6 +1072,30 @@ src/rendering/Shader.s: src/rendering/Shader.cpp.s
 src/rendering/Shader.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/Shader.cpp.s
 .PHONY : src/rendering/Shader.cpp.s
+
+src/rendering/ShaderManager.obj: src/rendering/ShaderManager.cpp.obj
+.PHONY : src/rendering/ShaderManager.obj
+
+# target to build an object file
+src/rendering/ShaderManager.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/ShaderManager.cpp.obj
+.PHONY : src/rendering/ShaderManager.cpp.obj
+
+src/rendering/ShaderManager.i: src/rendering/ShaderManager.cpp.i
+.PHONY : src/rendering/ShaderManager.i
+
+# target to preprocess a source file
+src/rendering/ShaderManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/ShaderManager.cpp.i
+.PHONY : src/rendering/ShaderManager.cpp.i
+
+src/rendering/ShaderManager.s: src/rendering/ShaderManager.cpp.s
+.PHONY : src/rendering/ShaderManager.s
+
+# target to generate assembly for a file
+src/rendering/ShaderManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/ShaderManager.cpp.s
+.PHONY : src/rendering/ShaderManager.cpp.s
 
 src/rendering/common/Light.obj: src/rendering/common/Light.cpp.obj
 .PHONY : src/rendering/common/Light.obj
@@ -1097,6 +1193,30 @@ src/rendering/rasterization/Camera.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.s
 .PHONY : src/rendering/rasterization/Camera.cpp.s
 
+src/rendering/rasterization/CameraController.obj: src/rendering/rasterization/CameraController.cpp.obj
+.PHONY : src/rendering/rasterization/CameraController.obj
+
+# target to build an object file
+src/rendering/rasterization/CameraController.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/CameraController.cpp.obj
+.PHONY : src/rendering/rasterization/CameraController.cpp.obj
+
+src/rendering/rasterization/CameraController.i: src/rendering/rasterization/CameraController.cpp.i
+.PHONY : src/rendering/rasterization/CameraController.i
+
+# target to preprocess a source file
+src/rendering/rasterization/CameraController.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/CameraController.cpp.i
+.PHONY : src/rendering/rasterization/CameraController.cpp.i
+
+src/rendering/rasterization/CameraController.s: src/rendering/rasterization/CameraController.cpp.s
+.PHONY : src/rendering/rasterization/CameraController.s
+
+# target to generate assembly for a file
+src/rendering/rasterization/CameraController.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/CameraController.cpp.s
+.PHONY : src/rendering/rasterization/CameraController.cpp.s
+
 src/rendering/rasterization/Mesh.obj: src/rendering/rasterization/Mesh.cpp.obj
 .PHONY : src/rendering/rasterization/Mesh.obj
 
@@ -1144,6 +1264,30 @@ src/rendering/rasterization/Rasterizer.s: src/rendering/rasterization/Rasterizer
 src/rendering/rasterization/Rasterizer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Rasterizer.cpp.s
 .PHONY : src/rendering/rasterization/Rasterizer.cpp.s
+
+src/rendering/rasterization/RenderPass.obj: src/rendering/rasterization/RenderPass.cpp.obj
+.PHONY : src/rendering/rasterization/RenderPass.obj
+
+# target to build an object file
+src/rendering/rasterization/RenderPass.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.obj
+.PHONY : src/rendering/rasterization/RenderPass.cpp.obj
+
+src/rendering/rasterization/RenderPass.i: src/rendering/rasterization/RenderPass.cpp.i
+.PHONY : src/rendering/rasterization/RenderPass.i
+
+# target to preprocess a source file
+src/rendering/rasterization/RenderPass.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.i
+.PHONY : src/rendering/rasterization/RenderPass.cpp.i
+
+src/rendering/rasterization/RenderPass.s: src/rendering/rasterization/RenderPass.cpp.s
+.PHONY : src/rendering/rasterization/RenderPass.s
+
+# target to generate assembly for a file
+src/rendering/rasterization/RenderPass.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.s
+.PHONY : src/rendering/rasterization/RenderPass.cpp.s
 
 src/resources/ModelLoader.obj: src/resources/ModelLoader.cpp.obj
 .PHONY : src/resources/ModelLoader.obj
@@ -1422,6 +1566,15 @@ help:
 	@echo ... src/main.obj
 	@echo ... src/main.i
 	@echo ... src/main.s
+	@echo ... src/pbr/BRDF.obj
+	@echo ... src/pbr/BRDF.i
+	@echo ... src/pbr/BRDF.s
+	@echo ... src/pbr/IBL.obj
+	@echo ... src/pbr/IBL.i
+	@echo ... src/pbr/IBL.s
+	@echo ... src/pbr/PBRMaterial.obj
+	@echo ... src/pbr/PBRMaterial.i
+	@echo ... src/pbr/PBRMaterial.s
 	@echo ... src/rendering/ImGuiComponentManager.obj
 	@echo ... src/rendering/ImGuiComponentManager.i
 	@echo ... src/rendering/ImGuiComponentManager.s
@@ -1431,6 +1584,9 @@ help:
 	@echo ... src/rendering/Shader.obj
 	@echo ... src/rendering/Shader.i
 	@echo ... src/rendering/Shader.s
+	@echo ... src/rendering/ShaderManager.obj
+	@echo ... src/rendering/ShaderManager.i
+	@echo ... src/rendering/ShaderManager.s
 	@echo ... src/rendering/common/Light.obj
 	@echo ... src/rendering/common/Light.i
 	@echo ... src/rendering/common/Light.s
@@ -1443,12 +1599,18 @@ help:
 	@echo ... src/rendering/rasterization/Camera.obj
 	@echo ... src/rendering/rasterization/Camera.i
 	@echo ... src/rendering/rasterization/Camera.s
+	@echo ... src/rendering/rasterization/CameraController.obj
+	@echo ... src/rendering/rasterization/CameraController.i
+	@echo ... src/rendering/rasterization/CameraController.s
 	@echo ... src/rendering/rasterization/Mesh.obj
 	@echo ... src/rendering/rasterization/Mesh.i
 	@echo ... src/rendering/rasterization/Mesh.s
 	@echo ... src/rendering/rasterization/Rasterizer.obj
 	@echo ... src/rendering/rasterization/Rasterizer.i
 	@echo ... src/rendering/rasterization/Rasterizer.s
+	@echo ... src/rendering/rasterization/RenderPass.obj
+	@echo ... src/rendering/rasterization/RenderPass.i
+	@echo ... src/rendering/rasterization/RenderPass.s
 	@echo ... src/resources/ModelLoader.obj
 	@echo ... src/resources/ModelLoader.i
 	@echo ... src/resources/ModelLoader.s

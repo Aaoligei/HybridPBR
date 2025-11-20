@@ -1,0 +1,37 @@
+#version 460 core
+
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aNormal;
+layout (location = 2) in vec2 aTexCoord;
+layout (location = 3) in vec3 aTangent;
+layout (location = 4) in vec3 aBitangent;
+
+out VS_OUT {
+    vec3 FragPos;
+    vec3 Normal;
+    vec2 TexCoord;
+    vec3 Tangent;
+    vec3 Bitangent;
+    vec3 ViewPos;
+} vs_out;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+uniform vec3 viewPos;
+
+void main() {
+    vec4 worldPos = model * vec4(aPos, 1.0);
+    vs_out.FragPos = worldPos.xyz;
+    
+    // 法线矩阵
+    mat3 normalMatrix = transpose(inverse(mat3(model)));
+    vs_out.Normal = normalize(normalMatrix * aNormal);
+    
+    vs_out.TexCoord = aTexCoord;
+    vs_out.Tangent = normalize(normalMatrix * aTangent);
+    vs_out.Bitangent = normalize(normalMatrix * aBitangent);
+    vs_out.ViewPos = viewPos;
+    
+    gl_Position = projection * view * worldPos;
+}

@@ -1,6 +1,7 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include <unordered_map>
+#include <glm/glm.hpp>
 
 namespace HybridPBR {
     
@@ -17,10 +18,13 @@ namespace HybridPBR {
         
         // 鼠标输入
         bool IsMouseButtonPressed(int button);
+        bool IsMouseButtonReleased(int button);
+        bool IsMouseButtonHeld(int button);
         double GetMouseX() const { return mouseX; }
         double GetMouseY() const { return mouseY; }
         double GetMouseDeltaX() const { return mouseDeltaX; }
         double GetMouseDeltaY() const { return mouseDeltaY; }
+        glm::vec2 GetMouseDelta() const {return glm::vec2(mouseDeltaX, mouseDeltaY);}
         
         // 设置鼠标位置（用于重置delta）
         void SetMousePosition(double x, double y);

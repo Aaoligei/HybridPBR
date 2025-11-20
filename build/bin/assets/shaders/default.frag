@@ -1,159 +1,192 @@
 #version 460 core
 
-in VS_OUT {
-    vec3 FragPos;
-    vec3 Normal;
-    vec2 TexCoord;
-    vec3 Tangent;
-    vec3 Bitangent;
-    vec3 ViewPos;
-} fs_in;
+// 从顶点着色器接收的数据
+in vec3 FragPos;
+in vec3 Normal;
+in vec2 TexCoord;
 
+// 输出颜色
 out vec4 FragColor;
 
 // 材质属性
 struct Material {
-    vec4 albedo;
-    float metallic;
-    float roughness;
-    float ambientOcclusion;
-    float normalScale;
-    vec3 emissiveColor;
-    float emissiveIntensity;
-    vec2 textureScale;
-    vec2 textureOffset;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
     
-    // 纹理使用标志
-    bool useAlbedoMap;
-    bool useNormalMap;
-    bool useMetallicMap;
-    bool useRoughnessMap;
-    bool useAOMap;
-    bool useEmissiveMap;
+    bool useDiffuseMap;
+    bool useSpecularMap;
 };
 
-// 方向光
-struct DirectionalLight {
+// 定向光源
+struct DirLight {
     vec3 direction;
-    vec3 color;
-    float intensity;
+    
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
 };
 
+// 点光源
+struct PointLight {
+    vec3 position;
+    
+    float constant;
+    float linear;
+    float quadratic;
+    
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+// 聚光灯
+struct SpotLight {
+    vec3 position;
+    vec3 direction;
+    float cutOff;
+    float outerCutOff;
+    
+    float constant;
+    float linear;
+    float quadratic;
+    
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+// Uniforms
+uniform vec3 viewPos;
 uniform Material material;
-uniform DirectionalLight directionalLight;
-uniform int directionalLightCount;
-uniform vec3 ambientLight;
+uniform DirLight dirLight;
+uniform PointLight pointLights[4];
+uniform SpotLight spotLight;
+uniform int pointLightCount;
 
-// 纹理采样器
-uniform sampler2D albedoMap;
-uniform sampler2D normalMap;
-uniform sampler2D metallicMap;
-uniform sampler2D roughnessMap;
-uniform sampler2D aoMap;
-uniform sampler2D emissiveMap;
+// 纹理
+uniform sampler2D diffuseMap;
+uniform sampler2D specularMap;
 
-// 工具函数
-vec3 CalculateNormal();
-vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir);
-vec3 CalculateAmbientLight(vec3 albedo);
+// 函数声明
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main() {
-    // 应用纹理缩放和偏移
-    vec2 texCoord = fs_in.TexCoord * material.textureScale + material.textureOffset;
+    // 属性
+    vec3 norm = normalize(Normal);
+    vec3 viewDir = normalize(viewPos - FragPos);
     
-    // 获取基础颜色
-    vec3 albedo = material.albedo.rgb;
-    if (material.useAlbedoMap) {
-        albedo = texture(albedoMap, texCoord).rgb;
+    // 获取材质颜色
+    vec3 diffuseTexel = vec3(1.0);
+    vec3 specularTexel = vec3(1.0);
+    
+    if (material.useDiffuseMap) {
+        diffuseTexel = vec3(texture(diffuseMap, TexCoord));
     }
     
-    // 获取法线
-    vec3 normal = CalculateNormal();
-    
-    // 获取其他材质参数
-    float metallic = material.metallic;
-    float roughness = material.roughness;
-    float ao = material.ambientOcclusion;
-    
-    if (material.useMetallicMap) {
-        metallic = texture(metallicMap, texCoord).r;
-    }
-    if (material.useRoughnessMap) {
-        roughness = texture(roughnessMap, texCoord).r;
-    }
-    if (material.useAOMap) {
-        ao = texture(aoMap, texCoord).r;
+    if (material.useSpecularMap) {
+        specularTexel = vec3(texture(specularMap, TexCoord));
     }
     
-    // 计算观察方向
-    vec3 viewDir = normalize(fs_in.ViewPos - fs_in.FragPos);
+    // 定向光
+    vec3 result = CalcDirLight(dirLight, norm, viewDir);
     
-    // 初始化光照结果
-    vec3 lighting = vec3(0.0);
-    
-    // 环境光照
-    lighting += CalculateAmbientLight(albedo) * ao;
-    
-    // 方向光照
-    if (directionalLightCount > 0) {
-        lighting += CalculateDirectionalLight(directionalLight, normal, viewDir);
+    // 点光源
+    for(int i = 0; i < pointLightCount && i < 4; i++) {
+        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
     }
     
-    // 自发光
-    vec3 emissive = material.emissiveColor * material.emissiveIntensity;
-    if (material.useEmissiveMap) {
-        emissive *= texture(emissiveMap, texCoord).rgb;
-    }
-    lighting += emissive;
+    // 聚光
+    result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
     
-    // 最终颜色（简单的色调映射）
-    vec3 color = albedo * lighting;
+    // 应用材质颜色
+    vec3 ambient = material.ambient * diffuseTexel;
+    vec3 diffuse = result * material.diffuse * diffuseTexel;
+    vec3 specular = result * material.specular * specularTexel;
     
-    // Gamma校正
-    color = pow(color, vec3(1.0/2.2));
-    
-    FragColor = vec4(color, material.albedo.a);
+    vec3 finalColor = ambient + diffuse + specular;
+    FragColor = vec4(finalColor, 1.0);
 }
 
-vec3 CalculateNormal() {
-    // 如果没有法线贴图，使用顶点法线
-    if (!material.useNormalMap) {
-        return normalize(fs_in.Normal);
-    }
-    
-    // 从法线贴图采样
-    vec3 normal = texture(normalMap, fs_in.TexCoord).rgb;
-    normal = normalize(normal * 2.0 - 1.0);
-    normal.xy *= material.normalScale;
-    normal = normalize(normal);
-    
-    // 构建TBN矩阵
-    vec3 T = normalize(fs_in.Tangent);
-    vec3 B = normalize(fs_in.Bitangent);
-    vec3 N = normalize(fs_in.Normal);
-    
-    mat3 TBN = mat3(T, B, N);
-    
-    // 将法线从切线空间转换到世界空间
-    return normalize(TBN * normal);
-}
-
-vec3 CalculateDirectionalLight(DirectionalLight light, vec3 normal, vec3 viewDir) {
+// 计算定向光
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
     vec3 lightDir = normalize(-light.direction);
     
-    // 漫反射
+    // 漫反射着色
     float diff = max(dot(normal, lightDir), 0.0);
-    vec3 diffuse = light.color * light.intensity * diff;
     
-    // 镜面反射（简单的Blinn-Phong）
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    float spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
-    vec3 specular = light.color * light.intensity * spec;
+    // 镜面着色
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     
-    // 简单的能量守恒：漫反射和镜面反射不能超过1.0
-    return (diffuse + specular) * 0.5;
+    // 合并结果
+    vec3 ambient = light.ambient;
+    vec3 diffuse = light.diffuse * diff;
+    vec3 specular = light.specular * spec;
+    
+    return (ambient + diffuse + specular);
 }
 
-vec3 CalculateAmbientLight(vec3 albedo) {
-    return ambientLight * albedo;
+// 计算点光源
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
+    vec3 lightDir = normalize(light.position - fragPos);
+    
+    // 漫反射着色
+    float diff = max(dot(normal, lightDir), 0.0);
+    
+    // 镜面着色
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    
+    // 衰减
+    float distance = length(light.position - fragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance +
+                               light.quadratic * (distance * distance));
+    
+    // 合并结果
+    vec3 ambient = light.ambient;
+    vec3 diffuse = light.diffuse * diff;
+    vec3 specular = light.specular * spec;
+    
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular *= attenuation;
+    
+    return (ambient + diffuse + specular);
+}
+
+// 计算聚光
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
+    vec3 lightDir = normalize(light.position - fragPos);
+    
+    // 漫反射着色
+    float diff = max(dot(normal, lightDir), 0.0);
+    
+    // 镜面着色
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    
+    // 衰减
+    float distance = length(light.position - fragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance +
+                               light.quadratic * (distance * distance));
+    
+    // 聚光强度
+    float theta = dot(lightDir, normalize(-light.direction));
+    float epsilon = light.cutOff - light.outerCutOff;
+    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+    
+    // 合并结果
+    vec3 ambient = light.ambient;
+    vec3 diffuse = light.diffuse * diff;
+    vec3 specular = light.specular * spec;
+    
+    ambient *= attenuation;
+    diffuse *= attenuation * intensity;
+    specular *= attenuation * intensity;
+    
+    return (ambient + diffuse + specular);
 }

@@ -1,5 +1,7 @@
 #include "Application.h"
 #include "rendering/ImGuiManager.h" // 添加ImGui管理器头文件
+#include "rendering/rasterization/Camera.h"
+#include "rendering/rasterization/CameraController.h"
 
 namespace HybridPBR {
     
@@ -28,6 +30,25 @@ namespace HybridPBR {
             return false;
         }
         
+        // 设置窗口事件回调
+        window->SetMouseCallback([this](double xpos, double ypos) {
+            if (cameraController) {
+                cameraController->OnMouseMove(xpos, ypos);
+            }
+        });
+        
+        window->SetMouseButtonCallback([this](int button, int action, int mods) {
+            if (cameraController) {
+                cameraController->OnMouseButton(button, action, mods);
+            }
+        });
+        
+        window->SetScrollCallback([this](double xoffset, double yoffset) {
+            if (cameraController) {
+                cameraController->OnMouseScroll(xoffset, yoffset);
+            }
+        });
+        
         // 用户初始化
         if (!OnInitialize()) {
             LOG_CRITICAL("User initialization failed");
@@ -44,12 +65,21 @@ namespace HybridPBR {
         
         while (isRunning && !window->ShouldClose()) {
             timer.Tick();
-            
+
+            // 更新输入状态
+            Input::GetInstance().Update();
+ 
             // 开始ImGui帧
             imguiManager->BeginFrame();
             
             HandleEvents();
             OnUpdate(timer.GetDeltaTime());
+            
+            // 更新相机控制器
+            if (cameraController) {
+                cameraController->Update(timer.GetDeltaTime());
+            }
+            
             OnRender();
             
             // 渲染ImGui界面
@@ -63,8 +93,7 @@ namespace HybridPBR {
             
             window->SwapBuffers();
             
-            // 更新输入状态
-            Input::GetInstance().Update();
+
         }
         
         LOG_INFO("Main loop ended");

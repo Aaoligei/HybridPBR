@@ -63,7 +63,6 @@ namespace HybridPBR {
             format = GL_RGBA;
             internalFormat = type == TextureType::DIFFUSE ? GL_SRGB8_ALPHA8 : GL_RGBA8;
         }
-        
         bool success = Create2D(width, height, internalFormat, format, GL_UNSIGNED_BYTE, data);
         
         FreeImageData(data);

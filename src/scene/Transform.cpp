@@ -21,8 +21,13 @@ namespace HybridPBR {
         MarkDirty();
     }
 
-    void Transform::SetScale(const glm::vec3& newScale) {
-        scale = newScale;
+    void Transform::SetScale(const glm::vec3& scale) {
+        // 防止零缩放导致法线矩阵奇异
+        this->scale = glm::vec3(
+            std::max(scale.x, 0.0001f),
+            std::max(scale.y, 0.0001f),
+            std::max(scale.z, 0.0001f)
+        );
         MarkDirty();
     }
 

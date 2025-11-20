@@ -1,0 +1,332 @@
+#include "IBL.h"
+#include "utils/Logger.h"
+#include <glm/gtc/matrix_transform.hpp>
+
+namespace HybridPBR {
+
+    IBL::IBL() {
+        if (!InitializeShaders() || !InitializeCaptureResources()) {
+            LOG_ERROR("Failed to initialize IBL system");
+        }
+    }
+
+    IBL::~IBL() {
+        Cleanup();
+    }
+
+    bool IBL::SetupFromHDR(const std::string& hdrFilePath, int cubemapSize) {
+        // 加载HDR环境贴图
+        auto hdrTexture = std::make_shared<Texture>();
+        if (!hdrTexture->LoadHDR(hdrFilePath)) {
+            lastError = "Failed to load HDR environment map: " + hdrFilePath;
+            LOG_ERROR(lastError);
+            return false;
+        }
+        
+        // 创建立方体贴图FBO
+        glGenFramebuffers(1, &captureFBO);
+        glGenRenderbuffers(1, &captureRBO);
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+        glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, cubemapSize, cubemapSize);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
+        
+        // 创建立方体贴图
+        environmentMap = std::make_shared<Texture>();
+        if (!environmentMap->CreateCubemap(cubemapSize, GL_RGB16F)) {
+            lastError = "Failed to create environment cubemap";
+            LOG_ERROR(lastError);
+            return false;
+        }
+        
+        // 将等距柱状投影转换为立方体贴图
+        equirectangularToCubemapShader->Use();
+        equirectangularToCubemapShader->SetInt("equirectangularMap", 0);
+        equirectangularToCubemapShader->SetMat4("projection", captureProjection);
+        hdrTexture->Bind(0);
+        
+        glViewport(0, 0, cubemapSize, cubemapSize);
+        glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+        
+        for (unsigned int i = 0; i < 6; ++i) {
+            equirectangularToCubemapShader->SetMat4("view", captureViews[i]);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+                                  GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, environmentMap->GetID(), 0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            RenderCube();
+        }
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
+        // 生成mipmaps
+        environmentMap->GenerateMipmaps();
+        
+        LOG_INFO("Successfully created environment map from HDR: " + hdrFilePath);
+        return true;
+    }
+
+    bool IBL::PrecomputeIrradianceMap(int size) {
+        if (!environmentMap) {
+            lastError = "No environment map available for irradiance computation";
+            return false;
+        }
+        
+        irradianceMap = std::make_shared<Texture>();
+        irradianceMap->CreateCubemap(size, GL_RGB16F);
+        
+        irradianceShader->Use();
+        irradianceShader->SetInt("environmentMap", 0);
+        irradianceShader->SetMat4("projection", captureProjection);
+        environmentMap->Bind(0);
+        
+        glViewport(0, 0, size, size);
+        glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+        
+        for (unsigned int i = 0; i < 6; ++i) {
+            irradianceShader->SetMat4("view", captureViews[i]);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+                                  GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap->GetID(), 0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            RenderCube();
+        }
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
+        LOG_INFO("Successfully precomputed irradiance map");
+        return true;
+    }
+
+    bool IBL::PrecomputePrefilterMap(int size, uint32_t maxMipLevels) {
+        if (!environmentMap) {
+            lastError = "No environment map available for prefilter computation";
+            return false;
+        }
+        
+        prefilterMap = std::make_shared<Texture>();
+        prefilterMap->CreateCubemap(size, GL_RGB16F);
+        prefilterMap->GenerateMipmaps();
+        
+        prefilterShader->Use();
+        prefilterShader->SetInt("environmentMap", 0);
+        prefilterShader->SetMat4("projection", captureProjection);
+        environmentMap->Bind(0);
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+        
+        for (unsigned int mip = 0; mip < maxMipLevels; ++mip) {
+            unsigned int mipWidth = size * std::pow(0.5, mip);
+            unsigned int mipHeight = size * std::pow(0.5, mip);
+            
+            glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
+            glViewport(0, 0, mipWidth, mipHeight);
+            
+            float roughness = (float)mip / (float)(maxMipLevels - 1);
+            prefilterShader->SetFloat("roughness", roughness);
+            
+            for (unsigned int i = 0; i < 6; ++i) {
+                prefilterShader->SetMat4("view", captureViews[i]);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+                                      GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterMap->GetID(), mip);
+                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                RenderCube();
+            }
+        }
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
+        LOG_INFO("Successfully precomputed prefilter map with " + std::to_string(maxMipLevels) + " mip levels");
+        return true;
+    }
+
+    bool IBL::GenerateBRDFLUT(int size) {
+        brdfLUT = std::make_shared<Texture>();
+        brdfLUT->Create2D(size, size, GL_RG16F, GL_RG, GL_FLOAT);
+        
+        brdfLUT->SetWrapMode(TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE);
+        brdfLUT->SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+        glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, size, size);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, brdfLUT->GetID(), 0);
+        
+        glViewport(0, 0, size, size);
+        brdfShader->Use();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        RenderQuad();
+        
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
+        LOG_INFO("Successfully generated BRDF LUT");
+        return true;
+    }
+
+    void IBL::BindIBLTextures(std::shared_ptr<Shader> shader) const {
+        if (!shader) return;
+        
+        shader->Use();
+        
+        if (irradianceMap) {
+            shader->SetInt("irradianceMap", 0);
+            irradianceMap->Bind(0);
+        }
+        
+        if (prefilterMap) {
+            shader->SetInt("prefilterMap", 1);
+            prefilterMap->Bind(1);
+        }
+        
+        if (brdfLUT) {
+            shader->SetInt("brdfLUT", 2);
+            brdfLUT->Bind(2);
+        }
+    }
+
+    bool IBL::InitializeShaders() {
+        // 这里应该加载对应的着色器
+        // 简化实现，实际项目中需要从文件加载
+        equirectangularToCubemapShader = std::make_shared<Shader>();
+        irradianceShader = std::make_shared<Shader>();
+        prefilterShader = std::make_shared<Shader>();
+        brdfShader = std::make_shared<Shader>();
+        
+        // TODO: 从文件加载着色器源码
+        return true;
+    }
+
+    bool IBL::InitializeCaptureResources() {
+        // 创建立方体贴图捕获用的FBO和RBO
+        glGenFramebuffers(1, &captureFBO);
+        glGenRenderbuffers(1, &captureRBO);
+        
+        // 设置捕获投影矩阵
+        captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+        
+        // 设置捕获视图矩阵（6个面）
+        captureViews.resize(6);
+        captureViews[0] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+        captureViews[1] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+        captureViews[2] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f));
+        captureViews[3] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f));
+        captureViews[4] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+        captureViews[5] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
+        
+        return true;
+    }
+
+    void IBL::RenderCube() {
+        // 简化的立方体渲染
+        // 实际项目中应该有专门的立方体VAO
+        static unsigned int cubeVAO = 0;
+        static unsigned int cubeVBO = 0;
+        
+        if (cubeVAO == 0) {
+            float vertices[] = {
+                // 背面
+                -1.0f, -1.0f, -1.0f,
+                 1.0f,  1.0f, -1.0f,
+                 1.0f, -1.0f, -1.0f,
+                 1.0f,  1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+                -1.0f,  1.0f, -1.0f,
+                // 前面
+                -1.0f, -1.0f,  1.0f,
+                 1.0f, -1.0f,  1.0f,
+                 1.0f,  1.0f,  1.0f,
+                 1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
+                // 左面
+                -1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f, -1.0f,
+                -1.0f, -1.0f,  1.0f,
+                -1.0f,  1.0f,  1.0f,
+                // 右面
+                 1.0f,  1.0f,  1.0f,
+                 1.0f, -1.0f, -1.0f,
+                 1.0f,  1.0f, -1.0f,
+                 1.0f, -1.0f, -1.0f,
+                 1.0f,  1.0f,  1.0f,
+                 1.0f, -1.0f,  1.0f,
+                // 下面
+                -1.0f, -1.0f, -1.0f,
+                 1.0f, -1.0f, -1.0f,
+                 1.0f, -1.0f,  1.0f,
+                 1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f,  1.0f,
+                -1.0f, -1.0f, -1.0f,
+                // 上面
+                -1.0f,  1.0f, -1.0f,
+                 1.0f,  1.0f,  1.0f,
+                 1.0f,  1.0f, -1.0f,
+                 1.0f,  1.0f,  1.0f,
+                -1.0f,  1.0f, -1.0f,
+                -1.0f,  1.0f,  1.0f
+            };
+            
+            glGenVertexArrays(1, &cubeVAO);
+            glGenBuffers(1, &cubeVBO);
+            
+            glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+            
+            glBindVertexArray(cubeVAO);
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindVertexArray(0);
+        }
+        
+        glBindVertexArray(cubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+    }
+
+    void IBL::RenderQuad() {
+        // 简化的四边形渲染
+        static unsigned int quadVAO = 0;
+        static unsigned int quadVBO = 0;
+        
+        if (quadVAO == 0) {
+            float quadVertices[] = {
+                -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+                -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+                 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+                 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+            };
+            
+            glGenVertexArrays(1, &quadVAO);
+            glGenBuffers(1, &quadVBO);
+            
+            glBindVertexArray(quadVAO);
+            glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+            
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        }
+        
+        glBindVertexArray(quadVAO);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glBindVertexArray(0);
+    }
+
+    void IBL::Cleanup() {
+        if (captureFBO) {
+            glDeleteFramebuffers(1, &captureFBO);
+            captureFBO = 0;
+        }
+        
+        if (captureRBO) {
+            glDeleteRenderbuffers(1, &captureRBO);
+            captureRBO = 0;
+        }
+    }
+
+} // namespace HybridPBR

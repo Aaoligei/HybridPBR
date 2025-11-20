@@ -91,6 +91,8 @@
         "thread": "cpp",
         "valarray": "cpp",
         "cfloat": "cpp",
-        "climits": "cpp"
-    }
+        "climits": "cpp",
+        "xtree": "cpp"
+    },
+    "Codegeex.RepoIndex": true
 }

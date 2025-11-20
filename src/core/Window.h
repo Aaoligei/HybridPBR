@@ -45,6 +45,7 @@ namespace HybridPBR {
         // 输入回调设置
         void SetKeyCallback(std::function<void(int, int, int, int)> callback);
         void SetMouseCallback(std::function<void(double, double)> callback);
+        void SetMouseButtonCallback(std::function<void(int, int, int)> callback);
         void SetScrollCallback(std::function<void(double, double)> callback);
         void SetResizeCallback(std::function<void(int, int)> callback);
 
@@ -57,6 +58,7 @@ namespace HybridPBR {
         // 回调函数
         std::function<void(int, int, int, int)> keyCallback;
         std::function<void(double, double)> mouseCallback;
+        std::function<void(int, int, int)> mouseButtonCallback;
         std::function<void(double, double)> scrollCallback;
         std::function<void(int, int)> resizeCallback;
         
@@ -64,6 +66,7 @@ namespace HybridPBR {
         static void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
         static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
         static void MouseCallback(GLFWwindow* window, double xpos, double ypos);
+        static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
         static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
         
         void SetupCallbacks();

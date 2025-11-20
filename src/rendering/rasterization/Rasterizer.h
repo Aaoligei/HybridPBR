@@ -1,8 +1,10 @@
 #pragma once
 #include "../interfaces/IRasterizer.h"
-#include "../Shader.h"
-#include "Camera.h"
-#include "../../resources/ResourceManager.h"
+#include "RenderPass.h"
+#include "../ShaderManager.h"
+#include "../../scene/Scene.h"
+#include <memory>
+#include <vector>
 
 namespace HybridPBR {
 
@@ -28,9 +30,20 @@ namespace HybridPBR {
         bool IsBackfaceCulling() const override { return backfaceCulling; }
         bool IsDepthTest() const override { return depthTest; }
         
-        // 渲染设置
-        void SetSkybox(std::shared_ptr<Texture> skybox);
-        void SetAmbientLight(const glm::vec3& color, float intensity = 0.1f);
+        // 渲染通道管理
+        void AddRenderPass(std::unique_ptr<RenderPass> pass);
+        void RemoveRenderPass(const std::string& passName);
+        std::vector<std::string> GetRenderPassNames();
+        void ClearRenderPasses();
+
+        
+        // 场景管理
+        void SetCurrentScene(const Scene& scene) { currentScene = &scene; }
+        static const Scene* GetCurrentScene() { return currentScene; }
+        static RenderStats& GetStats() { return stats; }
+        
+        // 设置
+        void SetSkyboxTexture(std::shared_ptr<Texture> texture);
 
     private:
         // 渲染状态
@@ -39,23 +52,15 @@ namespace HybridPBR {
         bool depthTest = true;
         glm::vec4 clearColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
         
-        // 着色器
-        std::shared_ptr<Shader> defaultShader;
-        std::shared_ptr<Shader> skyboxShader;
+        // 渲染通道
+        std::vector<std::unique_ptr<RenderPass>> renderPasses;
         
-        // 环境设置
-        glm::vec3 ambientLight = glm::vec3(0.1f);
-        std::shared_ptr<Texture> skyboxTexture;
+        // 当前场景
+        static const Scene* currentScene;
+        static RenderStats stats;
         
-        // 渲染方法
-        void RenderSceneNode(const SceneNode& node, const glm::mat4& parentTransform);
-        void RenderMesh(const Mesh& mesh, const Material& material, const glm::mat4& transform);
-        void RenderSkybox();
-        void SetupLighting(std::shared_ptr<Shader> shader, const Scene& scene);
-        
-        // 工具方法
-        void ApplyRenderState();
-        bool SetupDefaultShaders();
+        // 初始化默认渲染通道
+        void SetupDefaultRenderPasses();
     };
 
 } // namespace HybridPBR

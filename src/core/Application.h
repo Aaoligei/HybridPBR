@@ -2,7 +2,8 @@
 #include "Window.h"
 #include "Input.h"
 #include "Timer.h"
-#include "utils/Logger.h"
+#include "rendering/ImGuiManager.h"
+#include "rendering/rasterization/CameraController.h"
 #include <memory>
 
 // 前向声明
@@ -38,6 +39,7 @@ namespace HybridPBR {
         WindowConfig windowConfig;
         std::unique_ptr<Window> window;
         std::unique_ptr<ImGuiManager> imguiManager; // 添加ImGui管理器
+        std::unique_ptr<CameraController> cameraController; // 添加相机控制器
         Timer timer;
         bool isRunning = false;
         

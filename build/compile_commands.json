@@ -25,6 +25,24 @@
 },
 {
   "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
+  "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\pbr\\BRDF.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\pbr\\BRDF.cpp",
+  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/pbr/BRDF.cpp",
+  "output": "CMakeFiles/HybridPBR.dir/src/pbr/BRDF.cpp.obj"
+},
+{
+  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
+  "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\pbr\\IBL.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\pbr\\IBL.cpp",
+  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/pbr/IBL.cpp",
+  "output": "CMakeFiles/HybridPBR.dir/src/pbr/IBL.cpp.obj"
+},
+{
+  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
+  "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\pbr\\PBRMaterial.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\pbr\\PBRMaterial.cpp",
+  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/pbr/PBRMaterial.cpp",
+  "output": "CMakeFiles/HybridPBR.dir/src/pbr/PBRMaterial.cpp.obj"
+},
+{
+  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
   "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\Shader.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\Shader.cpp",
   "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.cpp",
   "output": "CMakeFiles/HybridPBR.dir/src/rendering/Shader.cpp.obj"
@@ -40,6 +58,12 @@
   "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\ImGuiComponentManager.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\ImGuiComponentManager.cpp",
   "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ImGuiComponentManager.cpp",
   "output": "CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.obj"
+},
+{
+  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
+  "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\ShaderManager.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\ShaderManager.cpp",
+  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ShaderManager.cpp",
+  "output": "CMakeFiles/HybridPBR.dir/src/rendering/ShaderManager.cpp.obj"
 },
 {
   "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
@@ -67,6 +91,12 @@
 },
 {
   "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
+  "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\rasterization\\CameraController.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\rasterization\\CameraController.cpp",
+  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/CameraController.cpp",
+  "output": "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/CameraController.cpp.obj"
+},
+{
+  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
   "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\rasterization\\Mesh.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\rasterization\\Mesh.cpp",
   "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Mesh.cpp",
   "output": "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Mesh.cpp.obj"
@@ -76,6 +106,12 @@
   "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\rasterization\\Rasterizer.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\rasterization\\Rasterizer.cpp",
   "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Rasterizer.cpp",
   "output": "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Rasterizer.cpp.obj"
+},
+{
+  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
+  "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\rasterization\\RenderPass.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\rasterization\\RenderPass.cpp",
+  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/RenderPass.cpp",
+  "output": "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.obj"
 },
 {
   "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",

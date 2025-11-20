@@ -105,15 +105,21 @@ add_executable(HybridPBR
     src/core/Window.cpp
     src/core/Input.cpp
     src/core/Timer.cpp
+    src/pbr/BRDF.cpp
+    src/pbr/IBL.cpp
+    src/pbr/PBRMaterial.cpp
     src/rendering/Shader.cpp
     src/rendering/ImGuiManager.cpp
     src/rendering/ImGuiComponentManager.cpp
+    src/rendering/ShaderManager.cpp
     src/rendering/common/Light.cpp
     src/rendering/common/Material.cpp
     src/rendering/common/Texture.cpp
     src/rendering/rasterization/Camera.cpp
+    src/rendering/rasterization/CameraController.cpp
     src/rendering/rasterization/Mesh.cpp
     src/rendering/rasterization/Rasterizer.cpp
+    src/rendering/rasterization/RenderPass.cpp
     src/resources/ModelLoader.cpp
     src/resources/ResourceManager.cpp
     src/scene/Scene.cpp

@@ -87,6 +87,7 @@ namespace HybridPBR {
         
         glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
         glfwSetKeyCallback(window, KeyCallback);
+        glfwSetMouseButtonCallback(window, MouseButtonCallback);
         glfwSetCursorPosCallback(window, MouseCallback);
         glfwSetScrollCallback(window, ScrollCallback);
     }
@@ -123,6 +124,16 @@ namespace HybridPBR {
             }
         }
     }
+
+    void Window::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+        auto win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+        if (win) {
+            Input::GetInstance().SetMouseButtonState(button, action != GLFW_RELEASE);
+            if (win->mouseButtonCallback) {
+                win->mouseButtonCallback(button, action, mods);
+            }
+        }
+    }
     
     void Window::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
         auto win = static_cast<Window*>(glfwGetWindowUserPointer(window));
@@ -138,6 +149,10 @@ namespace HybridPBR {
     
     void Window::SetMouseCallback(std::function<void(double, double)> callback) {
         mouseCallback = callback;
+    }
+
+    void Window::SetMouseButtonCallback(std::function<void(int, int, int)> callback) {
+        mouseButtonCallback = callback;
     }
     
     void Window::SetScrollCallback(std::function<void(double, double)> callback) {

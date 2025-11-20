@@ -29,7 +29,7 @@ namespace HybridPBR {
 
     private:
         Logger() = default;
-        LogLevel currentLevel = LogLevel::INFO;
+        LogLevel currentLevel = LogLevel::INFO; // 默认级别
         
         const char* LevelToString(LogLevel level);
     };

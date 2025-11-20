@@ -94,9 +94,8 @@ namespace HybridPBR {
                 // 确保我们有有效的纹理坐标和足够的组件
                 vertex.texcoord = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
                 
-                // 检查是否需要翻转V坐标（取决于纹理的坐标系统）
-                // OpenGL的纹理坐标系统原点在左下角，而很多模型格式原点在左上角
-                vertex.texcoord.y = 1.0f - vertex.texcoord.y;
+                // 不再自动翻转V坐标，让纹理加载处理这个
+                 vertex.texcoord.y = 1.0f - vertex.texcoord.y;
             }
             
             // 切线和副切线
@@ -104,6 +103,7 @@ namespace HybridPBR {
                 vertex.tangent = AssimpToGLM(mesh->mTangents[i]);
                 vertex.bitangent = AssimpToGLM(mesh->mBitangents[i]);
             } else {
+                // 如果没有切线信息，则计算它们
                 vertex.tangent = glm::vec3(0.0f);
                 vertex.bitangent = glm::vec3(0.0f);
             }
@@ -123,6 +123,11 @@ namespace HybridPBR {
         auto resultMesh = std::make_shared<Mesh>(mesh->mName.C_Str());
         resultMesh->SetVertices(vertices);
         resultMesh->SetIndices(indices);
+        
+        // 如果没有切线，则计算它们
+        if (!vertices.empty() && vertices[0].tangent == glm::vec3(0.0f)) {
+            resultMesh->CalculateTangents();
+        }
         
         return resultMesh;
     }

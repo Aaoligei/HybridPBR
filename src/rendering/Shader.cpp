@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include<GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <filesystem>
 
 namespace HybridPBR {
     
@@ -21,6 +22,9 @@ namespace HybridPBR {
             LOG_ERROR("Failed to read shader files");
             return false;
         }
+        /* --------- 取文件名 --------- */
+        std::string fileName = std::filesystem::path(vertexPath).filename().string();
+        shaderName = fileName; // 设置着色器名称
         
         return LoadFromSource(vertexSource, fragmentSource);
     }
@@ -114,7 +118,7 @@ namespace HybridPBR {
         
         int location = glGetUniformLocation(programID, name.c_str());
         if (location == -1) {
-            LOG_WARNING("Uniform '" + name + "' not found in shader");
+            LOG_WARNING("Uniform '" + name + "' not found in shader:"+ shaderName);
         }
         
         uniformLocationCache[name] = location;
@@ -148,6 +152,9 @@ namespace HybridPBR {
     
     void Shader::SetMat4(const std::string& name, const glm::mat4& value) const {
         glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
+    }
+    void Shader::SetMat3(const std::string& name, const glm::mat3& value) const {
+        glUniformMatrix3fv(GetUniformLocation(name), 1, GL_FALSE, glm::value_ptr(value));
     }
 
 } // namespace HybridPBR

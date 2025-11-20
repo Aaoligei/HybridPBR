@@ -173,6 +173,9 @@ namespace HybridPBR {
         ImGui::Separator();
 
         MaterialProperties& props = material->GetProperties();
+        ImGui::Text("Shader Name: %s", material->GetCustomShaderName().c_str());
+        ImGui::Text("Shader Type: %s", material->GetShaderTypeString().c_str());
+
 
         // Albedo color picker
         ImGui::Text("Albedo Color");
@@ -228,6 +231,19 @@ namespace HybridPBR {
             if (texture) {
                 ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Assigned (%dx%d)", 
                                  texture->GetWidth(), texture->GetHeight());
+                
+                // 添加纹理预览按钮
+                ImGui::SameLine();
+                std::string buttonLabel = std::string("Preview##") + textureTypes[i] + std::to_string(i);
+                if (ImGui::SmallButton(buttonLabel.c_str())) {
+                    // 纹理预览功能可以在这里实现
+                    // 当前只是占位符，后续可以添加实际的纹理查看器
+                }
+                
+                // 显示纹理文件路径
+                if (!texture->GetFilePath().empty()) {
+                    ImGui::Text("    Path: %s", texture->GetFilePath().c_str());
+                }
             } else {
                 ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "None");
             }

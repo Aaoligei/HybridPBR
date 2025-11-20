@@ -33,6 +33,14 @@ namespace HybridPBR {
         return mouseStates[button] && !prevMouseStates[button];
     }
     
+    bool Input::IsMouseButtonReleased(int button) {
+        return !mouseStates[button] && prevMouseStates[button];
+    }
+    
+    bool Input::IsMouseButtonHeld(int button) {
+        return mouseStates[button];
+    }
+    
     void Input::SetMousePosition(double x, double y) {
         prevMouseX = x;
         prevMouseY = y;

@@ -1,4 +1,5 @@
 #include "Logger.h"
+#include <GLFW/glfw3.h>
 
 namespace HybridPBR {
     
@@ -47,5 +48,13 @@ namespace HybridPBR {
             default: return "UNKNOWN";
         }
     }
+
+    inline void Logger::CheckGLError(const char* stmt, const char* file, int line) {
+    GLenum err = glGetError();
+    if (err != GL_NO_ERROR) {
+        fprintf(stderr, "GL error %s at %s:%d -> 0x%x\n", stmt, file, line, err);
+        exit(EXIT_FAILURE);
+    }
+}
 
 } // namespace HybridPBR

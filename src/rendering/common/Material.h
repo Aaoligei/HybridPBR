@@ -72,7 +72,7 @@ namespace HybridPBR {
         const std::string& GetName() const { return name; }
         void SetName(const std::string& newName) { name = newName; }
         
-        // 着色器参数应用
+        // 着色器参数应用（默认pbr）
         virtual void ApplyToShader(std::shared_ptr<Shader> shader) const;
         
         // 验证材质是否完整

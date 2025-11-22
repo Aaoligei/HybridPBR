@@ -1169,6 +1169,30 @@ src/rendering/common/Texture.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.s
 .PHONY : src/rendering/common/Texture.cpp.s
 
+src/rendering/common/UniformBuffer.obj: src/rendering/common/UniformBuffer.cpp.obj
+.PHONY : src/rendering/common/UniformBuffer.obj
+
+# target to build an object file
+src/rendering/common/UniformBuffer.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/UniformBuffer.cpp.obj
+.PHONY : src/rendering/common/UniformBuffer.cpp.obj
+
+src/rendering/common/UniformBuffer.i: src/rendering/common/UniformBuffer.cpp.i
+.PHONY : src/rendering/common/UniformBuffer.i
+
+# target to preprocess a source file
+src/rendering/common/UniformBuffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/UniformBuffer.cpp.i
+.PHONY : src/rendering/common/UniformBuffer.cpp.i
+
+src/rendering/common/UniformBuffer.s: src/rendering/common/UniformBuffer.cpp.s
+.PHONY : src/rendering/common/UniformBuffer.s
+
+# target to generate assembly for a file
+src/rendering/common/UniformBuffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/UniformBuffer.cpp.s
+.PHONY : src/rendering/common/UniformBuffer.cpp.s
+
 src/rendering/rasterization/Camera.obj: src/rendering/rasterization/Camera.cpp.obj
 .PHONY : src/rendering/rasterization/Camera.obj
 
@@ -1596,6 +1620,9 @@ help:
 	@echo ... src/rendering/common/Texture.obj
 	@echo ... src/rendering/common/Texture.i
 	@echo ... src/rendering/common/Texture.s
+	@echo ... src/rendering/common/UniformBuffer.obj
+	@echo ... src/rendering/common/UniformBuffer.i
+	@echo ... src/rendering/common/UniformBuffer.s
 	@echo ... src/rendering/rasterization/Camera.obj
 	@echo ... src/rendering/rasterization/Camera.i
 	@echo ... src/rendering/rasterization/Camera.s

@@ -174,8 +174,8 @@ public:
             props.metallic = materialParams[i].x;
             props.roughness = materialParams[i].y;
             props.ambientOcclusion = 1.0f;
-            props.customShaderName = "SphereShader";
-            props.shaderType = HybridPBR::ShaderType::CUSTOM;
+            props.customShaderName = "null";
+            props.shaderType = HybridPBR::ShaderType::PBR;
             
             auto pbrMaterial = std::make_shared<HybridPBR::PBRMaterial>("PBR_Sphere_" + std::to_string(i), props);
             pbrMaterial->SetTexture(HybridPBR::TextureType::DIFFUSE,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_basecolor.png"));
@@ -206,8 +206,8 @@ public:
             props.metallic = 0.5f;
             props.roughness = 0.3f;
             props.ambientOcclusion = 1.0f;
-            props.customShaderName = "SphereShader";
-            props.shaderType = HybridPBR::ShaderType::CUSTOM;
+            props.customShaderName = "null";
+            props.shaderType = HybridPBR::ShaderType::PBR;
             
             auto cubeMaterial = std::make_shared<HybridPBR::PBRMaterial>("PBR_Cube", props);
             cubeMaterial->SetTexture(HybridPBR::TextureType::DIFFUSE,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_basecolor.png"));
@@ -266,13 +266,13 @@ public:
         CreatePBRTestSpheres();
         
         // 加载3D模型
-        //LoadModels();
+        LoadModels();
         // 创建光源
-        auto light = std::make_shared<HybridPBR::Light>(HybridPBR::LightType::DIRECTIONAL, "MainLight");
-        light->SetDirection(glm::vec3(-0.5f, -1.0f, -0.5f));
+        auto light = std::make_shared<HybridPBR::Light>(HybridPBR::LightType::POINT, "MainLight");
+        light->SetPosition(glm::vec3(0.0f, 0.0f, 10.0f));
         HybridPBR::LightProperties lightProps;
         lightProps.color = glm::vec3(1.0f, 1.0f, 0.9f);
-        lightProps.intensity = 10.0f;
+        lightProps.intensity = 150.0f;
         light->SetProperties(lightProps);
         scene->AddLight(light);
         

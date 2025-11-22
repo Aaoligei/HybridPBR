@@ -2721,6 +2721,7 @@ CMakeFiles/HybridPBR.dir/src/main.cpp.obj: C:/Users/25342/OneDrive/Desktop/proje
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Light.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Material.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Texture.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/UniformBuffer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/interfaces/IRasterizer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/interfaces/IRenderer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Camera.h \
@@ -6408,6 +6409,75 @@ CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.obj: C:/Users/25342/On
   C:/mingw64/x86_64-w64-mingw32/include/wctype.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Texture.h
 
+CMakeFiles/HybridPBR.dir/src/rendering/common/UniformBuffer.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/UniformBuffer.cpp \
+  _deps/glad-build/include/KHR/khrplatform.h \
+  _deps/glad-build/include/glad/glad.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/backward/binders.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bit \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/alloc_traits.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/allocator.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/concept_check.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/cpp_type_traits.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/exception.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/exception_defines.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/functexcept.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/functional_hash.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/hash_bytes.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/invoke.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/memory_resource.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/memoryfwd.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/move.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/new_allocator.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/predefined_ops.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/ptr_traits.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/range_access.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/refwrap.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/requires_hosted.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_algobase.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_bvector.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_construct.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_function.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_funcs.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_iterator_base_types.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_pair.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_uninitialized.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_vector.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/uses_allocator.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/uses_allocator_args.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/utility.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/vector.tcc \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/version.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/concepts \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cstddef \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/debug/assertions.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/debug/debug.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ext/alloc_traits.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ext/numeric_traits.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ext/type_traits.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/initializer_list \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/new \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/pstl/pstl_config.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/tuple \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/type_traits \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/vector \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/c++allocator.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/c++config.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/cpu_defines.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/os_defines.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
+  C:/mingw64/x86_64-w64-mingw32/include/_mingw.h \
+  C:/mingw64/x86_64-w64-mingw32/include/_mingw_mac.h \
+  C:/mingw64/x86_64-w64-mingw32/include/_mingw_secapi.h \
+  C:/mingw64/x86_64-w64-mingw32/include/corecrt.h \
+  C:/mingw64/x86_64-w64-mingw32/include/crtdefs.h \
+  C:/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
+  C:/mingw64/x86_64-w64-mingw32/include/stddef.h \
+  C:/mingw64/x86_64-w64-mingw32/include/stdint.h \
+  C:/mingw64/x86_64-w64-mingw32/include/vadefs.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/UniformBuffer.h
+
 CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Camera.cpp \
   _deps/glm-src/glm/common.hpp \
   _deps/glm-src/glm/detail/_fixes.hpp \
@@ -7392,6 +7462,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Rasterizer.cpp.obj: C:/User
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Light.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Material.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Texture.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/UniformBuffer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/interfaces/IRasterizer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/interfaces/IRenderer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Camera.h \
@@ -7796,6 +7867,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.obj: C:/User
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Light.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Material.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Texture.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/UniformBuffer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/interfaces/IRasterizer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/interfaces/IRenderer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Camera.h \
@@ -10115,6 +10187,7 @@ CMakeFiles/HybridPBR.dir/src/utils/FileIO.cpp.obj: C:/Users/25342/OneDrive/Deskt
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/Logger.h
 
 CMakeFiles/HybridPBR.dir/src/utils/Logger.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/Logger.cpp \
+  _deps/glfw-src/include/GLFW/glfw3.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/backward/binders.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bit \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/alloc_traits.h \
@@ -10222,7 +10295,9 @@ CMakeFiles/HybridPBR.dir/src/utils/Logger.cpp.obj: C:/Users/25342/OneDrive/Deskt
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/limits.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/syslimits.h \
+  C:/mingw64/x86_64-w64-mingw32/include/GL/gl.h \
   C:/mingw64/x86_64-w64-mingw32/include/_mingw.h \
   C:/mingw64/x86_64-w64-mingw32/include/_mingw_mac.h \
   C:/mingw64/x86_64-w64-mingw32/include/_mingw_off_t.h \
@@ -10243,6 +10318,7 @@ CMakeFiles/HybridPBR.dir/src/utils/Logger.cpp.obj: C:/Users/25342/OneDrive/Deskt
   C:/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
   C:/mingw64/x86_64-w64-mingw32/include/sec_api/wchar_s.h \
   C:/mingw64/x86_64-w64-mingw32/include/stddef.h \
+  C:/mingw64/x86_64-w64-mingw32/include/stdint.h \
   C:/mingw64/x86_64-w64-mingw32/include/stdio.h \
   C:/mingw64/x86_64-w64-mingw32/include/stdlib.h \
   C:/mingw64/x86_64-w64-mingw32/include/swprintf.inl \
@@ -12053,6 +12129,8 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/filesystem:
 
 C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Texture.h:
 
+C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/UniformBuffer.h:
+
 C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/interfaces/IRasterizer.h:
 
 C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Mesh.h:
@@ -12116,6 +12194,8 @@ _deps/glm-src/glm/gtx/dual_quaternion.hpp:
 _deps/stb-src/stb_image.h:
 
 _deps/stb-src/stb_image_write.h:
+
+C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/UniformBuffer.cpp:
 
 C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Camera.cpp:
 

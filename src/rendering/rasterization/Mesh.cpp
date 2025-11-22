@@ -239,12 +239,12 @@ namespace HybridPBR {
 
             // 添加索引（两个三角形）
             indices.push_back(baseIndex);
-            indices.push_back(baseIndex + 1);
             indices.push_back(baseIndex + 2);
+            indices.push_back(baseIndex + 1);
             
             indices.push_back(baseIndex);
-            indices.push_back(baseIndex + 2);
             indices.push_back(baseIndex + 3);
+            indices.push_back(baseIndex + 2);
         }
 
         CalculateTangents();
@@ -285,12 +285,12 @@ namespace HybridPBR {
                 uint32_t second = first + segments + 1;
                 
                 indices.push_back(first);
-                indices.push_back(second);
                 indices.push_back(first + 1);
+                indices.push_back(second);
                 
                 indices.push_back(second);
-                indices.push_back(second + 1);
                 indices.push_back(first + 1);
+                indices.push_back(second + 1);
             }
         }
 

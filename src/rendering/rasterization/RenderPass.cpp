@@ -73,23 +73,19 @@ namespace HybridPBR {
         }
         
         auto& shaderManager = ShaderManager::GetInstance();
-        
-        // 切换到材质对应的着色器
         shaderManager.SetCurrentShader(shader);
         
-        // 设置公共统一变量
-        SetupCommonUniforms(shader, *Rasterizer::GetCurrentScene(),material); 
-        
-        // 设置模型矩阵
+        // 1. 设置模型矩阵 (Per Object)
         shader->SetMat4("model", transform);
-        // 设置法线矩阵
-        auto tmp = glm::transpose(glm::inverse(glm::mat3(transform)));
-        shader->SetMat3("normalMatrix", tmp);
         
-        // 应用材质特定参数
+        // 计算法线矩阵 (在Shader里计算开销较大，骨骼动画除外)
+        glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(transform)));
+        shader->SetMat3("normalMatrix", normalMatrix);
+        
+        // 2. 应用材质 (Per Material)
+        // 这里调用 Material 自己的 ApplyToShader，不要在 Pass 里手动绑定纹理
         material.ApplyToShader(shader);
         
-        // 渲染网格
         mesh.Render();
         
         // 更新统计信息

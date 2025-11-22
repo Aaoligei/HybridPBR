@@ -115,6 +115,7 @@ add_executable(HybridPBR
     src/rendering/common/Light.cpp
     src/rendering/common/Material.cpp
     src/rendering/common/Texture.cpp
+    src/rendering/common/UniformBuffer.cpp
     src/rendering/rasterization/Camera.cpp
     src/rendering/rasterization/CameraController.cpp
     src/rendering/rasterization/Mesh.cpp

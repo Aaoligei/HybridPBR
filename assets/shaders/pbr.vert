@@ -16,16 +16,19 @@ out VS_OUT {
 } vs_out;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
-uniform vec3 viewPos;
+uniform mat3 normalMatrix;
+
+layout (std140, binding = 0) uniform CameraData {
+    mat4 view;
+    mat4 projection;
+    vec3 viewPos;
+};
 
 void main() {
     vec4 worldPos = model * vec4(aPos, 1.0);
     vs_out.FragPos = worldPos.xyz;
     
     // 法线矩阵
-    mat3 normalMatrix = transpose(inverse(mat3(model)));
     vs_out.Normal = normalize(normalMatrix * aNormal);
     
     vs_out.TexCoord = aTexCoord;

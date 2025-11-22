@@ -30,28 +30,39 @@ struct Material {
 };
 
 // 光源
-struct DirectionalLight {
-    vec3 direction;
-    vec3 color;
+// 对应 C++ 的 GPULight
+struct Light {
+    vec3 position;  
+    // padding ...
+    vec3 direction; 
+    // padding ...
+    vec3 color;     
     float intensity;
-};
 
-struct PointLight {
-    vec3 position;
-    vec3 color;
-    float intensity;
+    float range;
     float constant;
     float linear;
     float quadratic;
+
+    float innerCutoff;
+    float outerCutoff;
+    int type;
+    // padding ...
+};
+
+// 对应 binding point 1
+layout (std140, binding = 1) uniform LightData {
+    int lightCount;
+    Light lights[16];
 };
 
 // 纹理
-uniform sampler2D albedoMap;
-uniform sampler2D normalMap;
-uniform sampler2D metallicMap;
-uniform sampler2D roughnessMap;
-uniform sampler2D aoMap;
-uniform sampler2D emissiveMap;
+uniform sampler2D AlbedoMap;
+uniform sampler2D NormalMap;
+uniform sampler2D MetallicMap;
+uniform sampler2D RoughnessMap;
+uniform sampler2D AOMap;
+uniform sampler2D EmissiveMap;
 
 // IBL纹理
 uniform samplerCube irradianceMap;
@@ -93,16 +104,16 @@ void main() {
     float ao = material.ao;
     
     if (material.useAlbedoMap) {
-        albedo = pow(texture(albedoMap, fs_in.TexCoord).rgb, vec3(2.2));
+        albedo = pow(texture(AlbedoMap, fs_in.TexCoord).rgb, vec3(2.2));
     }
     if (material.useMetallicMap) {
-        metallic = texture(metallicMap, fs_in.TexCoord).r;
+        metallic = texture(MetallicMap, fs_in.TexCoord).r;
     }
     if (material.useRoughnessMap) {
-        roughness = texture(roughnessMap, fs_in.TexCoord).r;
+        roughness = texture(RoughnessMap, fs_in.TexCoord).r;
     }
     if (material.useAOMap) {
-        ao = texture(aoMap, fs_in.TexCoord).r;
+        ao = texture(AOMap, fs_in.TexCoord).r;
     }
     
     // 输入数据
@@ -147,7 +158,7 @@ void main() {
     // 自发光
     vec3 emissive = material.emissive * material.emissiveIntensity;
     if (material.useEmissiveMap) {
-        emissive *= texture(emissiveMap, fs_in.TexCoord).rgb;
+        emissive *= texture(EmissiveMap, fs_in.TexCoord).rgb;
     }
     
     vec3 color = ambient + Lo + emissive;
@@ -202,7 +213,7 @@ vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness) {
 }
 
 vec3 CalculateNormal() {
-    vec3 tangentNormal = texture(normalMap, fs_in.TexCoord).xyz * 2.0 - 1.0;
+    vec3 tangentNormal = texture(NormalMap, fs_in.TexCoord).xyz * 2.0 - 1.0;
     tangentNormal.xy *= material.normalScale;
     tangentNormal = normalize(tangentNormal);
     

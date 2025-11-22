@@ -35,88 +35,36 @@ namespace HybridPBR {
     }
 
     void Material::ApplyToShader(std::shared_ptr<Shader> shader) const {
-         if (!shader) return;
-        
+        if (!shader) return;
         shader->Use();
+        // ... 设置材质基本属性 (albedo, roughness 等 float/vec3) ...
+
+        // 纹理单元分配策略：
+        // 0-4: PBR 基础纹理
+        // 5-9: 特殊纹理 (IBL 等)
+        // 10+: 阴影贴图等
         
-        // 根据着色器类型应用不同的参数
-        switch (properties.shaderType) {
-            case ShaderType::PBR:
-                // PBR材质参数
-                shader->SetVec3("material.albedo", glm::vec3(properties.albedo));
-                shader->SetFloat("material.metallic", properties.metallic);
-                shader->SetFloat("material.roughness", properties.roughness);
-                shader->SetFloat("material.ao", properties.ambientOcclusion);
-                shader->SetFloat("material.normalScale", properties.normalScale);
-                shader->SetVec3("material.emissive", properties.emissiveColor);
-                shader->SetFloat("material.emissiveIntensity", properties.emissiveIntensity);
-                
-                // 设置纹理使用标志
-                shader->SetBool("material.useAlbedoMap", GetTexture(TextureType::DIFFUSE) != nullptr);
-                shader->SetBool("material.useNormalMap", GetTexture(TextureType::NORMAL) != nullptr);
-                shader->SetBool("material.useMetallicMap", GetTexture(TextureType::METALLIC) != nullptr);
-                shader->SetBool("material.useRoughnessMap", GetTexture(TextureType::ROUGHNESS) != nullptr);
-                shader->SetBool("material.useAOMap", GetTexture(TextureType::AMBIENT_OCCLUSION) != nullptr);
-                shader->SetBool("material.useEmissiveMap", GetTexture(TextureType::EMISSIVE) != nullptr);
-                break;
-                
-            case ShaderType::UNLIT:
-                // 无光照材质参数
-                shader->SetVec3("color", glm::vec3(properties.albedo));
-                if (GetTexture(TextureType::DIFFUSE)) {
-                    shader->SetInt("albedoMap", 0);
-                    GetTexture(TextureType::DIFFUSE)->Bind(0);
-                }
-                break;
-                
-            default:
-                // 默认材质参数 - 使用我们在default.frag中定义的材质结构
-                shader->SetVec3("material.ambient", glm::vec3(properties.albedo) * 0.1f);
-                shader->SetVec3("material.diffuse", glm::vec3(properties.albedo));
-                shader->SetVec3("material.specular", glm::vec3(1.0f));
-                shader->SetFloat("material.shininess", 32.0f);
-                shader->SetBool("material.useDiffuseMap", GetTexture(TextureType::DIFFUSE) != nullptr);
-                shader->SetBool("material.useSpecularMap", GetTexture(TextureType::SPECULAR) != nullptr);
-                break;
-        }
+        uint32_t slot = 0;
         
-        // 通用纹理绑定
-        uint32_t textureUnit = 0;
-        for (const auto& [type, texture] : textures) {
-            if (!texture) continue;
+        // 辅助 Lambda
+        auto bindTex = [&](TextureType type, const std::string& name, int explicitSlot = -1) {
+            auto tex = GetTexture(type);
+            bool hasTex = (tex != nullptr);
+            shader->SetBool("material.use" + name + "Map", hasTex); // 统一命名规范
             
-            std::string uniformName;
-            switch (type) {
-                case TextureType::DIFFUSE:
-                    uniformName = (properties.shaderType == ShaderType::PBR) ? "albedoMap" : "diffuseMap";
-                    break;
-                case TextureType::SPECULAR:
-                    uniformName = "specularMap";
-                    break;
-                case TextureType::NORMAL:
-                    uniformName = "normalMap";
-                    break;
-                case TextureType::METALLIC:
-                    uniformName = "metallicMap";
-                    break;
-                case TextureType::ROUGHNESS:
-                    uniformName = "roughnessMap";
-                    break;
-                case TextureType::AMBIENT_OCCLUSION:
-                    uniformName = "aoMap";
-                    break;
-                case TextureType::EMISSIVE:
-                    uniformName = "emissiveMap";
-                    break;
-                default:
-                    continue;
+            if (hasTex) {
+                uint32_t useSlot = (explicitSlot != -1) ? explicitSlot : slot++;
+                tex->Bind(useSlot);
+                shader->SetInt(name + "Map", useSlot); 
             }
-            
-            texture->Bind(textureUnit);
-            shader->SetInt(uniformName, textureUnit);
-            textureUnit++;
-        }
-        
+        };
+
+        bindTex(TextureType::DIFFUSE, "Albedo", 0);
+        bindTex(TextureType::NORMAL, "Normal", 1);
+        bindTex(TextureType::METALLIC, "Metallic", 2);
+        bindTex(TextureType::ROUGHNESS, "Roughness", 3);
+        bindTex(TextureType::AMBIENT_OCCLUSION, "AO", 4);
+        bindTex(TextureType::EMISSIVE, "Emissive", 5);
     }
 
     bool Material::HasRequiredTextures() const {

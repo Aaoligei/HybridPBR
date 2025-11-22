@@ -57,7 +57,7 @@ namespace HybridPBR {
         
         shader->Use();
         
-        // 设置PBR材质属性
+        // 设置PBR材质属性（如果没有贴图就使用这些属性）
         shader->SetVec3("material.albedo", glm::vec3(properties.albedo));
         shader->SetFloat("material.metallic", properties.metallic);
         shader->SetFloat("material.roughness", properties.roughness);
@@ -66,52 +66,34 @@ namespace HybridPBR {
         shader->SetVec3("material.emissive", properties.emissiveColor);
         shader->SetFloat("material.emissiveIntensity", properties.emissiveIntensity);
         
-        // 绑定PBR纹理
-        uint32_t textureUnit = 0;
+        // ... 设置材质基本属性 (albedo, roughness 等 float/vec3) ...
+
+        // 纹理单元分配策略：
+        // 0-4: PBR 基础纹理
+        // 5-9: 特殊纹理 (IBL 等)
+        // 10+: 阴影贴图等
         
-        if (auto albedoMap = GetTexture(TextureType::DIFFUSE)) {
-            albedoMap->Bind(textureUnit);
-            shader->SetInt("material.albedoMap", textureUnit);
-            textureUnit++;
-        }
+        uint32_t slot = 0;
         
-        if (auto normalMap = GetTexture(TextureType::NORMAL)) {
-            normalMap->Bind(textureUnit);
-            shader->SetInt("material.normalMap", textureUnit);
-            textureUnit++;
-        }
-        
-        if (auto metallicMap = GetTexture(TextureType::METALLIC)) {
-            metallicMap->Bind(textureUnit);
-            shader->SetInt("material.metallicMap", textureUnit);
-            textureUnit++;
-        }
-        
-        if (auto roughnessMap = GetTexture(TextureType::ROUGHNESS)) {
-            roughnessMap->Bind(textureUnit);
-            shader->SetInt("material.roughnessMap", textureUnit);
-            textureUnit++;
-        }
-        
-        if (auto aoMap = GetTexture(TextureType::AMBIENT_OCCLUSION)) {
-            aoMap->Bind(textureUnit);
-            shader->SetInt("material.aoMap", textureUnit);
-            textureUnit++;
-        }
-        
-        if (auto emissiveMap = GetTexture(TextureType::EMISSIVE)) {
-            emissiveMap->Bind(textureUnit);
-            shader->SetInt("material.emissiveMap", textureUnit);
-            textureUnit++;
-        }
-        
-        // 设置纹理使用标志
-        shader->SetBool("material.useAlbedoMap", GetTexture(TextureType::DIFFUSE) != nullptr);
-        shader->SetBool("material.useNormalMap", GetTexture(TextureType::NORMAL) != nullptr);
-        shader->SetBool("material.useMetallicMap", GetTexture(TextureType::METALLIC) != nullptr);
-        shader->SetBool("material.useRoughnessMap", GetTexture(TextureType::ROUGHNESS) != nullptr);
-        shader->SetBool("material.useAOMap", GetTexture(TextureType::AMBIENT_OCCLUSION) != nullptr);
-        shader->SetBool("material.useEmissiveMap", GetTexture(TextureType::EMISSIVE) != nullptr);
+        // 辅助 Lambda
+        auto bindTex = [&](TextureType type, const std::string& name, int explicitSlot = -1) {
+            auto tex = GetTexture(type);
+            bool hasTex = (tex != nullptr);
+            shader->SetBool("material.use" + name + "Map", hasTex); // 统一命名规范
+            
+            if (hasTex) {
+                uint32_t useSlot = (explicitSlot != -1) ? explicitSlot : slot++;
+                tex->Bind(useSlot);
+                shader->SetInt( name + "Map", useSlot); 
+            }
+        };
+
+        bindTex(TextureType::DIFFUSE, "Albedo", 0);
+        bindTex(TextureType::NORMAL, "Normal", 1);
+        bindTex(TextureType::METALLIC, "Metallic", 2);
+        bindTex(TextureType::ROUGHNESS, "Roughness", 3);
+        bindTex(TextureType::AMBIENT_OCCLUSION, "AO", 4);
+        bindTex(TextureType::EMISSIVE, "Emissive", 5);
     }
 
     bool PBRMaterial::IsPBRComplete() const {

@@ -26,7 +26,7 @@ namespace HybridPBR {
         void Warning(const std::string& message);
         void Error(const std::string& message);
         void Critical(const std::string& message);
-
+        static inline void CheckGLError(const char* stmt, const char* file, int line);
     private:
         Logger() = default;
         LogLevel currentLevel = LogLevel::INFO; // 默认级别
@@ -40,5 +40,7 @@ namespace HybridPBR {
     #define LOG_WARNING(message) Logger::GetInstance().Warning(message)
     #define LOG_ERROR(message) Logger::GetInstance().Error(message)
     #define LOG_CRITICAL(message) Logger::GetInstance().Critical(message)
+
+    #define GL_CHECK(stmt) do { stmt; checkGLError(#stmt, __FILE__, __LINE__); } while(0)
 
 } // namespace HybridPBR

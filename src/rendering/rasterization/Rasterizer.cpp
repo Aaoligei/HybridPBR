@@ -28,10 +28,16 @@ namespace HybridPBR {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
-        glFrontFace(GL_CW);  // 使用顺时针为正面
+        glFrontFace(GL_CCW);  // 使用顺时针为正面
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        // 初始化 UBO
+        // Binding Point 0: Camera
+        // Binding Point 1: Lights
+        cameraUBO = std::make_unique<UniformBuffer>(sizeof(CameraData), 0);
+        lightUBO = std::make_unique<UniformBuffer>(sizeof(LightData), 1);
         
         LOG_INFO("Rasterizer initialized successfully");
         return true;
@@ -66,10 +72,16 @@ namespace HybridPBR {
         // 清除缓冲区
         glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // 在这里更新全局 UBO，这样每个 Pass 都不用管相机和光照了
+        if (currentScene) {
+            UpdateGlobalUniforms(*currentScene);
+        }
     }
 
     void Rasterizer::EndFrame() {
         // 可以在这里添加帧结束处理
+
     }
     void Rasterizer::SetViewport(int width, int height) {
         glViewport(0, 0, width, height);
@@ -155,4 +167,41 @@ namespace HybridPBR {
             }
             return names;
         }
+    
+    void Rasterizer::UpdateGlobalUniforms(const Scene& scene) {
+        auto camera = scene.GetMainCamera();
+        if (camera) {
+            CameraData camData;
+            camData.view = camera->GetViewMatrix();
+            camData.projection = camera->GetProjectionMatrix();
+            camData.viewPos = camera->GetPosition();
+            cameraUBO->SetData(&camData, sizeof(CameraData));
+        }
+
+        // 收集光源数据
+        LightData lightData;
+        const auto& lights = scene.GetLights();
+        lightData.lightCount = std::min((int)lights.size(), 16);
+        
+        for(int i=0; i < lightData.lightCount; ++i) {
+            auto& l = lights[i];
+            auto& props = l->GetProperties();
+            
+            lightData.lights[i].position = l->GetPosition();
+            lightData.lights[i].direction = l->GetDirection();
+            lightData.lights[i].color = props.color;
+            lightData.lights[i].intensity = props.intensity;
+
+            lightData.lights[i].range = props.range;
+            lightData.lights[i].constant = props.constant;
+            lightData.lights[i].linear = props.linear;
+            lightData.lights[i].quadratic = props.quadratic;
+
+            lightData.lights[i].innerCutoff = props.innerCutoff;
+            lightData.lights[i].outerCutoff = props.outerCutoff;
+            lightData.lights[i].type = (int)l->GetType();
+        }
+        
+        lightUBO->SetData(&lightData, sizeof(LightData));
+    }
 } // namespace HybridPBR

@@ -108,7 +108,7 @@ void main() {
         roughness = texture(RoughnessMap, fs_in.TexCoord).g;
     }
     if (material.useAOMap) {
-        ao = texture(AOMap, fs_in.TexCoord).b;
+        ao = texture(MetallicMap, fs_in.TexCoord).b;
     }
     
     // 输入数据

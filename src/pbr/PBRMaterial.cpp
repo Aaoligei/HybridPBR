@@ -58,13 +58,13 @@ namespace HybridPBR {
         shader->Use();
         
         // 设置PBR材质属性（如果没有贴图就使用这些属性）
-        shader->SetVec3("material.albedo", glm::vec3(properties.albedo));
-        shader->SetFloat("material.metallic", properties.metallic);
-        shader->SetFloat("material.roughness", properties.roughness);
-        shader->SetFloat("material.ao", properties.ambientOcclusion);
-        shader->SetFloat("material.normalScale", properties.normalScale);
-        shader->SetVec3("material.emissive", properties.emissiveColor);
-        shader->SetFloat("material.emissiveIntensity", properties.emissiveIntensity);
+        shader->SetVec3("albedo", glm::vec3(properties.albedo));
+        shader->SetFloat("metallic", properties.metallic);
+        shader->SetFloat("roughness", properties.roughness);
+        shader->SetFloat("ao", properties.ambientOcclusion);
+        // shader->SetFloat("material.normalScale", properties.normalScale);
+        // shader->SetVec3("material.emissive", properties.emissiveColor);
+        // shader->SetFloat("material.emissiveIntensity", properties.emissiveIntensity);
         
         // ... 设置材质基本属性 (albedo, roughness 等 float/vec3) ...
 
@@ -73,6 +73,7 @@ namespace HybridPBR {
         // 5-9: 特殊纹理 (IBL 等)
         // 10+: 阴影贴图等
         
+        // 注意：此函数会占用slot 0-5，因此IBL纹理必须在之后重新绑定
         uint32_t slot = 0;
         
         // 辅助 Lambda

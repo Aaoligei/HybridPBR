@@ -2,6 +2,8 @@
 #include "utils/Logger.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include"rendering/ShaderManager.h"
+#include <stb_image.h>
+#include <stb_image_write.h>
 
 namespace HybridPBR {
 
@@ -143,7 +145,14 @@ namespace HybridPBR {
 
     bool IBL::GenerateBRDFLUT(int size) {
         brdfLUT = std::make_shared<Texture>();
-        brdfLUT->Create2D(size, size, GL_RG16F, GL_RG, GL_FLOAT);
+        if (!brdfLUT->Create2D(size, size, GL_RG16F, GL_RG, GL_FLOAT)) {
+            lastError = "Failed to create BRDF LUT texture";
+            LOG_ERROR(lastError);
+            return false;
+        }
+        
+        // 记录生成的纹理ID用于调试
+        LOG_INFO("BRDF LUT created with ID: " + std::to_string(brdfLUT->GetID()));
         
         brdfLUT->SetWrapMode(TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE);
         brdfLUT->SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
@@ -160,7 +169,7 @@ namespace HybridPBR {
         
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         
-        LOG_INFO("Successfully generated BRDF LUT");
+        LOG_INFO("Successfully generated BRDF LUT with ID: " + std::to_string(brdfLUT->GetID()));
         return true;
     }
 
@@ -169,19 +178,46 @@ namespace HybridPBR {
         
         shader->Use();
         
+        // 添加纹理ID有效性验证
+        auto validateAndBind = [&](std::shared_ptr<Texture> tex, int slot, const char* uniformName) {
+            if (!tex || tex->GetID() == 0) {
+                LOG_WARNING("Attempted to bind invalid texture to slot " + std::to_string(slot));
+                return;
+            }
+            
+            // 1. 绑定纹理（内部会激活目标单元）
+            tex->Bind(slot);
+            shader->SetInt(uniformName, slot);
+            
+            // 2. 验证：必须在目标单元上下文中检查
+            glActiveTexture(GL_TEXTURE0 + slot);  // 切换到目标纹理单元
+            GLint currentTex = 0;
+            glGetIntegerv(GL_TEXTURE_BINDING_2D, &currentTex);
+            glActiveTexture(GL_TEXTURE0);  // 恢复默认单元
+            
+            if (currentTex != static_cast<GLint>(tex->GetID())) {
+                LOG_ERROR("Texture binding verification failed for " + std::string(uniformName) + 
+                          ": Expected ID " + std::to_string(tex->GetID()) + 
+                          ", but got " + std::to_string(currentTex));
+            }
+        };
+        
         if (irradianceMap) {
-            shader->SetInt("irradianceMap", 10);
-            irradianceMap->Bind(10);
+            validateAndBind(irradianceMap, 10, "irradianceMap");
         }
         
         if (prefilterMap) {
-            shader->SetInt("prefilterMap", 11);
-            prefilterMap->Bind(11);
+            validateAndBind(prefilterMap, 11, "prefilterMap");
         }
         
         if (brdfLUT) {
-            shader->SetInt("brdfLUT", 12);
-            brdfLUT->Bind(12);
+            validateAndBind(brdfLUT, 12, "brdfLUT");
+        }
+        
+        // 验证OpenGL错误
+        GLenum error = glGetError();
+        if (error != GL_NO_ERROR) {
+            LOG_ERROR("OpenGL error after IBL binding: " + std::to_string(error));
         }
     }
 

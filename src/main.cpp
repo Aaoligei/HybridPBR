@@ -155,31 +155,37 @@ public:
         int gridSize = 3;
         float spacing = 2.5f;
             
-        HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_basecolor.png",HybridPBR::TextureType::DIFFUSE);
-        HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_normal.png",HybridPBR::TextureType::NORMAL);
-        HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_metallic.png",HybridPBR::TextureType::METALLIC);
-        HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_roughness.png",HybridPBR::TextureType::ROUGHNESS);
-        HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_ambientocclusion.png",HybridPBR::TextureType::AMBIENT_OCCLUSION);
+        // HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_basecolor.png",HybridPBR::TextureType::DIFFUSE);
+        // HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_normal.png",HybridPBR::TextureType::NORMAL);
+        // HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_metallic.png",HybridPBR::TextureType::METALLIC);
+        // HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_roughness.png",HybridPBR::TextureType::ROUGHNESS);
+        // HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_ambientocclusion.png",HybridPBR::TextureType::AMBIENT_OCCLUSION);
 
+        HybridPBR::ShaderManager::GetInstance().LoadShader("sphere_pbr",HybridPBR::FileIO::GetAssetsPath() +"shaders/basic.vert", HybridPBR::FileIO::GetAssetsPath() +"shaders/basic.frag");
+        iblSystem->BindIBLTextures(HybridPBR::ShaderManager::GetInstance().GetShader("sphere_pbr"));
+        HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/HDR/brdf_lut.hdr",HybridPBR::TextureType::HDR);
+
+        // auto brdfLUT = HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/HDR/brdf_lut.hdr");
+        // HybridPBR::ShaderManager::GetInstance().GetShader("sphere_pbr")->Use();
+        // HybridPBR::ShaderManager::GetInstance().GetShader("sphere_pbr")->SetInt("brdfLUT",brdfLUT->GetID());
 
         for (int i = 0; i < materialParams.size(); ++i) {
             auto sphereMesh = std::make_shared<HybridPBR::Mesh>("Sphere_" + std::to_string(i));
-            sphereMesh->GenerateSphere(1.0f, 32);
+            sphereMesh->GenerateSphere(1.0f, 64);
             
             HybridPBR::MaterialProperties props;
             props.albedo = glm::vec4(colors[i], 1.0f);
             props.metallic = materialParams[i].x;
             props.roughness = materialParams[i].y;
             props.ambientOcclusion = 1.0f;
-            props.customShaderName = "null";
-            props.shaderType = HybridPBR::ShaderType::PBR;
+            props.customShaderName = "sphere_pbr";
             
             auto pbrMaterial = std::make_shared<HybridPBR::PBRMaterial>("PBR_Sphere_" + std::to_string(i), props);
-            pbrMaterial->SetTexture(HybridPBR::TextureType::DIFFUSE,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_basecolor.png"));
-            pbrMaterial->SetTexture(HybridPBR::TextureType::NORMAL,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_normal.png"));
-            pbrMaterial->SetTexture(HybridPBR::TextureType::METALLIC,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_metallic.png"));
-            pbrMaterial->SetTexture(HybridPBR::TextureType::ROUGHNESS,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_roughness.png"));
-            pbrMaterial->SetTexture(HybridPBR::TextureType::AMBIENT_OCCLUSION,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_ambientocclusion.png"));
+            // pbrMaterial->SetTexture(HybridPBR::TextureType::DIFFUSE,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_basecolor.png"));
+            // pbrMaterial->SetTexture(HybridPBR::TextureType::NORMAL,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_normal.png"));
+            // pbrMaterial->SetTexture(HybridPBR::TextureType::METALLIC,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_metallic.png"));
+            // pbrMaterial->SetTexture(HybridPBR::TextureType::ROUGHNESS,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_roughness.png"));
+            // pbrMaterial->SetTexture(HybridPBR::TextureType::AMBIENT_OCCLUSION,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_ambientocclusion.png"));
 
             
             int row = i / gridSize;
@@ -234,22 +240,21 @@ public:
         } 
     }
     void CreateLights() { 
-        auto light = std::make_shared<HybridPBR::Light>(HybridPBR::LightType::POINT, "MainLight");
-        light->SetPosition(glm::vec3(0.0f, 0.0f, 10.0f));
-        HybridPBR::LightProperties lightProps;
-        lightProps.color = glm::vec3(1.0f, 1.0f, 0.9f);
-        lightProps.intensity = 150.0f;
-        light->SetProperties(lightProps);
-        scene->AddLight(light);
-
-        auto light2 = std::make_shared<HybridPBR::Light>(HybridPBR::LightType::SPOT, "SunLight");
-        light2->SetPosition(glm::vec3(0.0f, 10.0f, 0.0f));
-        light2->SetDirection(glm::vec3(0.0f, -1.0f, 0.0f));
-        HybridPBR::LightProperties lightProps2;
-        lightProps2.color = glm::vec3(1.0f, 1.0f, 1.0f);
-        lightProps2.intensity = 100.0f;
-        light2->SetProperties(lightProps2);
-        scene->AddLight(light2);
+            glm::vec3 lightPositions[] = {
+            glm::vec3(-10.0f,  10.0f, 10.0f),
+            glm::vec3( 10.0f,  10.0f, 10.0f),
+            glm::vec3(-10.0f, -10.0f, 10.0f),
+            glm::vec3( 10.0f, -10.0f, 10.0f),
+            };
+        for (int i = 0; i < 4; ++i) { 
+            auto light = std::make_shared<HybridPBR::Light>(HybridPBR::LightType::POINT, "Light" + std::to_string(i));
+            light->SetPosition(lightPositions[i]);
+            HybridPBR::LightProperties lightProps;
+            lightProps.color = glm::vec3(1.0f, 1.0f, 1.0f);
+            lightProps.intensity = 300.0f;
+            light->SetProperties(lightProps);
+            scene->AddLight(light);
+        }
     }
     
     void CreateIBLlSystem() { 

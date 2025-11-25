@@ -31,13 +31,13 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 103,
+				"line" : 107,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 144,
+				"line" : 148,
 				"parent" : 0
 			},
 			{
@@ -54,24 +54,6 @@
 				"file" : 1,
 				"line" : 1283,
 				"parent" : 3
-			},
-			{
-				"command" : 3,
-				"file" : 0,
-				"line" : 83,
-				"parent" : 0
-			},
-			{
-				"command" : 3,
-				"file" : 0,
-				"line" : 84,
-				"parent" : 0
-			},
-			{
-				"command" : 3,
-				"file" : 0,
-				"line" : 85,
-				"parent" : 0
 			},
 			{
 				"command" : 3,
@@ -108,6 +90,24 @@
 				"file" : 0,
 				"line" : 91,
 				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 92,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 93,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 0,
+				"line" : 94,
+				"parent" : 0
 			}
 		]
 	},
@@ -117,7 +117,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -std=gnu++17"
+					"fragment" : " -g -g -std=gnu++17"
 				}
 			],
 			"includes" : 
@@ -237,11 +237,11 @@
 		},
 		{
 			"backtrace" : 2,
-			"id" : "assimp::@b1ea6f5c2178ebc90389"
+			"id" : "zlibstatic::@7fd99959cf8fe87d223a"
 		},
 		{
 			"backtrace" : 2,
-			"id" : "zlibstatic::@7fd99959cf8fe87d223a"
+			"id" : "assimp::@b1ea6f5c2178ebc90389"
 		}
 	],
 	"id" : "HybridPBR::@6890427a1f51a3e7e1df",
@@ -250,7 +250,7 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "-g",
+				"fragment" : "-g -g",
 				"role" : "flags"
 			},
 			{

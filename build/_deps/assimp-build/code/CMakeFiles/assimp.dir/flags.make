@@ -13,5 +13,5 @@ CXX_DEFINES = -DASSIMP_BUILD_NO_C4D_IMPORTER -DASSIMP_BUILD_NO_M3D_EXPORTER -DAS
 
 CXX_INCLUDES = @CMakeFiles/assimp.dir/includes_CXX.rsp
 
-CXX_FLAGS = -fvisibility=hidden -fno-strict-aliasing -Wall -Wno-long-long -Wa,-mbig-obj -g -std=gnu++17  -g -std=gnu++17 -Wno-dangling-reference -Wno-sign-compare
+CXX_FLAGS = -fvisibility=hidden -fno-strict-aliasing -Wall -Wno-long-long -Wa,-mbig-obj -g -std=gnu++17  -g -g -std=gnu++17 -Wno-dangling-reference -Wno-sign-compare
 

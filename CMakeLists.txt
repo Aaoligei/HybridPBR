@@ -4,6 +4,9 @@ project(HybridPBR VERSION 0.1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+
 # 设置输出目录
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -98,6 +101,7 @@ else()
     # 在GCC/Clang上禁用特定警告
     target_compile_options(assimp PRIVATE -Wno-dangling-reference -Wno-sign-compare)
 endif()
+
 
 # 可执行文件
 add_executable(HybridPBR

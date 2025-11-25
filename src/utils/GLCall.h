@@ -7,7 +7,13 @@
 #ifdef NDEBUG
 #  define GL_CALL(x) x
 #else
-#  define GL_CALL(x) ::GL::CheckError(x, #x, __FILE__, __LINE__)
+#define GLCall(x) do { \
+    x; \
+    GLenum error = glGetError(); \
+    if(error != GL_NO_ERROR) { \
+        std::cerr << "OpenGL Error (" << error << "): " << #x << " at " << __FILE__ << ":" << __LINE__ << std::endl; \
+    } \
+} while(false)
 #endif
 
 namespace GL {

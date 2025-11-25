@@ -57,7 +57,7 @@
 			{
 				"command" : 3,
 				"file" : 1,
-				"line" : 99,
+				"line" : 102,
 				"parent" : 4
 			},
 			{
@@ -191,7 +191,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-fvisibility=hidden -fno-strict-aliasing -Wall -Wno-long-long -Wa,-mbig-obj -g -std=gnu++17  -g -std=gnu++17"
+					"fragment" : "-fvisibility=hidden -fno-strict-aliasing -Wall -Wno-long-long -Wa,-mbig-obj -g -std=gnu++17  -g -g -std=gnu++17"
 				},
 				{
 					"backtrace" : 5,

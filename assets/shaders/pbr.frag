@@ -105,10 +105,10 @@ void main() {
         metallic = texture(MetallicMap, fs_in.TexCoord).r;
     }
     if (material.useRoughnessMap) {
-        roughness = texture(RoughnessMap, fs_in.TexCoord).r;
+        roughness = texture(RoughnessMap, fs_in.TexCoord).g;
     }
     if (material.useAOMap) {
-        ao = texture(AOMap, fs_in.TexCoord).r;
+        ao = texture(AOMap, fs_in.TexCoord).b;
     }
     
     // 输入数据
@@ -152,6 +152,7 @@ void main() {
     vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
     
     vec3 ambient = (kD * diffuse + specular) * ao;
+    //vec3 ambient = vec3(0.1f);
     
     // 自发光
     vec3 emissive = material.emissive * material.emissiveIntensity;
@@ -211,7 +212,11 @@ vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness) {
 }
 
 vec3 CalculateNormal() {
-    vec3 tangentNormal = texture(NormalMap, fs_in.TexCoord).xyz * 2.0 - 1.0;
+    vec3 tangentNormal;
+    if(material.useNormalMap)
+        tangentNormal = texture(NormalMap, fs_in.TexCoord).xyz * 2.0 - 1.0;
+    else
+        tangentNormal = fs_in.Normal;
     tangentNormal.xy *= material.normalScale;
     tangentNormal = normalize(tangentNormal);
     

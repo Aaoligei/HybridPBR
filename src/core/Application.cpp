@@ -120,5 +120,5 @@ namespace HybridPBR {
             isRunning = false;
         }
     }
-
+    
 } // namespace HybridPBR

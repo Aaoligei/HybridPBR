@@ -154,9 +154,6 @@ public:
         
         int gridSize = 3;
         float spacing = 2.5f;
-        auto sphere_shader=HybridPBR::ShaderManager::GetInstance().LoadShader("SphereShader",
-            HybridPBR::FileIO::GetAssetsPath() +"shaders/basic.vert", 
-             HybridPBR::FileIO::GetAssetsPath() +"shaders/basic.frag");
             
         HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_basecolor.png",HybridPBR::TextureType::DIFFUSE);
         HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_normal.png",HybridPBR::TextureType::NORMAL);
@@ -197,30 +194,7 @@ public:
             sphereNode->GetTransform().SetPosition(glm::vec3(x, y, 0.0f));
 
         }
-         // 创建一个立方体作为对比
-            auto cubeMesh = std::make_shared<HybridPBR::Mesh>("Cube");
-            cubeMesh->GenerateCube(1.0f);
-            
-            HybridPBR::MaterialProperties props;
-            props.albedo = glm::vec4(0.2f, 0.7f, 0.3f, 1.0f);
-            props.metallic = 0.5f;
-            props.roughness = 0.3f;
-            props.ambientOcclusion = 1.0f;
-            props.customShaderName = "null";
-            props.shaderType = HybridPBR::ShaderType::PBR;
-            
-            auto cubeMaterial = std::make_shared<HybridPBR::PBRMaterial>("PBR_Cube", props);
-            cubeMaterial->SetTexture(HybridPBR::TextureType::DIFFUSE,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_basecolor.png"));
-            cubeMaterial->SetTexture(HybridPBR::TextureType::NORMAL,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_normal.png"));
-            cubeMaterial->SetTexture(HybridPBR::TextureType::METALLIC,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_metallic.png"));
-            cubeMaterial->SetTexture(HybridPBR::TextureType::ROUGHNESS,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_roughness.png"));
-            cubeMaterial->SetTexture(HybridPBR::TextureType::AMBIENT_OCCLUSION,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_ambientocclusion.png"));
-
-            
-            auto cubeNode = scene->CreateNode("Cube");
-            cubeNode->SetMesh(cubeMesh);
-            cubeNode->SetMaterial(cubeMaterial);
-            cubeNode->GetTransform().SetPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+        
     }
     void LoadModels() {
          // 尝试加载模型
@@ -240,12 +214,70 @@ public:
             modelNode->GetTransform().SetPosition(glm::vec3(0.0f, 0.0f, 2.0f));
         } 
     }
+
+    void LoadModels2() { 
+         // 尝试加载模型
+        auto modelResult = HybridPBR::ModelLoader::LoadFromFile(HybridPBR::FileIO::GetAssetsPath()
+         + "models/ornate_mirror_01_4k.gltf/ornate_mirror_01_4k.gltf");
+        if (modelResult.success && !modelResult.meshes.empty()) {
+            // 使用加载的模型
+            auto mesh = modelResult.meshes[0];
+            auto material = modelResult.materials.empty() ? 
+                HybridPBR::ResourceManager::GetInstance().CreateMaterial("Default", HybridPBR::MaterialProperties{}) : 
+                modelResult.materials[0];
+            material->SetShaderType(HybridPBR::ShaderType::PBR);
+            // 创建场景节点
+            auto modelNode = scene->CreateNode("Mirror");
+            modelNode->SetMesh(mesh);
+            modelNode->SetMaterial(material);
+            modelNode->GetTransform().SetPosition(glm::vec3(2.0f, 0.0f, 2.0f));
+        } 
+    }
+    void CreateLights() { 
+        auto light = std::make_shared<HybridPBR::Light>(HybridPBR::LightType::POINT, "MainLight");
+        light->SetPosition(glm::vec3(0.0f, 0.0f, 10.0f));
+        HybridPBR::LightProperties lightProps;
+        lightProps.color = glm::vec3(1.0f, 1.0f, 0.9f);
+        lightProps.intensity = 150.0f;
+        light->SetProperties(lightProps);
+        scene->AddLight(light);
+
+        auto light2 = std::make_shared<HybridPBR::Light>(HybridPBR::LightType::SPOT, "SunLight");
+        light2->SetPosition(glm::vec3(0.0f, 10.0f, 0.0f));
+        light2->SetDirection(glm::vec3(0.0f, -1.0f, 0.0f));
+        HybridPBR::LightProperties lightProps2;
+        lightProps2.color = glm::vec3(1.0f, 1.0f, 1.0f);
+        lightProps2.intensity = 100.0f;
+        light2->SetProperties(lightProps2);
+        scene->AddLight(light2);
+    }
+    
+    void CreateIBLlSystem() { 
+        iblSystem = std::make_unique<HybridPBR::IBL>();
+        if (!iblSystem->SetupFromHDR(HybridPBR::FileIO::GetAssetsPath() + "textures/HDR/ibl_hdr_radiance.png",512)) {
+            return;
+        }
+        iblSystem->PrecomputeIrradianceMap(32);
+        iblSystem->PrecomputePrefilterMap(128,5);
+        iblSystem->GenerateBRDFLUT(512);
+
+    }
     bool OnInitialize() override {
+        //创建IBL系统
+        CreateIBLlSystem();
+        
         // 创建光栅化渲染器
         rasterizer = std::make_unique<HybridPBR::Rasterizer>();
         if (!rasterizer->Initialize()) {
             return false;
         }
+        auto& shaderManager = HybridPBR::ShaderManager::GetInstance();
+        iblSystem->BindIBLTextures(shaderManager.GetShader(HybridPBR::ShaderType::PBR));
+
+        //添加天空盒通道
+        auto skyboxPass = std::make_unique<HybridPBR::SkyboxPass>();
+        skyboxPass->SetSkyboxTexture(iblSystem->GetEnvironmentMap());
+        rasterizer->AddRenderPass(std::move(skyboxPass));
         
         // 创建场景
         scene = std::make_unique<HybridPBR::Scene>();
@@ -267,14 +299,9 @@ public:
         
         // 加载3D模型
         LoadModels();
+        LoadModels2();
         // 创建光源
-        auto light = std::make_shared<HybridPBR::Light>(HybridPBR::LightType::POINT, "MainLight");
-        light->SetPosition(glm::vec3(0.0f, 0.0f, 10.0f));
-        HybridPBR::LightProperties lightProps;
-        lightProps.color = glm::vec3(1.0f, 1.0f, 0.9f);
-        lightProps.intensity = 150.0f;
-        light->SetProperties(lightProps);
-        scene->AddLight(light);
+        CreateLights();
         
         rotationSpeed = 45.0f; // 度/秒
         
@@ -290,15 +317,15 @@ public:
         }
         
         // 旋转模型
-        if (auto modelNode = scene->FindNode("Model")) {
-            auto rotation = modelNode->GetTransform().GetRotation();
-            rotation.y += rotationSpeed * deltaTime;
-            modelNode->GetTransform().SetRotation(rotation);
-        } else if (auto cubeNode = scene->FindNode("Cube")) {
-            auto rotation = cubeNode->GetTransform().GetRotation();
-            rotation.y += rotationSpeed * deltaTime;
-            cubeNode->GetTransform().SetRotation(rotation);
-        }
+        // if (auto modelNode = scene->FindNode("Model")) {
+        //     auto rotation = modelNode->GetTransform().GetRotation();
+        //     rotation.y += rotationSpeed * deltaTime;
+        //     modelNode->GetTransform().SetRotation(rotation);
+        // } else if (auto cubeNode = scene->FindNode("Cube")) {
+        //     auto rotation = cubeNode->GetTransform().GetRotation();
+        //     rotation.y += rotationSpeed * deltaTime;
+        //     cubeNode->GetTransform().SetRotation(rotation);
+        // }
         
         // 更新相机纵横比
         if (auto camera = scene->GetMainCamera()) {
@@ -309,6 +336,7 @@ public:
     }
     
     void OnRender() override {
+        rasterizer->SetViewport(GetWindow().GetWidth(), GetWindow().GetHeight());
         rasterizer->Render(*scene);
 
     }
@@ -330,6 +358,11 @@ public:
         ImGui::End();
 
         auto componentManager = imguiManager->GetComponentManager();
+
+        // 处理gizmo交互
+        componentManager->HandleGizmoInteraction(*camera, *scene, timer.GetDeltaTime());
+        // 渲染gizmo
+        componentManager->RenderGizmo(*camera, *scene);
         
         componentManager->ShowSceneStats(scene);
         componentManager->ShowSceneHierarchy(scene);
@@ -344,10 +377,9 @@ public:
 
 private:
     std::unique_ptr<HybridPBR::Rasterizer> rasterizer;
-    std::unique_ptr<HybridPBR::Scene> scene;
     std::shared_ptr<HybridPBR::Camera> camera;
     float rotationSpeed;
-    
+    std::shared_ptr<HybridPBR::IBL> iblSystem;
 
 };
 

@@ -1,6 +1,7 @@
 #include "IBL.h"
 #include "utils/Logger.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include"rendering/ShaderManager.h"
 
 namespace HybridPBR {
 
@@ -169,37 +170,75 @@ namespace HybridPBR {
         shader->Use();
         
         if (irradianceMap) {
-            shader->SetInt("irradianceMap", 0);
-            irradianceMap->Bind(0);
+            shader->SetInt("irradianceMap", 10);
+            irradianceMap->Bind(10);
         }
         
         if (prefilterMap) {
-            shader->SetInt("prefilterMap", 1);
-            prefilterMap->Bind(1);
+            shader->SetInt("prefilterMap", 11);
+            prefilterMap->Bind(11);
         }
         
         if (brdfLUT) {
-            shader->SetInt("brdfLUT", 2);
-            brdfLUT->Bind(2);
+            shader->SetInt("brdfLUT", 12);
+            brdfLUT->Bind(12);
         }
     }
 
     bool IBL::InitializeShaders() {
-        // 这里应该加载对应的着色器
-        // 简化实现，实际项目中需要从文件加载
-        equirectangularToCubemapShader = std::make_shared<Shader>();
-        irradianceShader = std::make_shared<Shader>();
-        prefilterShader = std::make_shared<Shader>();
-        brdfShader = std::make_shared<Shader>();
+         auto& shaderManager = ShaderManager::GetInstance();
+    
+        // 加载等距柱状投影转立方体贴图着色器
+        if (!shaderManager.LoadShader("EquirectangularToCubemap", 
+            FileIO::GetAssetsPath()+"shaders/equirectangular_to_cubemap.vert", 
+            FileIO::GetAssetsPath()+"shaders/equirectangular_to_cubemap.frag")) {
+            lastError = "Failed to load equirectangular to cubemap shader";
+            LOG_ERROR(lastError);
+            return false;
+        }
+        equirectangularToCubemapShader = shaderManager.GetShader("EquirectangularToCubemap");
+
+        if (!shaderManager.LoadShader("IrradianceConvolution", 
+            FileIO::GetAssetsPath()+"shaders/irradiance_convolution.vert", 
+            FileIO::GetAssetsPath()+"shaders/irradiance_convolution.frag")) {
+            lastError = "Failed to load irradiance_convolution shader";
+            LOG_ERROR(lastError);
+            return false;
+        }
+        irradianceShader = shaderManager.GetShader("IrradianceConvolution");
         
-        // TODO: 从文件加载着色器源码
+        // 加载预滤波着色器
+        if (!shaderManager.LoadShader("Prefilter", 
+            FileIO::GetAssetsPath()+"shaders/prefilter.vert", 
+            FileIO::GetAssetsPath()+"shaders/prefilter.frag")) {
+            lastError = "Failed to load prefilter shader";
+            LOG_ERROR(lastError);
+            return false;
+        }
+        prefilterShader = shaderManager.GetShader("Prefilter");
+        
+        // 加载BRDF积分着色器
+        if (!shaderManager.LoadShader("BRDFIntegration", 
+            FileIO::GetAssetsPath()+"shaders/brdf_integration.vert", 
+            FileIO::GetAssetsPath()+"shaders/brdf_integration.frag")) {
+            lastError = "Failed to load BRDF integration shader";
+            LOG_ERROR(lastError);
+            return false;
+        }
+        brdfShader = shaderManager.GetShader("BRDFIntegration");
+        
+        if (!equirectangularToCubemapShader || !irradianceShader || !prefilterShader || !brdfShader) {
+            lastError = "One or more IBL shaders failed to load";
+            LOG_ERROR(lastError);
+            return false;
+        }
+        
+        LOG_INFO("All IBL shaders loaded successfully");
         return true;
     }
 
     bool IBL::InitializeCaptureResources() {
-        // 创建立方体贴图捕获用的FBO和RBO
-        glGenFramebuffers(1, &captureFBO);
-        glGenRenderbuffers(1, &captureRBO);
+
         
         // 设置捕获投影矩阵
         captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
@@ -222,65 +261,69 @@ namespace HybridPBR {
         static unsigned int cubeVAO = 0;
         static unsigned int cubeVBO = 0;
         
-        if (cubeVAO == 0) {
+        if (cubeVAO == 0)
+        {
             float vertices[] = {
-                // 背面
-                -1.0f, -1.0f, -1.0f,
-                 1.0f,  1.0f, -1.0f,
-                 1.0f, -1.0f, -1.0f,
-                 1.0f,  1.0f, -1.0f,
-                -1.0f, -1.0f, -1.0f,
-                -1.0f,  1.0f, -1.0f,
-                // 前面
-                -1.0f, -1.0f,  1.0f,
-                 1.0f, -1.0f,  1.0f,
-                 1.0f,  1.0f,  1.0f,
-                 1.0f,  1.0f,  1.0f,
-                -1.0f,  1.0f,  1.0f,
-                -1.0f, -1.0f,  1.0f,
-                // 左面
-                -1.0f,  1.0f,  1.0f,
-                -1.0f,  1.0f, -1.0f,
-                -1.0f, -1.0f, -1.0f,
-                -1.0f, -1.0f, -1.0f,
-                -1.0f, -1.0f,  1.0f,
-                -1.0f,  1.0f,  1.0f,
-                // 右面
-                 1.0f,  1.0f,  1.0f,
-                 1.0f, -1.0f, -1.0f,
-                 1.0f,  1.0f, -1.0f,
-                 1.0f, -1.0f, -1.0f,
-                 1.0f,  1.0f,  1.0f,
-                 1.0f, -1.0f,  1.0f,
-                // 下面
-                -1.0f, -1.0f, -1.0f,
-                 1.0f, -1.0f, -1.0f,
-                 1.0f, -1.0f,  1.0f,
-                 1.0f, -1.0f,  1.0f,
-                -1.0f, -1.0f,  1.0f,
-                -1.0f, -1.0f, -1.0f,
-                // 上面
-                -1.0f,  1.0f, -1.0f,
-                 1.0f,  1.0f,  1.0f,
-                 1.0f,  1.0f, -1.0f,
-                 1.0f,  1.0f,  1.0f,
-                -1.0f,  1.0f, -1.0f,
-                -1.0f,  1.0f,  1.0f
+                // back face
+                -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+                1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+                1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
+                1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+                -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+                -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
+                // front face
+                -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+                1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
+                1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+                1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+                -1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
+                -1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+                // left face
+                -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+                -1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
+                -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+                -1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+                -1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+                -1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+                // right face
+                1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+                1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+                1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
+                1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+                1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+                1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
+                // bottom face
+                -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+                1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
+                1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+                1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+                -1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+                -1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+                // top face
+                -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+                1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+                1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
+                1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+                -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+                -1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
             };
-            
             glGenVertexArrays(1, &cubeVAO);
             glGenBuffers(1, &cubeVBO);
-            
+            // fill buffer
             glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
             glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-            
+            // link vertex attributes
             glBindVertexArray(cubeVAO);
             glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+            glEnableVertexAttribArray(2);
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
         }
-        
+        // render Cube
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);

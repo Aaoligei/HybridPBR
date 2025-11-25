@@ -24,6 +24,7 @@ namespace HybridPBR {
         float GetMovementSpeed() const { return movementSpeed; }
         float GetMouseSensitivity() const { return mouseSensitivity; }
         float GetZoomSensitivity() const { return zoomSensitivity; }
+        Camera* GetCamera() const { return camera; }
 
     private:
         Camera* camera;

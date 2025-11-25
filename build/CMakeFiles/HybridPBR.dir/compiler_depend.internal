@@ -1428,6 +1428,8 @@ CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_widgets.cpp.obj
 
 CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/Application.cpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glad-build/include/KHR/khrplatform.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glad-build/include/glad/glad.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glfw-src/include/GLFW/glfw3.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/common.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/_fixes.hpp
@@ -1444,6 +1446,7 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/func_vector_relational.inl
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/qualifier.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/setup.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/type_float.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/type_half.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/type_half.inl
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/type_mat2x2.hpp
@@ -1464,6 +1467,8 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/type_mat4x3.inl
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/type_mat4x4.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/type_mat4x4.inl
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/type_quat.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/type_quat.inl
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/type_vec1.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/type_vec1.inl
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/type_vec2.hpp
@@ -1515,34 +1520,60 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/matrix_projection.inl
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/matrix_transform.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/matrix_transform.inl
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/quaternion_common.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/quaternion_common.inl
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/quaternion_double.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/quaternion_double_precision.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/quaternion_float.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/quaternion_float_precision.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/quaternion_geometric.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/quaternion_geometric.inl
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/quaternion_relational.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/quaternion_relational.inl
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/quaternion_transform.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/quaternion_transform.inl
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/quaternion_trigonometric.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/quaternion_trigonometric.inl
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/scalar_constants.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/scalar_constants.inl
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/scalar_int_sized.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/scalar_uint_sized.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_bool1.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_bool1_precision.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_bool2.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_bool2_precision.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_bool3.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_bool3_precision.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_bool4.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_bool4_precision.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_double1.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_double1_precision.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_double2.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_double2_precision.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_double3.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_double3_precision.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_double4.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_double4_precision.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_float1.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_float1_precision.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_float2.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_float2_precision.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_float3.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_float3_precision.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_float4.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_float4_precision.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_int1.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_int1_sized.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_int2.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_int2_sized.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_int3.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_int3_sized.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_int4.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_int4_sized.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_relational.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_relational.inl
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_uint1.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_uint1_sized.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_uint2.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_uint2_sized.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/ext/vector_uint3.hpp
@@ -1554,8 +1585,15 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/glm.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/gtc/constants.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/gtc/constants.inl
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/gtc/epsilon.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/gtc/epsilon.inl
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/gtc/matrix_transform.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/gtc/matrix_transform.inl
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/gtc/quaternion.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/gtc/quaternion.inl
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/gtc/type_ptr.hpp
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/gtc/type_ptr.inl
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/gtc/vec1.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/integer.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/mat2x2.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/mat2x3.hpp
@@ -1575,9 +1613,20 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/vec4.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/vector_relational.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ImGuiManager.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ShaderManager.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Light.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Material.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Texture.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Camera.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/CameraController.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Mesh.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Scene.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/SceneNode.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Transform.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/FileIO.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/Logger.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/MathUtils.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/array
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/backward/auto_ptr.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/backward/binders.h
@@ -1595,6 +1644,7 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/char_traits.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/charconv.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/chrono.h
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/codecvt.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/concept_check.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/cpp_type_traits.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/cxxabi_forced.h
@@ -1604,6 +1654,7 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/exception.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/exception_defines.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/exception_ptr.h
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/fstream.tcc
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/functexcept.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/functional_hash.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/hash_bytes.h
@@ -1676,6 +1727,7 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cstdint
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cstdio
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cstdlib
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cstring
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ctime
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cwchar
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cwctype
@@ -1689,6 +1741,7 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ext/numeric_traits.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ext/string_conversions.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ext/type_traits.h
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/fstream
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/functional
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/initializer_list
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ios
@@ -1728,8 +1781,10 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/unordered_map
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/vector
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/atomic_word.h
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/basic_file.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/c++allocator.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/c++config.h
+ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/c++io.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/c++locale.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/cpu_defines.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/ctype_base.h
@@ -1744,7 +1799,6 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/syslimits.h
- C:/mingw64/x86_64-w64-mingw32/include/GL/gl.h
  C:/mingw64/x86_64-w64-mingw32/include/_mingw.h
  C:/mingw64/x86_64-w64-mingw32/include/_mingw_mac.h
  C:/mingw64/x86_64-w64-mingw32/include/_mingw_off_t.h
@@ -1767,12 +1821,14 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj
  C:/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h
  C:/mingw64/x86_64-w64-mingw32/include/sec_api/stdio_s.h
  C:/mingw64/x86_64-w64-mingw32/include/sec_api/stdlib_s.h
+ C:/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h
  C:/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h
  C:/mingw64/x86_64-w64-mingw32/include/sec_api/wchar_s.h
  C:/mingw64/x86_64-w64-mingw32/include/stddef.h
  C:/mingw64/x86_64-w64-mingw32/include/stdint.h
  C:/mingw64/x86_64-w64-mingw32/include/stdio.h
  C:/mingw64/x86_64-w64-mingw32/include/stdlib.h
+ C:/mingw64/x86_64-w64-mingw32/include/string.h
  C:/mingw64/x86_64-w64-mingw32/include/swprintf.inl
  C:/mingw64/x86_64-w64-mingw32/include/sys/timeb.h
  C:/mingw64/x86_64-w64-mingw32/include/time.h
@@ -2729,6 +2785,7 @@ CMakeFiles/HybridPBR.dir/src/main.cpp.obj
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/imgui-src/imconfig.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/imgui-src/imgui.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ImGuiManager.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ShaderManager.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Light.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Material.h
@@ -2970,7 +3027,6 @@ CMakeFiles/HybridPBR.dir/src/main.cpp.obj
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/pbr/IBL.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/pbr/PBRMaterial.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ImGuiComponentManager.h
- C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Rasterizer.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/RenderPass.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/resources/ModelLoader.h
@@ -3400,6 +3456,7 @@ CMakeFiles/HybridPBR.dir/src/pbr/IBL.cpp.obj
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/vec4.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/vector_relational.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ShaderManager.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Texture.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/FileIO.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/Logger.h
@@ -3940,6 +3997,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.obj
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ImGuiComponentManager.cpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glad-build/include/KHR/khrplatform.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glad-build/include/glad/glad.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glfw-src/include/GLFW/glfw3.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/common.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/_fixes.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/_vectorize.hpp
@@ -4123,6 +4181,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.obj
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/vector_relational.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/imgui-src/imconfig.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/imgui-src/imgui.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/Input.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ShaderManager.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Light.h
@@ -7703,6 +7762,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.obj
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/RenderPass.cpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glad-build/include/KHR/khrplatform.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glad-build/include/glad/glad.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glfw-src/include/GLFW/glfw3.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/common.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/_fixes.hpp
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glm-src/glm/detail/_vectorize.hpp
@@ -7904,6 +7964,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.obj
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/SceneNode.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Transform.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/FileIO.h
+ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/GLCall.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/Logger.h
  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/MathUtils.h
  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/backward/auto_ptr.h

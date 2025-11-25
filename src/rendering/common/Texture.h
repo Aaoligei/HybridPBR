@@ -68,6 +68,7 @@ namespace HybridPBR {
         int GetWidth() const { return width; }
         int GetHeight() const { return height; }
         TextureType GetType() const { return type; }
+        bool GetIsCubeMap() const { return isCubemap; }
         const std::string& GetFilePath() const { return filePath; }
         
         // 工具函数

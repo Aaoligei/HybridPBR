@@ -4,6 +4,7 @@
 #include "Timer.h"
 #include "rendering/ImGuiManager.h"
 #include "rendering/rasterization/CameraController.h"
+#include "scene/Scene.h"
 #include <memory>
 
 // 前向声明
@@ -40,6 +41,7 @@ namespace HybridPBR {
         std::unique_ptr<Window> window;
         std::unique_ptr<ImGuiManager> imguiManager; // 添加ImGui管理器
         std::unique_ptr<CameraController> cameraController; // 添加相机控制器
+        std::unique_ptr<Scene> scene;
         Timer timer;
         bool isRunning = false;
         

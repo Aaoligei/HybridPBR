@@ -1,6 +1,8 @@
 #include "RenderPass.h"
 #include "Rasterizer.h"
 #include "utils/Logger.h"
+#include"utils/GLCall.h"
+#include "GLFW/glfw3.h"
 #include <glm/gtx/string_cast.hpp>
 
 namespace HybridPBR {
@@ -29,23 +31,35 @@ namespace HybridPBR {
     }
 
     void GeometryPass::ApplyRenderState() {
-        // 线框模式
-        if (wireframe) {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        } else {
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        }
-        
-        // 背面剔除
-        if (backfaceCulling) {
-            glEnable(GL_CULL_FACE);
-        } else {
-            glDisable(GL_CULL_FACE);
-        }
-        
-        // 启用深度测试
-        glEnable(GL_DEPTH_TEST);
+    // 检查是否有有效的OpenGL上下文
+    if (!glfwGetCurrentContext()) {
+        LOG_ERROR("No valid OpenGL context!");
+        return;
     }
+    
+    // 线框模式
+     if (wireframe) {
+         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+     } else {
+         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+     }
+    
+    // 背面剔除
+    if (backfaceCulling) {
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+    } else {
+        glDisable(GL_CULL_FACE);
+    }
+    
+    // 启用深度测试
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    
+    // 确保深度写入开启
+    glDepthMask(GL_TRUE);
+    
+}
 
     void GeometryPass::RenderSceneNode(const SceneNode& node, const glm::mat4& parentTransform, const Scene& scene) {
         auto transform = parentTransform * node.GetTransform().GetLocalMatrix();
@@ -95,70 +109,6 @@ namespace HybridPBR {
         stats.vertexCount += mesh.GetVertexCount();
     }
 
-    void GeometryPass::SetupCommonUniforms(std::shared_ptr<Shader> shader, const Scene& scene,const Material& material) {
-        if (!shader) return;
-        
-        auto camera = scene.GetMainCamera();
-        if (!camera) return;
-        
-        // 设置相机相关统一变量
-        shader->SetMat4("view", camera->GetViewMatrix());
-        shader->SetMat4("projection", camera->GetProjectionMatrix());
-        shader->SetVec3("viewPos", camera->GetPosition());
-
-        // 设置环境光
-        shader->SetVec3("ambientLight", glm::vec3(0.05f)); // 添加默认环境光
-
-        // 设置光照 (简化处理，只设置第一个方向光)
-        int directionalLightCount = 0;
-        for (const auto& light : scene.GetLights()) {
-            if (!light->IsEnabled()) continue;
-            
-            if (light->GetType() == LightType::DIRECTIONAL && directionalLightCount == 0) {
-                std::string prefix = "directionalLight";
-                shader->SetVec3(prefix + ".direction", light->GetDirection());
-                shader->SetVec3(prefix + ".color", light->GetProperties().color);
-                shader->SetFloat(prefix + ".intensity", light->GetProperties().intensity);
-                directionalLightCount++;
-            }
-        }
-        //-----------------------------------------------------------------
-        auto albedoMap = material.GetTexture(TextureType::DIFFUSE);
-        auto normalMap = material.GetTexture(TextureType::NORMAL);
-        auto metallicMap = material.GetTexture(TextureType::METALLIC);
-        auto roughnessMap = material.GetTexture(TextureType::ROUGHNESS);
-        auto aoMap = material.GetTexture(TextureType::AMBIENT_OCCLUSION);
-        albedoMap ->Bind(0);
-        normalMap ->Bind(1);
-        metallicMap ->Bind(2);
-        roughnessMap ->Bind(3);
-        aoMap ->Bind(4);
-
-        shader->SetInt("albedoMap", 0);
-        shader->SetInt("normalMap", 1);
-        shader->SetInt("metallicMap", 2);
-        shader->SetInt("roughnessMap", 3);
-        shader->SetInt("aoMap", 4);
-
-        shader->SetVec3("lightPositions" , glm::vec3(0,0,10.0f));
-        shader->SetVec3("lightColors" , glm::vec3(150.0f, 150.0f, 150.0f));
-        shader->SetVec3("camPos" , camera->GetPosition());
-        //------------------------------------------------------------------
-        shader->SetInt("directionalLightCount", directionalLightCount);
-        
-        // 对于PBR着色器，设置IBL纹理（如果可用）
-        // 只有在着色器确实存在时才进行比较，避免产生警告
-        auto& shaderManager = ShaderManager::GetInstance();
-        auto pbrShader = shaderManager.GetShader(ShaderType::PBR);
-        // 检查获取到的着色器是否是默认着色器（意味着PBR着色器不存在）
-        if (shader == pbrShader && pbrShader != shaderManager.GetDefaultShader()) {
-            // 这里应该设置IBL纹理，暂时使用默认值
-            shader->SetInt("irradianceMap", 6);
-            shader->SetInt("prefilterMap", 7);
-            shader->SetInt("brdfLUT", 8);
-        }
-    }
-
     // SkyboxPass 实现
     void SkyboxPass::Initialize() {
         LOG_INFO("Initializing SkyboxPass");
@@ -174,24 +124,54 @@ namespace HybridPBR {
         auto skyboxShader = shaderManager.GetShader(ShaderType::SKYBOX);
         if (!skyboxShader) return;
         
-        // 设置天空盒渲染状态
-        glDepthFunc(GL_LEQUAL);  // 更改深度测试，让天空盒在远处
+        glBindFramebuffer(GL_FRAMEBUFFER,0);
+        // 1. 保存旧状态
+        GLint oldDepthFunc, oldCullFace;
+        GLboolean oldDepthMask;
+        glGetIntegerv(GL_DEPTH_FUNC,      &oldDepthFunc);
+        glGetIntegerv(GL_CULL_FACE_MODE,  &oldCullFace);
+        glGetBooleanv(GL_DEPTH_WRITEMASK, &oldDepthMask);
+
+        //设天空盒专用状态
+        glDepthFunc(GL_LEQUAL);
         glDisable(GL_CULL_FACE);
+        glDepthMask(GL_FALSE);   // 不写深度
         
         shaderManager.SetCurrentShader(skyboxShader);
         
         // 设置天空盒统一变量
         skyboxShader->SetMat4("view", glm::mat4(glm::mat3(camera->GetViewMatrix()))); // 移除平移
         skyboxShader->SetMat4("projection", camera->GetProjectionMatrix());
-        skyboxShader->SetInt("skybox", 0);
+        skyboxShader->SetInt("environmentMap", 0);
         skyboxTexture->Bind(0);
         
-        // 渲染天空盒 (简化实现)
-        // 实际应该渲染一个立方体
+        if (cubeVAO == 0){
+            glGenVertexArrays(1, &cubeVAO);
+            glGenBuffers(1, &cubeVBO);
+            // fill buffer
+            glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+            // link vertex attributes
+            glBindVertexArray(cubeVAO);
+            glEnableVertexAttribArray(0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(1);
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+            glEnableVertexAttribArray(2);
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindVertexArray(0);
+        }
+        // render Cube
+        glBindVertexArray(cubeVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
         
         // 恢复渲染状态
-        glDepthFunc(GL_LESS);
+        glDepthFunc(oldDepthFunc);
+        glDepthMask(oldDepthMask);
         glEnable(GL_CULL_FACE);
+
     }
 
     void SkyboxPass::Cleanup() {

@@ -71,11 +71,6 @@ uniform sampler2D brdfLUT;
 
 // 统一变量
 uniform Material material;
-uniform DirectionalLight directionalLight;
-uniform PointLight pointLights[4];
-uniform int directionalLightCount;
-uniform int pointLightCount;
-uniform vec3 ambientLight;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -93,8 +88,8 @@ vec3 FresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness);
 vec3 CalculateNormal();
 
 // 光照计算
-vec3 CalculateDirectionalLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo, float metallic, float roughness);
-vec3 CalculatePointLight(PointLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo, float metallic, float roughness);
+vec3 CalculateDirectionalLight(Light light, vec3 N, vec3 V, vec3 F0, vec3 albedo, float metallic, float roughness);
+vec3 CalculatePointLight(Light light, vec3 N, vec3 V, vec3 F0, vec3 albedo, float metallic, float roughness);
 
 void main() {
     // 材质参数
@@ -128,14 +123,17 @@ void main() {
     // 反射方程
     vec3 Lo = vec3(0.0);
     
-    // 方向光贡献
-    if (directionalLightCount > 0) {
-        Lo += CalculateDirectionalLight(directionalLight, N, V, F0, albedo, metallic, roughness);
-    }
-    
-    // 点光源贡献
-    for (int i = 0; i < pointLightCount; ++i) {
-        Lo += CalculatePointLight(pointLights[i], N, V, F0, albedo, metallic, roughness);
+    //遍历所有光线
+    for (int i = 0; i < lightCount; ++i) {
+        Light light = lights[i];
+        
+        if (light.type == 0) { // 方向光
+            Lo += CalculateDirectionalLight(light, N, V, F0, albedo, metallic, roughness);
+        }else if (light.type == 1) { // 点光
+            Lo += CalculatePointLight(light, N, V, F0, albedo, metallic, roughness);
+        }else if (light.type == 2) { // spot光
+            Lo += CalculatePointLight(light, N, V, F0, albedo, metallic, roughness);
+        }
     }
     
     // 环境光贡献 (IBL)
@@ -230,7 +228,7 @@ vec3 CalculateNormal() {
     return normalize(TBN * tangentNormal);
 }
 
-vec3 CalculateDirectionalLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo, float metallic, float roughness) {
+vec3 CalculateDirectionalLight(Light light, vec3 N, vec3 V, vec3 F0, vec3 albedo, float metallic, float roughness) {
     vec3 L = normalize(-light.direction);
     vec3 H = normalize(V + L);
     
@@ -258,7 +256,7 @@ vec3 CalculateDirectionalLight(DirectionalLight light, vec3 N, vec3 V, vec3 F0, 
     return (kD * albedo / PI + specular) * radiance * NdotL;
 }
 
-vec3 CalculatePointLight(PointLight light, vec3 N, vec3 V, vec3 F0, vec3 albedo, float metallic, float roughness) {
+vec3 CalculatePointLight(Light light, vec3 N, vec3 V, vec3 F0, vec3 albedo, float metallic, float roughness) {
     vec3 L = normalize(light.position - fs_in.FragPos);
     vec3 H = normalize(V + L);
     float distance = length(light.position - fs_in.FragPos);

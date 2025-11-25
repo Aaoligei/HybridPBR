@@ -1420,6 +1420,8 @@ CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_widgets.cpp.obj: _deps/imgui-src/
   _deps/imgui-src/imstb_textedit.h
 
 CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/Application.cpp \
+  _deps/glad-build/include/KHR/khrplatform.h \
+  _deps/glad-build/include/glad/glad.h \
   _deps/glfw-src/include/GLFW/glfw3.h \
   _deps/glm-src/glm/common.hpp \
   _deps/glm-src/glm/detail/_fixes.hpp \
@@ -1436,6 +1438,7 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj: C:/Users/25342/OneDrive/D
   _deps/glm-src/glm/detail/func_vector_relational.inl \
   _deps/glm-src/glm/detail/qualifier.hpp \
   _deps/glm-src/glm/detail/setup.hpp \
+  _deps/glm-src/glm/detail/type_float.hpp \
   _deps/glm-src/glm/detail/type_half.hpp \
   _deps/glm-src/glm/detail/type_half.inl \
   _deps/glm-src/glm/detail/type_mat2x2.hpp \
@@ -1456,6 +1459,8 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj: C:/Users/25342/OneDrive/D
   _deps/glm-src/glm/detail/type_mat4x3.inl \
   _deps/glm-src/glm/detail/type_mat4x4.hpp \
   _deps/glm-src/glm/detail/type_mat4x4.inl \
+  _deps/glm-src/glm/detail/type_quat.hpp \
+  _deps/glm-src/glm/detail/type_quat.inl \
   _deps/glm-src/glm/detail/type_vec1.hpp \
   _deps/glm-src/glm/detail/type_vec1.inl \
   _deps/glm-src/glm/detail/type_vec2.hpp \
@@ -1507,34 +1512,60 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj: C:/Users/25342/OneDrive/D
   _deps/glm-src/glm/ext/matrix_projection.inl \
   _deps/glm-src/glm/ext/matrix_transform.hpp \
   _deps/glm-src/glm/ext/matrix_transform.inl \
+  _deps/glm-src/glm/ext/quaternion_common.hpp \
+  _deps/glm-src/glm/ext/quaternion_common.inl \
+  _deps/glm-src/glm/ext/quaternion_double.hpp \
+  _deps/glm-src/glm/ext/quaternion_double_precision.hpp \
+  _deps/glm-src/glm/ext/quaternion_float.hpp \
+  _deps/glm-src/glm/ext/quaternion_float_precision.hpp \
+  _deps/glm-src/glm/ext/quaternion_geometric.hpp \
+  _deps/glm-src/glm/ext/quaternion_geometric.inl \
+  _deps/glm-src/glm/ext/quaternion_relational.hpp \
+  _deps/glm-src/glm/ext/quaternion_relational.inl \
+  _deps/glm-src/glm/ext/quaternion_transform.hpp \
+  _deps/glm-src/glm/ext/quaternion_transform.inl \
+  _deps/glm-src/glm/ext/quaternion_trigonometric.hpp \
+  _deps/glm-src/glm/ext/quaternion_trigonometric.inl \
   _deps/glm-src/glm/ext/scalar_constants.hpp \
   _deps/glm-src/glm/ext/scalar_constants.inl \
   _deps/glm-src/glm/ext/scalar_int_sized.hpp \
   _deps/glm-src/glm/ext/scalar_uint_sized.hpp \
+  _deps/glm-src/glm/ext/vector_bool1.hpp \
+  _deps/glm-src/glm/ext/vector_bool1_precision.hpp \
   _deps/glm-src/glm/ext/vector_bool2.hpp \
   _deps/glm-src/glm/ext/vector_bool2_precision.hpp \
   _deps/glm-src/glm/ext/vector_bool3.hpp \
   _deps/glm-src/glm/ext/vector_bool3_precision.hpp \
   _deps/glm-src/glm/ext/vector_bool4.hpp \
   _deps/glm-src/glm/ext/vector_bool4_precision.hpp \
+  _deps/glm-src/glm/ext/vector_double1.hpp \
+  _deps/glm-src/glm/ext/vector_double1_precision.hpp \
   _deps/glm-src/glm/ext/vector_double2.hpp \
   _deps/glm-src/glm/ext/vector_double2_precision.hpp \
   _deps/glm-src/glm/ext/vector_double3.hpp \
   _deps/glm-src/glm/ext/vector_double3_precision.hpp \
   _deps/glm-src/glm/ext/vector_double4.hpp \
   _deps/glm-src/glm/ext/vector_double4_precision.hpp \
+  _deps/glm-src/glm/ext/vector_float1.hpp \
+  _deps/glm-src/glm/ext/vector_float1_precision.hpp \
   _deps/glm-src/glm/ext/vector_float2.hpp \
   _deps/glm-src/glm/ext/vector_float2_precision.hpp \
   _deps/glm-src/glm/ext/vector_float3.hpp \
   _deps/glm-src/glm/ext/vector_float3_precision.hpp \
   _deps/glm-src/glm/ext/vector_float4.hpp \
   _deps/glm-src/glm/ext/vector_float4_precision.hpp \
+  _deps/glm-src/glm/ext/vector_int1.hpp \
+  _deps/glm-src/glm/ext/vector_int1_sized.hpp \
   _deps/glm-src/glm/ext/vector_int2.hpp \
   _deps/glm-src/glm/ext/vector_int2_sized.hpp \
   _deps/glm-src/glm/ext/vector_int3.hpp \
   _deps/glm-src/glm/ext/vector_int3_sized.hpp \
   _deps/glm-src/glm/ext/vector_int4.hpp \
   _deps/glm-src/glm/ext/vector_int4_sized.hpp \
+  _deps/glm-src/glm/ext/vector_relational.hpp \
+  _deps/glm-src/glm/ext/vector_relational.inl \
+  _deps/glm-src/glm/ext/vector_uint1.hpp \
+  _deps/glm-src/glm/ext/vector_uint1_sized.hpp \
   _deps/glm-src/glm/ext/vector_uint2.hpp \
   _deps/glm-src/glm/ext/vector_uint2_sized.hpp \
   _deps/glm-src/glm/ext/vector_uint3.hpp \
@@ -1546,8 +1577,15 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj: C:/Users/25342/OneDrive/D
   _deps/glm-src/glm/glm.hpp \
   _deps/glm-src/glm/gtc/constants.hpp \
   _deps/glm-src/glm/gtc/constants.inl \
+  _deps/glm-src/glm/gtc/epsilon.hpp \
+  _deps/glm-src/glm/gtc/epsilon.inl \
   _deps/glm-src/glm/gtc/matrix_transform.hpp \
   _deps/glm-src/glm/gtc/matrix_transform.inl \
+  _deps/glm-src/glm/gtc/quaternion.hpp \
+  _deps/glm-src/glm/gtc/quaternion.inl \
+  _deps/glm-src/glm/gtc/type_ptr.hpp \
+  _deps/glm-src/glm/gtc/type_ptr.inl \
+  _deps/glm-src/glm/gtc/vec1.hpp \
   _deps/glm-src/glm/integer.hpp \
   _deps/glm-src/glm/mat2x2.hpp \
   _deps/glm-src/glm/mat2x3.hpp \
@@ -1567,9 +1605,20 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj: C:/Users/25342/OneDrive/D
   _deps/glm-src/glm/vec4.hpp \
   _deps/glm-src/glm/vector_relational.hpp \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ImGuiManager.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ShaderManager.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Light.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Material.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Texture.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Camera.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/CameraController.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Mesh.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Scene.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/SceneNode.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Transform.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/FileIO.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/Logger.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/MathUtils.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/array \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/backward/auto_ptr.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/backward/binders.h \
@@ -1587,6 +1636,7 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj: C:/Users/25342/OneDrive/D
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/char_traits.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/charconv.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/chrono.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/codecvt.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/concept_check.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/cpp_type_traits.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/cxxabi_forced.h \
@@ -1596,6 +1646,7 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj: C:/Users/25342/OneDrive/D
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/exception.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/exception_defines.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/exception_ptr.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/fstream.tcc \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/functexcept.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/functional_hash.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/hash_bytes.h \
@@ -1668,6 +1719,7 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj: C:/Users/25342/OneDrive/D
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cstdint \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cstdio \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cstdlib \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cstring \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ctime \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cwchar \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cwctype \
@@ -1681,6 +1733,7 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj: C:/Users/25342/OneDrive/D
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ext/numeric_traits.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ext/string_conversions.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ext/type_traits.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/fstream \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/functional \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/initializer_list \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ios \
@@ -1720,8 +1773,10 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj: C:/Users/25342/OneDrive/D
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/unordered_map \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/vector \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/atomic_word.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/basic_file.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/c++allocator.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/c++config.h \
+  C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/c++io.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/c++locale.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/cpu_defines.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/ctype_base.h \
@@ -1736,7 +1791,6 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj: C:/Users/25342/OneDrive/D
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stddef.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/stdint.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/syslimits.h \
-  C:/mingw64/x86_64-w64-mingw32/include/GL/gl.h \
   C:/mingw64/x86_64-w64-mingw32/include/_mingw.h \
   C:/mingw64/x86_64-w64-mingw32/include/_mingw_mac.h \
   C:/mingw64/x86_64-w64-mingw32/include/_mingw_off_t.h \
@@ -1759,12 +1813,14 @@ CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj: C:/Users/25342/OneDrive/D
   C:/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h \
   C:/mingw64/x86_64-w64-mingw32/include/sec_api/stdio_s.h \
   C:/mingw64/x86_64-w64-mingw32/include/sec_api/stdlib_s.h \
+  C:/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h \
   C:/mingw64/x86_64-w64-mingw32/include/sec_api/sys/timeb_s.h \
   C:/mingw64/x86_64-w64-mingw32/include/sec_api/wchar_s.h \
   C:/mingw64/x86_64-w64-mingw32/include/stddef.h \
   C:/mingw64/x86_64-w64-mingw32/include/stdint.h \
   C:/mingw64/x86_64-w64-mingw32/include/stdio.h \
   C:/mingw64/x86_64-w64-mingw32/include/stdlib.h \
+  C:/mingw64/x86_64-w64-mingw32/include/string.h \
   C:/mingw64/x86_64-w64-mingw32/include/swprintf.inl \
   C:/mingw64/x86_64-w64-mingw32/include/sys/timeb.h \
   C:/mingw64/x86_64-w64-mingw32/include/time.h \
@@ -2717,6 +2773,7 @@ CMakeFiles/HybridPBR.dir/src/main.cpp.obj: C:/Users/25342/OneDrive/Desktop/proje
   _deps/imgui-src/imconfig.h \
   _deps/imgui-src/imgui.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ImGuiManager.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ShaderManager.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Light.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Material.h \
@@ -2958,7 +3015,6 @@ CMakeFiles/HybridPBR.dir/src/main.cpp.obj: C:/Users/25342/OneDrive/Desktop/proje
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/pbr/IBL.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/pbr/PBRMaterial.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ImGuiComponentManager.h \
-  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Rasterizer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/RenderPass.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/resources/ModelLoader.h \
@@ -3386,6 +3442,7 @@ CMakeFiles/HybridPBR.dir/src/pbr/IBL.cpp.obj: C:/Users/25342/OneDrive/Desktop/pr
   _deps/glm-src/glm/vec4.hpp \
   _deps/glm-src/glm/vector_relational.hpp \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ShaderManager.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Texture.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/FileIO.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/Logger.h \
@@ -3924,6 +3981,7 @@ CMakeFiles/HybridPBR.dir/src/pbr/PBRMaterial.cpp.obj: C:/Users/25342/OneDrive/De
 CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ImGuiComponentManager.cpp \
   _deps/glad-build/include/KHR/khrplatform.h \
   _deps/glad-build/include/glad/glad.h \
+  _deps/glfw-src/include/GLFW/glfw3.h \
   _deps/glm-src/glm/common.hpp \
   _deps/glm-src/glm/detail/_fixes.hpp \
   _deps/glm-src/glm/detail/_vectorize.hpp \
@@ -4107,6 +4165,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.obj: C:/Users/2
   _deps/glm-src/glm/vector_relational.hpp \
   _deps/imgui-src/imconfig.h \
   _deps/imgui-src/imgui.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/Input.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ShaderManager.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Light.h \
@@ -7675,6 +7734,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Rasterizer.cpp.obj: C:/User
 CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/RenderPass.cpp \
   _deps/glad-build/include/KHR/khrplatform.h \
   _deps/glad-build/include/glad/glad.h \
+  _deps/glfw-src/include/GLFW/glfw3.h \
   _deps/glm-src/glm/common.hpp \
   _deps/glm-src/glm/detail/_fixes.hpp \
   _deps/glm-src/glm/detail/_vectorize.hpp \
@@ -7876,6 +7936,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.obj: C:/User
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/SceneNode.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Transform.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/FileIO.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/GLCall.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/Logger.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/MathUtils.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/backward/auto_ptr.h \
@@ -10591,11 +10652,11 @@ CMakeFiles/HybridPBR.dir/src/utils/MathUtils.cpp.obj: C:/Users/25342/OneDrive/De
 
 _deps/nlohmann_json-src/include/nlohmann/thirdparty/hedley/hedley_undef.hpp:
 
+_deps/glm-src/glm/mat2x4.hpp:
+
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/clzerointrin.h:
 
 _deps/imgui-src/backends/imgui_impl_glfw.cpp:
-
-_deps/glm-src/glm/mat2x4.hpp:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/invoke.h:
 
@@ -10613,9 +10674,9 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/uniform_int_dist.h
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/avxvnniintrin.h:
 
-_deps/glm-src/glm/ext/quaternion_geometric.inl:
-
 _deps/glfw-src/include/GLFW/glfw3native.h:
+
+_deps/glm-src/glm/ext/quaternion_geometric.inl:
 
 _deps/glm-src/glm/glm.hpp:
 
@@ -10633,11 +10694,11 @@ _deps/assimp-src/include/assimp/Importer.hpp:
 
 _deps/imgui-src/imgui.h:
 
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/array:
+
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/ammintrin.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/amxbf16intrin.h:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/array:
 
 C:/mingw64/x86_64-w64-mingw32/include/stdlib.h:
 
@@ -10664,8 +10725,6 @@ C:/mingw64/x86_64-w64-mingw32/include/winscard.h:
 _deps/glm-src/glm/ext/matrix_double4x4_precision.hpp:
 
 _deps/glm-src/glm/ext/matrix_float4x3_precision.hpp:
-
-_deps/glm-src/glm/simd/platform.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/avx512ifmavlintrin.h:
 
@@ -10717,8 +10776,6 @@ C:/mingw64/x86_64-w64-mingw32/include/cguid.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/c++config.h:
 
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/align.h:
-
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/avx512bwintrin.h:
 
 _deps/glm-src/glm/mat2x3.hpp:
@@ -10738,6 +10795,8 @@ _deps/glm-src/glm/detail/compute_common.hpp:
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/avx512fintrin.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/avx512fp16intrin.h:
+
+_deps/glm-src/glm/detail/type_quat.inl:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/x86_64-w64-mingw32/bits/os_defines.h:
 
@@ -10759,9 +10818,9 @@ C:/mingw64/x86_64-w64-mingw32/include/oaidl.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/specstrings.h:
 
-_deps/glm-src/glm/ext/quaternion_relational.hpp:
-
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/avx512vlintrin.h:
+
+_deps/glm-src/glm/ext/quaternion_relational.hpp:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/avx512vbmi2vlintrin.h:
 
@@ -10813,13 +10872,13 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/ia32intrin.h:
 
 _deps/glm-src/glm/ext/scalar_constants.hpp:
 
-C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.h:
-
 C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/main.cpp:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cerrno:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/uses_allocator_args.h:
+
+C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.h:
 
 _deps/glm-src/glm/ext/scalar_int_sized.hpp:
 
@@ -10869,9 +10928,9 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/clflushoptintrin.h:
 
 _deps/glm-src/glm/detail/type_vec4.hpp:
 
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/tr1/poly_laguerre.tcc:
-
 _deps/glm-src/glm/packing.hpp:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/tr1/poly_laguerre.tcc:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/clwbintrin.h:
 
@@ -10929,17 +10988,17 @@ _deps/assimp-src/include/assimp/matrix3x3.h:
 
 _deps/imgui-src/imgui_tables.cpp:
 
-_deps/nlohmann_json-src/include/nlohmann/detail/string_concat.hpp:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/cpp_type_traits.h:
-
-_deps/glm-src/glm/vec4.hpp:
-
-_deps/glm-src/glm/ext/quaternion_transform.inl:
-
 C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/Window.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/lzcntintrin.h:
+
+_deps/glm-src/glm/ext/quaternion_transform.inl:
+
+_deps/nlohmann_json-src/include/nlohmann/detail/string_concat.hpp:
+
+_deps/glm-src/glm/vec4.hpp:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/cpp_type_traits.h:
 
 _deps/nlohmann_json-src/include/nlohmann/detail/conversions/to_json.hpp:
 
@@ -10949,17 +11008,19 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mm_malloc.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/rpcsal.h:
 
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ratio:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/movdirintrin.h:
+
+_deps/glm-src/glm/detail/type_quat.hpp:
+
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/initializer_list:
 
 C:/mingw64/x86_64-w64-mingw32/include/ctype.h:
 
 _deps/glm-src/glm/detail/type_mat4x4.inl:
 
-_deps/glm-src/glm/detail/type_quat.hpp:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/ratio:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/movdirintrin.h:
+_deps/glm-src/glm/ext/quaternion_float.hpp:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mwaitintrin.h:
 
@@ -10967,11 +11028,11 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/mwaitxintrin.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/pconfigintrin.h:
 
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/enable_special_members.h:
+
 C:/mingw64/x86_64-w64-mingw32/include/apiset.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/tr1/ell_integral.tcc:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/enable_special_members.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_bvector.h:
 
@@ -10998,8 +11059,6 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/rdseedintrin.h:
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/sm3intrin.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/_mingw_unicode.h:
-
-_deps/glm-src/glm/mat3x2.hpp:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/fstream:
 
@@ -11109,13 +11168,13 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/xsaveoptintrin.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/xsavesintrin.h:
 
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/xtestintrin.h:
-
-_deps/glm-src/glm/mat4x3.hpp:
-
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/locale_facets.h:
 
 _deps/glm-src/glm/detail/type_vec1.inl:
+
+_deps/glm-src/glm/mat4x3.hpp:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/xtestintrin.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/GL/gl.h:
 
@@ -11135,11 +11194,11 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cstddef:
 
 C:/mingw64/x86_64-w64-mingw32/include/_mingw_mac.h:
 
-_deps/glm-src/glm/gtc/vec1.hpp:
+C:/mingw64/x86_64-w64-mingw32/include/stdarg.h:
 
 _deps/glm-src/glm/ext/vector_int1_sized.hpp:
 
-C:/mingw64/x86_64-w64-mingw32/include/stdarg.h:
+_deps/glm-src/glm/gtc/vec1.hpp:
 
 C:/mingw64/x86_64-w64-mingw32/include/_mingw_secapi.h:
 
@@ -11235,13 +11294,13 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_construct.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/driverspecs.h:
 
-_deps/glm-src/glm/gtc/quaternion.hpp:
-
-_deps/glm-src/glm/ext/vector_float1.hpp:
-
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/locale_classes.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/errno.h:
+
+_deps/glm-src/glm/ext/vector_float1.hpp:
+
+_deps/glm-src/glm/gtc/quaternion.hpp:
 
 C:/mingw64/x86_64-w64-mingw32/include/excpt.h:
 
@@ -11274,8 +11333,6 @@ _deps/glm-src/glm/detail/setup.hpp:
 _deps/glm-src/glm/gtx/dual_quaternion.inl:
 
 C:/mingw64/x86_64-w64-mingw32/include/imm.h:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/chrono.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/inaddr.h:
 
@@ -11311,21 +11368,21 @@ C:/mingw64/x86_64-w64-mingw32/include/mciapi.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/memoryapi.h:
 
+_deps/glm-src/glm/ext/vector_int1.hpp:
+
 C:/mingw64/x86_64-w64-mingw32/include/minwinbase.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/mmeapi.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/mmiscapi.h:
 
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/basic_string.tcc:
+
 C:/mingw64/x86_64-w64-mingw32/include/mmiscapi2.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/winperf.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/winver.h:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/basic_string.tcc:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/allocated_ptr.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/localefwd.h:
 
@@ -11343,9 +11400,9 @@ _deps/nlohmann_json-src/include/nlohmann/detail/meta/identity_tag.hpp:
 
 C:/mingw64/x86_64-w64-mingw32/include/ole2.h:
 
-C:/mingw64/x86_64-w64-mingw32/include/oleauto.h:
-
 C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/Logger.h:
+
+C:/mingw64/x86_64-w64-mingw32/include/oleauto.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/oleidl.h:
 
@@ -11356,8 +11413,6 @@ C:/mingw64/x86_64-w64-mingw32/include/playsoundapi.h:
 C:/mingw64/x86_64-w64-mingw32/include/windows.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/processenv.h:
-
-_deps/glm-src/glm/vec3.hpp:
 
 C:/mingw64/x86_64-w64-mingw32/include/processthreadsapi.h:
 
@@ -11447,6 +11502,8 @@ C:/mingw64/x86_64-w64-mingw32/include/sal.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/sdkddkver.h:
 
+_deps/glm-src/glm/ext/quaternion_double.hpp:
+
 C:/mingw64/x86_64-w64-mingw32/include/sdks/_mingw_ddk.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/version.h:
@@ -11467,9 +11524,9 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/ostream.tcc:
 
 C:/mingw64/x86_64-w64-mingw32/include/securityappcontainer.h:
 
-_deps/glm-src/glm/gtc/type_ptr.hpp:
-
 C:/mingw64/x86_64-w64-mingw32/include/securitybaseapi.h:
+
+_deps/glm-src/glm/gtc/type_ptr.hpp:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/hashtable.h:
 
@@ -11531,9 +11588,9 @@ C:/mingw64/x86_64-w64-mingw32/include/virtdisk.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/urlmon.h:
 
-_deps/glm-src/glm/ext/quaternion_trigonometric.inl:
-
 _deps/glm-src/glm/ext/matrix_double2x2_precision.hpp:
+
+_deps/glm-src/glm/ext/quaternion_trigonometric.inl:
 
 C:/mingw64/x86_64-w64-mingw32/include/vadefs.h:
 
@@ -11547,11 +11604,11 @@ C:/mingw64/x86_64-w64-mingw32/include/winbase.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/wincon.h:
 
-_deps/glm-src/glm/gtc/epsilon.hpp:
-
 C:/mingw64/x86_64-w64-mingw32/include/winefs.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/move.h:
+
+_deps/glm-src/glm/gtc/epsilon.hpp:
 
 _deps/glm-src/glm/gtx/string_cast.hpp:
 
@@ -11659,6 +11716,10 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/tr1/legendre_function.t
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/tr1/modified_bessel_func.tcc:
 
+C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/interfaces/IRenderer.h:
+
+_deps/glm-src/glm/ext/vector_relational.inl:
+
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/tr1/poly_hermite.tcc:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/type_traits:
@@ -11683,13 +11744,19 @@ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/pbr/BRDF.cpp:
 
 _deps/imgui-src/imgui_widgets.cpp:
 
-_deps/glm-src/glm/detail/type_mat2x3.inl:
+_deps/imgui-src/imstb_textedit.h:
 
 _deps/glm-src/glm/ext/quaternion_transform.hpp:
 
-_deps/imgui-src/imstb_textedit.h:
+_deps/glm-src/glm/detail/type_mat2x3.inl:
 
 C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/Application.cpp:
+
+_deps/glad-build/include/KHR/khrplatform.h:
+
+_deps/glm-src/glm/ext/matrix_double2x4.hpp:
+
+_deps/glad-build/include/glad/glad.h:
 
 _deps/glm-src/glm/detail/_vectorize.hpp:
 
@@ -11704,6 +11771,8 @@ _deps/glm-src/glm/detail/func_geometric.inl:
 _deps/glm-src/glm/gtc/type_precision.hpp:
 
 _deps/glm-src/glm/detail/qualifier.hpp:
+
+_deps/glm-src/glm/detail/type_float.hpp:
 
 _deps/glm-src/glm/detail/type_half.hpp:
 
@@ -11721,17 +11790,15 @@ _deps/glm-src/glm/detail/type_mat3x4.hpp:
 
 _deps/glm-src/glm/detail/type_mat3x4.inl:
 
-_deps/glm-src/glm/mat3x4.hpp:
-
 _deps/glm-src/glm/detail/type_mat4x2.hpp:
+
+_deps/glm-src/glm/ext/vector_float1_precision.hpp:
 
 _deps/glm-src/glm/detail/type_mat4x2.inl:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/erase_if.h:
 
 _deps/glm-src/glm/detail/type_mat4x3.hpp:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/alloc_traits.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/postypes.h:
 
@@ -11754,8 +11821,6 @@ _deps/glm-src/glm/ext/matrix_clip_space.inl:
 _deps/glm-src/glm/ext/vector_float2.hpp:
 
 _deps/glm-src/glm/ext/matrix_double2x2.hpp:
-
-_deps/glm-src/glm/ext/matrix_double2x4.hpp:
 
 _deps/glm-src/glm/ext/matrix_double3x3.hpp:
 
@@ -11807,13 +11872,43 @@ _deps/glm-src/glm/ext/matrix_projection.hpp:
 
 _deps/glm-src/glm/ext/matrix_projection.inl:
 
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/backward/binders.h:
+
+_deps/glm-src/glm/ext/quaternion_common.hpp:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_raw_storage_iter.h:
+
+_deps/glm-src/glm/ext/quaternion_common.inl:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/cxxabi_forced.h:
+
+_deps/glm-src/glm/ext/quaternion_double_precision.hpp:
+
+_deps/glm-src/glm/ext/quaternion_float_precision.hpp:
+
+_deps/glm-src/glm/ext/quaternion_geometric.hpp:
+
+_deps/glm-src/glm/ext/quaternion_relational.inl:
+
+_deps/glm-src/glm/ext/quaternion_trigonometric.hpp:
+
 _deps/assimp-src/include/assimp/matrix3x3.inl:
 
 _deps/glm-src/glm/ext/scalar_uint_sized.hpp:
 
+_deps/glm-src/glm/ext/vector_bool1.hpp:
+
+_deps/glm-src/glm/ext/vector_bool1_precision.hpp:
+
 _deps/glm-src/glm/ext/vector_bool2_precision.hpp:
 
 _deps/glm-src/glm/ext/vector_bool4.hpp:
+
+_deps/glm-src/glm/ext/vector_double1.hpp:
+
+_deps/glm-src/glm/ext/vector_double1_precision.hpp:
+
+_deps/glm-src/glm/gtc/matrix_transform.hpp:
 
 _deps/glm-src/glm/ext/vector_float2_precision.hpp:
 
@@ -11830,6 +11925,12 @@ _deps/glm-src/glm/ext/vector_int3_sized.hpp:
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cstdio:
 
 _deps/glm-src/glm/ext/vector_int4.hpp:
+
+_deps/glm-src/glm/ext/vector_relational.hpp:
+
+_deps/glm-src/glm/ext/vector_uint1.hpp:
+
+_deps/glm-src/glm/ext/vector_uint1_sized.hpp:
 
 _deps/glm-src/glm/ext/vector_uint2.hpp:
 
@@ -11849,13 +11950,21 @@ _deps/glm-src/glm/geometric.hpp:
 
 _deps/glm-src/glm/gtc/constants.inl:
 
-_deps/glm-src/glm/ext/vector_double1_precision.hpp:
+_deps/glm-src/glm/gtc/epsilon.inl:
 
-_deps/glm-src/glm/gtc/matrix_transform.hpp:
+_deps/glm-src/glm/gtc/quaternion.inl:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_numeric.h:
+
+_deps/glm-src/glm/gtc/type_ptr.inl:
 
 _deps/glm-src/glm/mat2x2.hpp:
 
+_deps/glm-src/glm/mat3x2.hpp:
+
 _deps/glm-src/glm/mat3x3.hpp:
+
+_deps/glm-src/glm/mat3x4.hpp:
 
 _deps/nlohmann_json-src/include/nlohmann/detail/iterators/primitive_iterator.hpp:
 
@@ -11867,6 +11976,8 @@ _deps/assimp-src/include/assimp/quaternion.h:
 
 _deps/glm-src/glm/matrix.hpp:
 
+_deps/glm-src/glm/simd/platform.h:
+
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/functional:
 
 _deps/glm-src/glm/trigonometric.hpp:
@@ -11875,9 +11986,17 @@ _deps/assimp-src/include/assimp/mesh.h:
 
 _deps/glm-src/glm/vec2.hpp:
 
+_deps/glm-src/glm/vec3.hpp:
+
 _deps/glm-src/glm/vector_relational.hpp:
 
 C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ImGuiManager.h:
+
+C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Material.h:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/filesystem:
+
+C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Texture.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/new_allocator.h:
 
@@ -11885,11 +12004,19 @@ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/C
 
 C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/CameraController.h:
 
+C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Mesh.h:
+
+C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Transform.h:
+
+C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/FileIO.h:
+
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/backward/auto_ptr.h:
 
-_deps/glm-src/glm/ext/quaternion_common.hpp:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/align.h:
 
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/backward/binders.h:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/alloc_traits.h:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/allocated_ptr.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/allocator.h:
 
@@ -11917,11 +12044,11 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/char_traits.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/charconv.h:
 
-_deps/glm-src/glm/ext/quaternion_double_precision.hpp:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/cxxabi_forced.h:
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/chrono.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/cxxabi_init_exception.h:
+
+C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/fstream.tcc:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/hashtable_policy.h:
 
@@ -11954,10 +12081,6 @@ C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/shared_ptr_atomic.
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/sstream.tcc:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_function.h:
-
-_deps/glm-src/glm/ext/quaternion_common.inl:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_raw_storage_iter.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_vector.h:
 
@@ -12043,10 +12166,6 @@ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/Input.cpp:
 
 C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/Window.cpp:
 
-_deps/glad-build/include/KHR/khrplatform.h:
-
-_deps/glad-build/include/glad/glad.h:
-
 _deps/assimp-src/include/assimp/Compiler/poppack1.h:
 
 _deps/assimp-src/include/assimp/aabb.h:
@@ -12079,69 +12198,11 @@ _deps/assimp-src/include/assimp/types.h:
 
 _deps/assimp-src/include/assimp/vector2.inl:
 
-_deps/glm-src/glm/detail/type_float.hpp:
-
-_deps/glm-src/glm/detail/type_quat.inl:
-
-_deps/glm-src/glm/ext/quaternion_double.hpp:
-
-_deps/glm-src/glm/ext/quaternion_float.hpp:
-
-_deps/glm-src/glm/ext/quaternion_float_precision.hpp:
-
-_deps/glm-src/glm/ext/quaternion_geometric.hpp:
-
-_deps/glm-src/glm/ext/quaternion_relational.inl:
-
-_deps/glm-src/glm/ext/quaternion_trigonometric.hpp:
-
-_deps/glm-src/glm/ext/vector_bool1.hpp:
-
-_deps/glm-src/glm/ext/vector_bool1_precision.hpp:
-
-_deps/glm-src/glm/ext/vector_double1.hpp:
-
-_deps/glm-src/glm/ext/vector_float1_precision.hpp:
-
-_deps/glm-src/glm/ext/vector_int1.hpp:
-
-_deps/glm-src/glm/ext/vector_relational.hpp:
-
-C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/interfaces/IRenderer.h:
-
-_deps/glm-src/glm/ext/vector_relational.inl:
-
-_deps/glm-src/glm/ext/vector_uint1.hpp:
-
-_deps/glm-src/glm/ext/vector_uint1_sized.hpp:
-
-_deps/glm-src/glm/gtc/epsilon.inl:
-
-_deps/glm-src/glm/gtc/quaternion.inl:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_numeric.h:
-
-_deps/glm-src/glm/gtc/type_ptr.inl:
-
-C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Material.h:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/filesystem:
-
-C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Texture.h:
-
 C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/UniformBuffer.h:
 
 C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/interfaces/IRasterizer.h:
 
-C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Mesh.h:
-
-C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Transform.h:
-
-C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/FileIO.h:
-
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/algorithm:
-
-C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/fstream.tcc:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/bits/stl_heap.h:
 
@@ -12206,6 +12267,8 @@ C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/M
 C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/RenderPass.cpp:
 
 _deps/glm-src/glm/gtc/type_precision.inl:
+
+C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/GLCall.h:
 
 C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/cstdarg:
 

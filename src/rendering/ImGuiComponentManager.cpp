@@ -2,6 +2,10 @@
 #include"resources/ResourceManager.h"
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>
+#include "../scene/Scene.h"
+#include "../rendering/rasterization/Camera.h"
+#include "../utils/MathUtils.h"
+#include "../core/Input.h"
 
 namespace HybridPBR {
 
@@ -15,7 +19,7 @@ namespace HybridPBR {
         ImGui::Begin("Scene Hierarchy");
         
         if (scene) {
-            DisplayNodeTree(scene->GetRoot());
+            DisplayNodeTree(scene->GetRoot(),*scene->GetMainCamera());
         }
         
         ImGui::End();
@@ -74,7 +78,7 @@ namespace HybridPBR {
         ImGui::End();
     }
 
-    void ImGuiComponentManager::DisplayNodeTree(std::shared_ptr<SceneNode> node) {
+    void ImGuiComponentManager::DisplayNodeTree(std::shared_ptr<SceneNode> node,const Camera& camera) {
         if (!node) return;
 
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
@@ -92,14 +96,48 @@ namespace HybridPBR {
         bool opened = ImGui::TreeNodeEx(node->GetName().c_str(), flags);
         
         // 处理节点选择
-        if (ImGui::IsItemClicked()) {
+        if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen()) {
             selectedNode = node;
-            selectedLight.reset(); // 取消选择光源
+            // 重置gizmo状态
+            activeGizmoAxis = GizmoAxis::NONE;
+        }
+        
+        // 处理gizmo轴的选择
+        Input& input = Input::GetInstance();
+        if (selectedNode && input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+            glm::vec3 nodePosition = selectedNode->GetTransform().GetPosition();
+            
+            // 转换到屏幕空间（简化版）
+            glm::mat4 viewProj = camera.GetViewProjectionMatrix();
+            glm::vec4 screenPosHomogeneous = viewProj * glm::vec4(nodePosition, 1.0f);
+            if (screenPosHomogeneous.w > 0.0f) {
+                glm::vec3 screenPos3D = screenPosHomogeneous / screenPosHomogeneous.w;
+                glm::vec2 screenPos = glm::vec2(screenPos3D.x, -screenPos3D.y);
+                screenPos = (screenPos + 1.0f) * 0.5f;
+                screenPos *= glm::vec2(1280, 720);
+                
+                // 检查是否点击在某个轴上
+                if (IsPointInGizmoArea(nodePosition, screenPos, 50.0f)) {
+                    // 简化：根据鼠标位置判断哪个轴
+                    Input& input = Input::GetInstance();
+                    glm::vec2 mousePos(input.GetMouseX(), input.GetMouseY());
+                    glm::vec2 delta = mousePos - screenPos;
+                    
+                    if (std::abs(delta.x) > std::abs(delta.y)) {
+                        activeGizmoAxis = GizmoAxis::X; // X轴
+                    } else {
+                        activeGizmoAxis = GizmoAxis::Y; // Y轴
+                    }
+                    
+                    gizmoInitialPosition = selectedNode->GetTransform().GetPosition();
+                    mouseInitialPosition = mousePos;
+                }
+            }
         }
         
         if (hasChildren && opened && !(flags & ImGuiTreeNodeFlags_NoTreePushOnOpen)) {
             for (const auto& child : node->GetChildren()) {
-                DisplayNodeTree(child);
+                DisplayNodeTree(child,camera);
             }
             ImGui::TreePop();
         }
@@ -348,4 +386,77 @@ namespace HybridPBR {
         }
     }
 
+    void ImGuiComponentManager::RenderGizmo(const Camera& camera, const Scene& scene) {
+        if (!selectedNode) return;
+
+        // 获取选中物体的位置（世界空间）
+        glm::vec3 nodePosition = selectedNode->GetTransform().GetPosition();
+        
+        // 转换到屏幕空间
+        glm::mat4 viewProj = camera.GetViewProjectionMatrix();
+        glm::vec4 screenPosHomogeneous = viewProj * glm::vec4(nodePosition, 1.0f);
+        if (screenPosHomogeneous.w <= 0.0f) return; // 在相机后面
+    
+        glm::vec3 screenPos3D = screenPosHomogeneous / screenPosHomogeneous.w;
+        glm::vec2 screenPos = glm::vec2(screenPos3D.x, -screenPos3D.y); // Y轴翻转
+        screenPos = (screenPos + 1.0f) * 0.5f; // [-1,1] -> [0,1]
+        screenPos *= glm::vec2(1280, 720); // 假设窗口大小
+
+        // 绘制三个轴
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        ImVec2 center = ImVec2(screenPos.x, screenPos.y);
+        float axisLength = 50.0f;
+        
+        // X轴（红色）
+        ImVec2 xEnd = ImVec2(center.x + axisLength, center.y);
+        drawList->AddLine(center, xEnd, IM_COL32(255, 0, 0, 255), 3.0f);
+        
+        // Y轴（绿色）
+        ImVec2 yEnd = ImVec2(center.x, center.y - axisLength);
+        drawList->AddLine(center, yEnd, IM_COL32(0, 255, 0, 255), 3.0f);
+        
+        // Z轴（蓝色）
+        ImVec2 zEnd = ImVec2(center.x + axisLength * 0.707f, center.y - axisLength * 0.707f);
+        drawList->AddLine(center, zEnd, IM_COL32(0, 0, 255, 255), 3.0f);
+    }
+
+    void ImGuiComponentManager::HandleGizmoInteraction(const Camera& camera, const Scene& scene, float deltaTime) {
+        if (!selectedNode || activeGizmoAxis == GizmoAxis::NONE) return;
+
+        Input& input = Input::GetInstance();
+        glm::vec2 currentMouse = glm::vec2(input.GetMouseX(), input.GetMouseY());
+        
+        // 计算鼠标移动量
+        glm::vec2 delta = currentMouse - mouseInitialPosition;
+        
+        // 根据激活的轴移动物体
+        glm::vec3 moveDirection = glm::vec3(0.0f);
+        switch (activeGizmoAxis) {
+            case GizmoAxis::X:
+                moveDirection = camera.GetRight();
+                break;
+            case GizmoAxis::Y:
+                moveDirection = camera.GetUp();
+                break;
+            case GizmoAxis::Z:
+                moveDirection = camera.GetFront();
+                break;
+            default:
+                break;
+        }
+        
+        // 将屏幕空间移动转换为世界空间移动
+        float speed = 0.01f;
+        glm::vec3 worldDelta = moveDirection * (delta.x * speed);
+        
+        // 更新物体位置
+        Transform& transform = selectedNode->GetTransform();
+        transform.SetPosition(gizmoInitialPosition + worldDelta);
+    }
+
+    bool ImGuiComponentManager::IsPointInGizmoArea(const glm::vec3& worldPos, const glm::vec2& screenPos, float radius) {
+        Input& input = Input::GetInstance();
+        glm::vec2 mousePos = glm::vec2(input.GetMouseX(), input.GetMouseY());
+        return glm::length(mousePos - screenPos) < radius;
+    }
 } // namespace HybridPBR

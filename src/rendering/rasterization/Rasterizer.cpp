@@ -28,7 +28,7 @@ namespace HybridPBR {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
-        glFrontFace(GL_CCW);  // 使用顺时针为正面
+        glFrontFace(GL_CCW);
         
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -132,7 +132,7 @@ namespace HybridPBR {
         
         // 添加天空盒通道
         //auto skyboxPass = std::make_unique<SkyboxPass>();
-        // skyboxPass->SetSkyboxTexture(skyboxTexture); // 需要设置天空盒纹理
+        //skyboxPass->SetSkyboxTexture(skyboxTexture); // 需要设置天空盒纹理
         //AddRenderPass(std::move(skyboxPass));
         
         // 可以添加后处理通道

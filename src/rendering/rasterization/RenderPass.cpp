@@ -219,8 +219,7 @@ namespace HybridPBR {
         shaderManager.SetCurrentShader(postProcessShader);
         
         // 绑定场景纹理到着色器
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, sceneTexture);
+        glBindTextureUnit(GL_TEXTURE0, sceneTexture);
         postProcessShader->SetInt("scene", 0);
         
         // 渲染全屏四边形

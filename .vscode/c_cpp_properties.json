@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/build/_deps/glfw-src/include",
-                "${workspaceFolder}/build/_deps/nlohmann_json-src/include"
+                "${workspaceFolder}/build/_deps/nlohmann_json-src/include",
+                "${workspaceFolder}/build/_deps/glad-build/include"
             ],
             "defines": [
                 "_DEBUG",

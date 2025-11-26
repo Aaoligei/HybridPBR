@@ -3008,6 +3008,7 @@ CMakeFiles/HybridPBR.dir/src/main.cpp.obj: C:/Users/25342/OneDrive/Desktop/proje
   C:/mingw64/x86_64-w64-mingw32/include/vadefs.h \
   C:/mingw64/x86_64-w64-mingw32/include/wchar.h \
   C:/mingw64/x86_64-w64-mingw32/include/wctype.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/DefferedApplication.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/Application.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/Input.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/Timer.h \
@@ -11519,6 +11520,8 @@ C:/mingw64/x86_64-w64-mingw32/include/sec_api/stdlib_s.h:
 C:/mingw64/x86_64-w64-mingw32/include/timeapi.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/sec_api/stralign_s.h:
+
+C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/DefferedApplication.h:
 
 C:/mingw64/x86_64-w64-mingw32/include/sec_api/string_s.h:
 

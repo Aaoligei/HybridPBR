@@ -6,17 +6,35 @@
 #include <stb_image_write.h>
 
 namespace HybridPBR {
-
-    Texture::Texture() {
-        glGenTextures(1, &textureID);
+    /* ---------- 工具：把 TextureWrap / TextureFilter 转成 GLenum ---------- */
+    static GLenum ToGL(TextureWrap w) {
+        switch (w) {
+            case TextureWrap::REPEAT:            return GL_REPEAT;
+            case TextureWrap::CLAMP_TO_EDGE:     return GL_CLAMP_TO_EDGE;
+            case TextureWrap::CLAMP_TO_BORDER:   return GL_CLAMP_TO_BORDER;
+            case TextureWrap::MIRRORED_REPEAT:   return GL_MIRRORED_REPEAT;
+        }
+        return GL_REPEAT;
     }
+    static GLenum ToGL(TextureFilter f) {
+        switch (f) {
+            case TextureFilter::NEAREST: return GL_NEAREST;
+            case TextureFilter::LINEAR:  return GL_LINEAR;
+            case TextureFilter::NEAREST_MIPMAP_NEAREST: return GL_NEAREST_MIPMAP_NEAREST;
+            case TextureFilter::LINEAR_MIPMAP_NEAREST:  return GL_LINEAR_MIPMAP_NEAREST;
+            case TextureFilter::NEAREST_MIPMAP_LINEAR:  return GL_NEAREST_MIPMAP_LINEAR;
+            case TextureFilter::LINEAR_MIPMAP_LINEAR:   return GL_LINEAR_MIPMAP_LINEAR;
+        }
+        return GL_LINEAR;
+    }
+    Texture::Texture() {}
 
     Texture::~Texture() {
         if (textureID != 0) {
             glDeleteTextures(1, &textureID);
         }
     }
-
+    
     bool Texture::Create2D(int w, int h, GLenum internalFormat, 
                           GLenum format, GLenum dataType,
                           const void* data) {
@@ -24,15 +42,18 @@ namespace HybridPBR {
         height = h;
         isCubemap = false;
         
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        
-        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, data);
+        /* 1. 创建 + 一次性分配存储 */
+        if (textureID) glDeleteTextures(1, &textureID);
+        glCreateTextures(GL_TEXTURE_2D, 1, &textureID);
+        glTextureStorage2D(textureID, 1, internalFormat, w, h);
+
+        /* 2. 上传数据（如有） */
+        if (data)
+            glTextureSubImage2D(textureID, 0, 0, 0, w, h, format, dataType, data);
         
         // 设置默认参数
         SetWrapMode(TextureWrap::REPEAT, TextureWrap::REPEAT);
         SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
-        
-        glBindTexture(GL_TEXTURE_2D, 0);
         
         return true;
     }
@@ -84,13 +105,12 @@ namespace HybridPBR {
             return false;
         }
         
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, data);
+        glCreateTextures(GL_TEXTURE_2D, 1, &textureID);
+        glTextureStorage2D(textureID, 1, GL_RGB16F, width, height);
+        glTextureSubImage2D(textureID, 0, 0, 0, width, height, GL_RGB, GL_FLOAT, data);
         
         SetWrapMode(TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE);
         SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
-        
-        glBindTexture(GL_TEXTURE_2D, 0);
         
         stbi_image_free(data);
         return true;
@@ -102,103 +122,68 @@ namespace HybridPBR {
         isCubemap = true;
         type = TextureType::CUBEMAP;
         
-        glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-        
-        for (unsigned int i = 0; i < 6; ++i) {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, internalFormat, 
-                        width, height, 0, GL_RGB, GL_FLOAT, nullptr);
-        }
+        if (textureID) glDeleteTextures(1, &textureID);
+        glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &textureID);
+        glTextureStorage2D(textureID, 1, internalFormat, size, size); // 6 面一起分配
         
         SetWrapMode(TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE);
         SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
-        
-        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+       
         return true;
     }
 
     bool Texture::LoadCubemap(const std::vector<std::string>& faces) {
-        if (faces.size() != 6) {
-            LOG_ERROR("Cubemap requires exactly 6 faces");
-            return false;
-        }
-        
+        if (faces.size() != 6) { LOG_ERROR("Cubemap needs 6 faces"); return false; }
         isCubemap = true;
         type = TextureType::CUBEMAP;
-        
-        glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-        
-        for (unsigned int i = 0; i < 6; ++i) {
-            int w, h, channels;
-            void* data = nullptr;
-            
-            if (!LoadImageData(faces[i], w, h, channels, &data, false)) {
-                glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-                return false;
-            }
-            
-            GLenum format = GL_RGB;
-            if (channels == 1) format = GL_RED;
-            else if (channels == 3) format = GL_RGB;
-            else if (channels == 4) format = GL_RGBA;
-            
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, w, h, 0, format, GL_UNSIGNED_BYTE, data);
-            
-            FreeImageData(data);
-            
-            if (i == 0) {
-                width = w;
-                height = h;
-            }
+
+        if (textureID) glDeleteTextures(1, &textureID);
+        glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &textureID);
+
+        int w = 0, h = 0;
+        for (int i = 0; i < 6; ++i) {
+            int channels;
+            stbi_set_flip_vertically_on_load(false);
+            unsigned char* data = stbi_load(faces[i].c_str(), &w, &h, &channels, 0);
+            if (!data) { LOG_ERROR("Failed cubemap face: " + faces[i]); return false; }
+
+            GLenum format = GetGLFormat(channels);
+            if (i == 0) glTextureStorage2D(textureID, 1, GL_RGBA8, w, h); // 只需一次
+            glTextureSubImage3D(textureID, 0, 0, 0, i, w, h, 1, format, GL_UNSIGNED_BYTE, data);
+            stbi_image_free(data);
         }
-        
-        SetWrapMode(TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE);
+        width = w; height = h;
+
+        SetWrapMode(TextureWrap::CLAMP_TO_EDGE,
+                    TextureWrap::CLAMP_TO_EDGE,
+                    TextureWrap::CLAMP_TO_EDGE);
         SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
-        
-        glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
         return true;
     }
 
     void Texture::SetWrapMode(TextureWrap wrapS, TextureWrap wrapT, TextureWrap wrapR) {
-        GLenum target = isCubemap ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
+        glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, ToGL(wrapS));
+        glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, ToGL(wrapT));
+        if (isCubemap)
+            glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, ToGL(wrapR));
         
-        glBindTexture(target, textureID);
-        glTexParameteri(target, GL_TEXTURE_WRAP_S, static_cast<GLint>(wrapS));
-        glTexParameteri(target, GL_TEXTURE_WRAP_T, static_cast<GLint>(wrapT));
-        
-        if (isCubemap) {
-            glTexParameteri(target, GL_TEXTURE_WRAP_R, static_cast<GLint>(wrapR));
-        }
-        
-        glBindTexture(target, 0);
     }
 
     void Texture::SetFilter(TextureFilter minFilter, TextureFilter magFilter) {
-        GLenum target = isCubemap ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
-        
-        glBindTexture(target, textureID);
-        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, static_cast<GLint>(minFilter));
-        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, static_cast<GLint>(magFilter));
-        glBindTexture(target, 0);
+        glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, ToGL(minFilter));
+        glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, ToGL(magFilter));
     }
 
     void Texture::GenerateMipmaps() {
-        GLenum target = isCubemap ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
-        
-        glBindTexture(target, textureID);
-        glGenerateMipmap(target);
-        glBindTexture(target, 0);
+        glGenerateTextureMipmap(textureID);
     }
 
     void Texture::Bind(uint32_t unit) const {
-        GLenum target = isCubemap ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
-        
-        glActiveTexture(GL_TEXTURE0 + unit);
-        glBindTexture(target, textureID);
+        glBindTextureUnit(unit, textureID);
     }
 
     void Texture::Unbind() const {
-        GLenum target = isCubemap ? GL_TEXTURE_CUBE_MAP : GL_TEXTURE_2D;
-        glBindTexture(target, 0);
+        glBindTextureUnit(0, 0);
     }
 
     GLenum Texture::GetGLInternalFormat(GLenum format, bool sRGB) {

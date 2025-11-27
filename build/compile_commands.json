@@ -91,6 +91,12 @@
 },
 {
   "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
+  "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp  -g -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\deferred\\GBuffer.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\deferred\\GBuffer.cpp",
+  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/deferred/GBuffer.cpp",
+  "output": "CMakeFiles/HybridPBR.dir/src/rendering/deferred/GBuffer.cpp.obj"
+},
+{
+  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
   "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp  -g -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\rasterization\\Camera.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\rasterization\\Camera.cpp",
   "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Camera.cpp",
   "output": "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.obj"

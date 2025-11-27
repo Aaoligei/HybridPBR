@@ -1,16 +1,25 @@
 #pragma once
 #include "../ShaderManager.h"
 #include "../../scene/Scene.h"
+#include "rendering/deferred/GBuffer.h"
+#include "pbr/IBL.h"
 
 namespace HybridPBR {
-
+    
+    struct RenderContext{
+        const Scene* scene = nullptr;
+        GBuffer* gBuffer = nullptr;       // 延迟渲染核心资源
+        uint32_t outputFBO = 0;           // 当前应该画到哪里
+        int width = 0;
+        int height = 0;
+    };
     // 渲染通道基类
     class RenderPass {
     public:
         virtual ~RenderPass() = default;
         
         virtual void Initialize() = 0;
-        virtual void Execute(const Scene& scene) = 0;
+        virtual void Execute(RenderContext& context) = 0;
         virtual void Cleanup() = 0;
         
         virtual std::string GetName() const = 0;
@@ -22,7 +31,7 @@ namespace HybridPBR {
         GeometryPass() = default;
         
         void Initialize() override;
-        void Execute(const Scene& scene) override;
+        void Execute(RenderContext& context) override;
         void Cleanup() override;
         
         std::string GetName() const override { return "GeometryPass"; }
@@ -40,13 +49,27 @@ namespace HybridPBR {
         void RenderMesh(const Mesh& mesh, const Material& material, const glm::mat4& transform);
     };
 
+    // 光照通道 - 使用G-Buffer计算光照
+    class LightingPass : public RenderPass {
+    public:
+        void Initialize() override;
+        void Execute(RenderContext& context) override;
+        void Cleanup() override;
+        std::string GetName() const override { return "LightingPass"; }
+
+    private:
+        std::shared_ptr<Shader> lightingShader;
+        uint32_t quadVAO = 0, quadVBO = 0;
+        void RenderQuad();
+    };
+    
     // 天空盒通道
     class SkyboxPass : public RenderPass {
     public:
         SkyboxPass() = default;
         
         void Initialize() override;
-        void Execute(const Scene& scene) override;
+        void Execute(RenderContext& context) override;
         void Cleanup() override;
         
         std::string GetName() const override { return "SkyboxPass"; }
@@ -107,7 +130,7 @@ namespace HybridPBR {
         PostProcessPass() = default;
         
         void Initialize() override;
-        void Execute(const Scene& scene) override;
+        void Execute(RenderContext& context) override;
         void Cleanup() override;
         
         std::string GetName() const override { return "PostProcessPass"; }
@@ -123,4 +146,22 @@ namespace HybridPBR {
         void RenderQuad();
     };
 
+    class GBufferPass : public RenderPass {
+    public:
+        void Initialize() override;
+        void Execute(RenderContext& context) override;
+        void Cleanup() override;
+        std::string GetName() const override { return "GBufferPass"; }
+        
+        void SetWireframe(bool enabled) { wireframe = enabled; }
+        void SetBackfaceCulling(bool enabled) { backfaceCulling = enabled; }
+
+    private:
+        bool wireframe = false;
+        bool backfaceCulling = true;
+        std::shared_ptr<Shader> gBufferShader;
+
+        void RenderSceneNode(const SceneNode& node, const glm::mat4& parentTransform,const Scene& scene);
+        void RenderMesh(const Mesh& mesh, const Material& material, const glm::mat4& transform);
+    };
 } // namespace HybridPBR

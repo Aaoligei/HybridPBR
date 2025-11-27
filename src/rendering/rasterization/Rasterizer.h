@@ -41,9 +41,12 @@ namespace HybridPBR {
         GPULight lights[16];  // 支持最多16个光源
     };
 
+    struct WindowConfig;
+    class Window;
+
     class Rasterizer : public IRasterizer {
     public:
-        Rasterizer();
+        Rasterizer() {stats = RenderStats();};
         ~Rasterizer();
         
         // IRenderer接口实现
@@ -64,7 +67,7 @@ namespace HybridPBR {
         bool IsDepthTest() const override { return depthTest; }
         
         // 渲染通道管理
-        void AddRenderPass(std::unique_ptr<RenderPass> pass);
+        void AddRenderPass(std::shared_ptr<RenderPass> pass, bool deferred = false);
         void RemoveRenderPass(const std::string& passName);
         std::vector<std::string> GetRenderPassNames();
         void ClearRenderPasses();
@@ -77,6 +80,8 @@ namespace HybridPBR {
         // 设置
         void SetSkyboxTexture(std::shared_ptr<Texture> texture);
 
+        void SetDeferred(bool enabled) { deferred = enabled; }
+
     private:
         // 渲染状态
         bool wireframe = false;
@@ -85,7 +90,9 @@ namespace HybridPBR {
         glm::vec4 clearColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
         
         // 渲染通道
-        std::vector<std::unique_ptr<RenderPass>> renderPasses;
+        std::vector<std::shared_ptr<RenderPass>> forwardRenderPass;
+        std::vector<std::shared_ptr<RenderPass>> deferredRenderPass;
+        bool deferred = false; // 是否使用延迟渲染
         
         // 当前场景
         static const Scene* currentScene;
@@ -94,11 +101,21 @@ namespace HybridPBR {
         // UBO
         std::unique_ptr<UniformBuffer> cameraUBO;
         std::unique_ptr<UniformBuffer> lightUBO;
+
+        std::unique_ptr<GBuffer> gBuffer; // 唯一持有
+        int m_width = 1920; // 需要记录当前宽高
+        int m_height = 1080;
         
         void UpdateGlobalUniforms(const Scene& scene);
         
         // 初始化默认渲染通道
         void SetupDefaultRenderPasses();
+        // 初始化默认 Pass (修改名字以体现意图)
+        void SetupDeferredPipeline();
+        
+        // 窗口大小变化回调 (需要重新创建 GBuffer)
+        void OnResize(int width, int height); 
+
     };
 
 } // namespace HybridPBR

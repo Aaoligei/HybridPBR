@@ -45,6 +45,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.obj.d"
   "CMakeFiles/HybridPBR.dir/src/rendering/common/UniformBuffer.cpp.obj"
   "CMakeFiles/HybridPBR.dir/src/rendering/common/UniformBuffer.cpp.obj.d"
+  "CMakeFiles/HybridPBR.dir/src/rendering/deferred/GBuffer.cpp.obj"
+  "CMakeFiles/HybridPBR.dir/src/rendering/deferred/GBuffer.cpp.obj.d"
   "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.obj"
   "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.obj.d"
   "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/CameraController.cpp.obj"

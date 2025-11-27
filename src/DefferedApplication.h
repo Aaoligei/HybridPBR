@@ -164,7 +164,7 @@ public:
         //创建IBL系统
         CreateIBLlSystem();
         
-        // 创建光栅化渲染器
+        // 初始化渲染器
         rasterizer = std::make_unique<HybridPBR::Rasterizer>();
         if (!rasterizer->Initialize()) {
             return false;
@@ -172,10 +172,18 @@ public:
         auto& shaderManager = HybridPBR::ShaderManager::GetInstance();
         iblSystem->BindIBLTextures(shaderManager.GetShader(HybridPBR::ShaderType::PBR));
 
+        //延迟渲染
+        auto gbufferPass = std::make_shared<HybridPBR::GBufferPass>();
+        rasterizer->AddRenderPass(std::move(gbufferPass), true);
+
+        auto lightingPass = std::make_shared<HybridPBR::LightingPass>();
+        rasterizer->AddRenderPass(std::move(lightingPass), true);
+
         //添加天空盒通道
-        auto skyboxPass = std::make_unique<HybridPBR::SkyboxPass>();
+        auto skyboxPass = std::make_shared<HybridPBR::SkyboxPass>();
         skyboxPass->SetSkyboxTexture(iblSystem->GetEnvironmentMap());
-        rasterizer->AddRenderPass(std::move(skyboxPass));
+        rasterizer->AddRenderPass(skyboxPass);
+        rasterizer->AddRenderPass(skyboxPass, true);
         
         // 创建场景
         scene = std::make_unique<HybridPBR::Scene>();

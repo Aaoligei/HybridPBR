@@ -1193,6 +1193,30 @@ src/rendering/common/UniformBuffer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/UniformBuffer.cpp.s
 .PHONY : src/rendering/common/UniformBuffer.cpp.s
 
+src/rendering/deferred/GBuffer.obj: src/rendering/deferred/GBuffer.cpp.obj
+.PHONY : src/rendering/deferred/GBuffer.obj
+
+# target to build an object file
+src/rendering/deferred/GBuffer.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/deferred/GBuffer.cpp.obj
+.PHONY : src/rendering/deferred/GBuffer.cpp.obj
+
+src/rendering/deferred/GBuffer.i: src/rendering/deferred/GBuffer.cpp.i
+.PHONY : src/rendering/deferred/GBuffer.i
+
+# target to preprocess a source file
+src/rendering/deferred/GBuffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/deferred/GBuffer.cpp.i
+.PHONY : src/rendering/deferred/GBuffer.cpp.i
+
+src/rendering/deferred/GBuffer.s: src/rendering/deferred/GBuffer.cpp.s
+.PHONY : src/rendering/deferred/GBuffer.s
+
+# target to generate assembly for a file
+src/rendering/deferred/GBuffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/deferred/GBuffer.cpp.s
+.PHONY : src/rendering/deferred/GBuffer.cpp.s
+
 src/rendering/rasterization/Camera.obj: src/rendering/rasterization/Camera.cpp.obj
 .PHONY : src/rendering/rasterization/Camera.obj
 
@@ -1623,6 +1647,9 @@ help:
 	@echo ... src/rendering/common/UniformBuffer.obj
 	@echo ... src/rendering/common/UniformBuffer.i
 	@echo ... src/rendering/common/UniformBuffer.s
+	@echo ... src/rendering/deferred/GBuffer.obj
+	@echo ... src/rendering/deferred/GBuffer.i
+	@echo ... src/rendering/deferred/GBuffer.s
 	@echo ... src/rendering/rasterization/Camera.obj
 	@echo ... src/rendering/rasterization/Camera.i
 	@echo ... src/rendering/rasterization/Camera.s

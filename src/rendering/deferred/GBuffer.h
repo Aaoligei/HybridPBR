@@ -40,6 +40,7 @@ namespace HybridPBR {
         bool IsValid() const { return initialized; }
         int GetWidth() const { return width; }
         int GetHeight() const { return height; }
+        uint32_t GetFBO() const { return fbo; }
         
         // 调试可视化
         void BindForDebugVisualization(GBufferTextureType type, uint32_t unit) const;

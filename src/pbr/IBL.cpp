@@ -27,13 +27,19 @@ namespace HybridPBR {
         }
         
         // 创建立方体贴图FBO
-        glGenFramebuffers(1, &captureFBO);
-        glGenRenderbuffers(1, &captureRBO);
-        
-        glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-        glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, cubemapSize, cubemapSize);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
+        // 2. 创建并设置 FBO 和 RBO (DSA 方式)
+        // 使用 glCreate* 代替 glGen*，直接创建对象而非仅生成ID
+        glCreateFramebuffers(1, &captureFBO);
+        glCreateRenderbuffers(1, &captureRBO);
+
+        // 设置 Renderbuffer 存储 (无需绑定)
+        // 替换 glBindRenderbuffer + glRenderbufferStorage
+        glNamedRenderbufferStorage(captureRBO, GL_DEPTH_COMPONENT24, cubemapSize, cubemapSize);
+
+        // 将 RBO 附加到 FBO (无需绑定 FBO)
+        // 替换 glBindFramebuffer + glFramebufferRenderbuffer
+        glNamedFramebufferRenderbuffer(captureFBO, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
+
         
         // 创建立方体贴图
         environmentMap = std::make_shared<Texture>();
@@ -54,8 +60,7 @@ namespace HybridPBR {
         
         for (unsigned int i = 0; i < 6; ++i) {
             equirectangularToCubemapShader->SetMat4("view", captureViews[i]);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
-                                  GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, environmentMap->GetID(), 0);
+            glNamedFramebufferTextureLayer(captureFBO, GL_COLOR_ATTACHMENT0, environmentMap->GetID(), 0, i);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             RenderCube();
         }
@@ -88,8 +93,7 @@ namespace HybridPBR {
         
         for (unsigned int i = 0; i < 6; ++i) {
             irradianceShader->SetMat4("view", captureViews[i]);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
-                                  GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap->GetID(), 0);
+            glNamedFramebufferTextureLayer(captureFBO, GL_COLOR_ATTACHMENT0, irradianceMap->GetID(), 0, i);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             RenderCube();
         }
@@ -130,8 +134,7 @@ namespace HybridPBR {
             
             for (unsigned int i = 0; i < 6; ++i) {
                 prefilterShader->SetMat4("view", captureViews[i]);
-                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
-                                      GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterMap->GetID(), mip);
+                glNamedFramebufferTextureLayer(captureFBO, GL_COLOR_ATTACHMENT0, prefilterMap->GetID(), 0, i);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 RenderCube();
             }
@@ -178,46 +181,19 @@ namespace HybridPBR {
         
         shader->Use();
         
-        // 添加纹理ID有效性验证
-        auto validateAndBind = [&](std::shared_ptr<Texture> tex, int slot, const char* uniformName) {
-            if (!tex || tex->GetID() == 0) {
-                LOG_WARNING("Attempted to bind invalid texture to slot " + std::to_string(slot));
-                return;
-            }
-            
-            // 1. 绑定纹理（内部会激活目标单元）
-            tex->Bind(slot);
-            shader->SetInt(uniformName, slot);
-            
-            // 2. 验证：必须在目标单元上下文中检查
-            glActiveTexture(GL_TEXTURE0 + slot);  // 切换到目标纹理单元
-            GLint currentTex = 0;
-            glGetIntegerv(GL_TEXTURE_BINDING_2D, &currentTex);
-            glActiveTexture(GL_TEXTURE0);  // 恢复默认单元
-            
-            if (currentTex != static_cast<GLint>(tex->GetID())) {
-                LOG_ERROR("Texture binding verification failed for " + std::string(uniformName) + 
-                          ": Expected ID " + std::to_string(tex->GetID()) + 
-                          ", but got " + std::to_string(currentTex));
-            }
-        };
-        
         if (irradianceMap) {
-            validateAndBind(irradianceMap, 10, "irradianceMap");
+            irradianceMap->Bind(10);
+            shader->SetInt("irradianceMap", 10);
         }
         
         if (prefilterMap) {
-            validateAndBind(prefilterMap, 11, "prefilterMap");
+            prefilterMap->Bind(11);
+            shader->SetInt("prefilterMap", 11);
         }
         
         if (brdfLUT) {
-            validateAndBind(brdfLUT, 12, "brdfLUT");
-        }
-        
-        // 验证OpenGL错误
-        GLenum error = glGetError();
-        if (error != GL_NO_ERROR) {
-            LOG_ERROR("OpenGL error after IBL binding: " + std::to_string(error));
+            brdfLUT->Bind(12);
+            shader->SetInt("brdfLUT", 12);
         }
     }
 
@@ -343,21 +319,40 @@ namespace HybridPBR {
                 -1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
                 -1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
             };
-            glGenVertexArrays(1, &cubeVAO);
-            glGenBuffers(1, &cubeVBO);
-            // fill buffer
-            glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-            // link vertex attributes
-            glBindVertexArray(cubeVAO);
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-            glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
+           // 1. 创建 VAO 和 VBO (DSA: glCreate*)
+            glCreateVertexArrays(1, &cubeVAO);
+            glCreateBuffers(1, &cubeVBO);
+
+            // 2. 分配并上传数据 (DSA: glNamedBufferStorage)
+            // 使用 Storage 代表数据是不可变的(Immutable)，显卡驱动可进行优化，且比 BufferData 更快
+            // 最后一个参数 flags 设为 0，表示我们以后不会去 map 读取或修改它
+            glNamedBufferStorage(cubeVBO, sizeof(vertices), vertices, 0);
+
+            // 3. 将 VBO 关联到 VAO 的 "绑定点(Binding Point) 0"
+            // 参数: VAO, BindingIndex, VBO, Offset, Stride
+            // 我们的数据是交错的 (Interleaved)，所以所有属性都来自同一个 Binding Point，Stride 都是 8*float
+            glVertexArrayVertexBuffer(cubeVAO, 0, cubeVBO, 0, 8 * sizeof(float));
+
+            // 4. 配置属性 (Format + Binding)
+            
+            // --- Attribute 0: Position ---
+            glEnableVertexArrayAttrib(cubeVAO, 0); 
+            // 设置格式: 3个float, 归一化false, 相对偏移量0
+            glVertexArrayAttribFormat(cubeVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+            // 将属性0 关联到 绑定点0
+            glVertexArrayAttribBinding(cubeVAO, 0, 0);
+
+            // --- Attribute 1: Normal ---
+            glEnableVertexArrayAttrib(cubeVAO, 1);
+            // 相对偏移量: 3 * sizeof(float)
+            glVertexArrayAttribFormat(cubeVAO, 1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float));
+            glVertexArrayAttribBinding(cubeVAO, 1, 0);
+
+            // --- Attribute 2: TexCoords ---
+            glEnableVertexArrayAttrib(cubeVAO, 2);
+            // 相对偏移量: 6 * sizeof(float)
+            glVertexArrayAttribFormat(cubeVAO, 2, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float));
+            glVertexArrayAttribBinding(cubeVAO, 2, 0);
         }
         // render Cube
         glBindVertexArray(cubeVAO);
@@ -378,17 +373,20 @@ namespace HybridPBR {
                  1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
             };
             
-            glGenVertexArrays(1, &quadVAO);
-            glGenBuffers(1, &quadVBO);
-            
-            glBindVertexArray(quadVAO);
-            glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-            
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+            glCreateVertexArrays(1, &quadVAO);
+            glCreateBuffers(1, &quadVBO);
+            glNamedBufferStorage(quadVBO, sizeof(quadVertices), &quadVertices, 0);
+
+            glVertexArrayVertexBuffer(quadVAO, 0, quadVBO, 0, 5 * sizeof(float));
+
+            glEnableVertexArrayAttrib(quadVAO, 0);
+            glVertexArrayAttribFormat(quadVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+            glVertexArrayAttribBinding(quadVAO, 0, 0);
+
+            glEnableVertexArrayAttrib(quadVAO, 1);
+            glVertexArrayAttribFormat(quadVAO, 1, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(float));
+            glVertexArrayAttribBinding(quadVAO, 1, 0);
+
         }
         
         glBindVertexArray(quadVAO);

@@ -1,5 +1,6 @@
 #include "GBuffer.h"
 #include "utils/Logger.h"
+#include "utils/GLCheck.h"
 
 namespace HybridPBR {
 
@@ -59,7 +60,7 @@ namespace HybridPBR {
     void GBuffer::BindForGeometryPass() {
         if (!initialized) return;
         
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        GLCall(glBindFramebuffer(GL_FRAMEBUFFER, fbo));
         glViewport(0, 0, width, height);
         
         // 清除所有附件
@@ -70,7 +71,7 @@ namespace HybridPBR {
             GL_COLOR_ATTACHMENT3, // MetallicRoughnessAO
             GL_COLOR_ATTACHMENT4  // Emissive
         };
-        glDrawBuffers(5, drawBuffers);
+        GLCall(glDrawBuffers(5, drawBuffers));
         
         // 清除颜色和深度
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -148,35 +149,30 @@ namespace HybridPBR {
     }
 
     bool GBuffer::CreateFramebuffer() {
-        glGenFramebuffers(1, &fbo);
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+        GLCall(glCreateFramebuffers(1, &fbo));
         
         // 附加颜色附件
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 
-                              textures[static_cast<size_t>(GBufferTextureType::Position)]->GetID(), 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, 
-                              textures[static_cast<size_t>(GBufferTextureType::Normal)]->GetID(), 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, 
-                              textures[static_cast<size_t>(GBufferTextureType::Albedo)]->GetID(), 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, 
-                              textures[static_cast<size_t>(GBufferTextureType::MetallicRoughnessAO)]->GetID(), 0);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, 
-                              textures[static_cast<size_t>(GBufferTextureType::Emissive)]->GetID(), 0);
+        GLCall(glNamedFramebufferTexture(fbo, GL_COLOR_ATTACHMENT0, 
+                                textures[static_cast<size_t>(GBufferTextureType::Position)]->GetID(), 0));
+        GLCall(glNamedFramebufferTexture(fbo, GL_COLOR_ATTACHMENT1, 
+                                textures[static_cast<size_t>(GBufferTextureType::Normal)]->GetID(), 0));
+        GLCall(glNamedFramebufferTexture(fbo, GL_COLOR_ATTACHMENT2, 
+                                textures[static_cast<size_t>(GBufferTextureType::Albedo)]->GetID(), 0));
+        GLCall(glNamedFramebufferTexture(fbo, GL_COLOR_ATTACHMENT3, 
+                                textures[static_cast<size_t>(GBufferTextureType::MetallicRoughnessAO)]->GetID(), 0));
+        GLCall(glNamedFramebufferTexture(fbo, GL_COLOR_ATTACHMENT4, 
+                                textures[static_cast<size_t>(GBufferTextureType::Emissive)]->GetID(), 0));
         
         // 创建深度渲染缓冲区
-        glGenRenderbuffers(1, &depthRBO);
-        glBindRenderbuffer(GL_RENDERBUFFER, depthRBO);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32F, width, height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRBO);
+        GLCall(glCreateRenderbuffers(1, &depthRBO));
+        GLCall(glNamedRenderbufferStorage(depthRBO, GL_DEPTH_COMPONENT32F, width, height));
+        GLCall(glNamedFramebufferRenderbuffer(fbo, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRBO));
         
         // 检查完整性
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
             LOG_ERROR("Framebuffer is not complete!");
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
             return false;
         }
-        
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         return true;
     }
 

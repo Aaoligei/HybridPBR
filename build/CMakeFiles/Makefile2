@@ -328,12 +328,12 @@ CMakeFiles/HybridPBR.dir/all: _deps/assimp-build/contrib/zlib/CMakeFiles/zlibsta
 CMakeFiles/HybridPBR.dir/all: _deps/assimp-build/code/CMakeFiles/assimp.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9 "Built target HybridPBR"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10 "Built target HybridPBR"
 .PHONY : CMakeFiles/HybridPBR.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/HybridPBR.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 73
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 74
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/HybridPBR.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 0
 .PHONY : CMakeFiles/HybridPBR.dir/rule
@@ -432,7 +432,7 @@ _deps/glfw-build/src/CMakeFiles/glfw.dir/clean:
 _deps/glfw-build/examples/CMakeFiles/boing.dir/all: _deps/glfw-build/src/CMakeFiles/glfw.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\examples\CMakeFiles\boing.dir\build.make _deps/glfw-build/examples/CMakeFiles/boing.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\examples\CMakeFiles\boing.dir\build.make _deps/glfw-build/examples/CMakeFiles/boing.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=65 "Built target boing"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=66 "Built target boing"
 .PHONY : _deps/glfw-build/examples/CMakeFiles/boing.dir/all
 
 # Build rule for subdir invocation for target.
@@ -666,7 +666,7 @@ _deps/glfw-build/examples/CMakeFiles/wave.dir/clean:
 _deps/glfw-build/tests/CMakeFiles/clipboard.dir/all: _deps/glfw-build/src/CMakeFiles/glfw.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\clipboard.dir\build.make _deps/glfw-build/tests/CMakeFiles/clipboard.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\clipboard.dir\build.make _deps/glfw-build/tests/CMakeFiles/clipboard.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=66 "Built target clipboard"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=67 "Built target clipboard"
 .PHONY : _deps/glfw-build/tests/CMakeFiles/clipboard.dir/all
 
 # Build rule for subdir invocation for target.
@@ -692,7 +692,7 @@ _deps/glfw-build/tests/CMakeFiles/clipboard.dir/clean:
 _deps/glfw-build/tests/CMakeFiles/events.dir/all: _deps/glfw-build/src/CMakeFiles/glfw.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\events.dir\build.make _deps/glfw-build/tests/CMakeFiles/events.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\events.dir\build.make _deps/glfw-build/tests/CMakeFiles/events.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=69 "Built target events"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=70 "Built target events"
 .PHONY : _deps/glfw-build/tests/CMakeFiles/events.dir/all
 
 # Build rule for subdir invocation for target.
@@ -770,7 +770,7 @@ _deps/glfw-build/tests/CMakeFiles/glfwinfo.dir/clean:
 _deps/glfw-build/tests/CMakeFiles/iconify.dir/all: _deps/glfw-build/src/CMakeFiles/glfw.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\iconify.dir\build.make _deps/glfw-build/tests/CMakeFiles/iconify.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\iconify.dir\build.make _deps/glfw-build/tests/CMakeFiles/iconify.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=79 "Built target iconify"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=80 "Built target iconify"
 .PHONY : _deps/glfw-build/tests/CMakeFiles/iconify.dir/all
 
 # Build rule for subdir invocation for target.
@@ -848,7 +848,7 @@ _deps/glfw-build/tests/CMakeFiles/reopen.dir/clean:
 _deps/glfw-build/tests/CMakeFiles/cursor.dir/all: _deps/glfw-build/src/CMakeFiles/glfw.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\cursor.dir\build.make _deps/glfw-build/tests/CMakeFiles/cursor.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\cursor.dir\build.make _deps/glfw-build/tests/CMakeFiles/cursor.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=67 "Built target cursor"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=68 "Built target cursor"
 .PHONY : _deps/glfw-build/tests/CMakeFiles/cursor.dir/all
 
 # Build rule for subdir invocation for target.
@@ -874,7 +874,7 @@ _deps/glfw-build/tests/CMakeFiles/cursor.dir/clean:
 _deps/glfw-build/tests/CMakeFiles/empty.dir/all: _deps/glfw-build/src/CMakeFiles/glfw.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\empty.dir\build.make _deps/glfw-build/tests/CMakeFiles/empty.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\empty.dir\build.make _deps/glfw-build/tests/CMakeFiles/empty.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=68 "Built target empty"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=69 "Built target empty"
 .PHONY : _deps/glfw-build/tests/CMakeFiles/empty.dir/all
 
 # Build rule for subdir invocation for target.
@@ -900,12 +900,12 @@ _deps/glfw-build/tests/CMakeFiles/empty.dir/clean:
 _deps/glfw-build/tests/CMakeFiles/gamma.dir/all: _deps/glfw-build/src/CMakeFiles/glfw.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\gamma.dir\build.make _deps/glfw-build/tests/CMakeFiles/gamma.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\gamma.dir\build.make _deps/glfw-build/tests/CMakeFiles/gamma.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=70 "Built target gamma"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num= "Built target gamma"
 .PHONY : _deps/glfw-build/tests/CMakeFiles/gamma.dir/all
 
 # Build rule for subdir invocation for target.
 _deps/glfw-build/tests/CMakeFiles/gamma.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 4
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 _deps/glfw-build/tests/CMakeFiles/gamma.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 0
 .PHONY : _deps/glfw-build/tests/CMakeFiles/gamma.dir/rule
@@ -926,12 +926,12 @@ _deps/glfw-build/tests/CMakeFiles/gamma.dir/clean:
 _deps/glfw-build/tests/CMakeFiles/icon.dir/all: _deps/glfw-build/src/CMakeFiles/glfw.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\icon.dir\build.make _deps/glfw-build/tests/CMakeFiles/icon.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\icon.dir\build.make _deps/glfw-build/tests/CMakeFiles/icon.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num= "Built target icon"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=79 "Built target icon"
 .PHONY : _deps/glfw-build/tests/CMakeFiles/icon.dir/all
 
 # Build rule for subdir invocation for target.
 _deps/glfw-build/tests/CMakeFiles/icon.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 5
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 _deps/glfw-build/tests/CMakeFiles/icon.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 0
 .PHONY : _deps/glfw-build/tests/CMakeFiles/icon.dir/rule
@@ -952,7 +952,7 @@ _deps/glfw-build/tests/CMakeFiles/icon.dir/clean:
 _deps/glfw-build/tests/CMakeFiles/inputlag.dir/all: _deps/glfw-build/src/CMakeFiles/glfw.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\inputlag.dir\build.make _deps/glfw-build/tests/CMakeFiles/inputlag.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\inputlag.dir\build.make _deps/glfw-build/tests/CMakeFiles/inputlag.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=80 "Built target inputlag"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=81 "Built target inputlag"
 .PHONY : _deps/glfw-build/tests/CMakeFiles/inputlag.dir/all
 
 # Build rule for subdir invocation for target.
@@ -978,12 +978,12 @@ _deps/glfw-build/tests/CMakeFiles/inputlag.dir/clean:
 _deps/glfw-build/tests/CMakeFiles/joysticks.dir/all: _deps/glfw-build/src/CMakeFiles/glfw.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\joysticks.dir\build.make _deps/glfw-build/tests/CMakeFiles/joysticks.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\joysticks.dir\build.make _deps/glfw-build/tests/CMakeFiles/joysticks.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=81 "Built target joysticks"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num= "Built target joysticks"
 .PHONY : _deps/glfw-build/tests/CMakeFiles/joysticks.dir/all
 
 # Build rule for subdir invocation for target.
 _deps/glfw-build/tests/CMakeFiles/joysticks.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 4
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 _deps/glfw-build/tests/CMakeFiles/joysticks.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 0
 .PHONY : _deps/glfw-build/tests/CMakeFiles/joysticks.dir/rule
@@ -1030,12 +1030,12 @@ _deps/glfw-build/tests/CMakeFiles/opacity.dir/clean:
 _deps/glfw-build/tests/CMakeFiles/tearing.dir/all: _deps/glfw-build/src/CMakeFiles/glfw.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\tearing.dir\build.make _deps/glfw-build/tests/CMakeFiles/tearing.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\tearing.dir\build.make _deps/glfw-build/tests/CMakeFiles/tearing.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num= "Built target tearing"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=91 "Built target tearing"
 .PHONY : _deps/glfw-build/tests/CMakeFiles/tearing.dir/all
 
 # Build rule for subdir invocation for target.
 _deps/glfw-build/tests/CMakeFiles/tearing.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 4
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 5
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 _deps/glfw-build/tests/CMakeFiles/tearing.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 0
 .PHONY : _deps/glfw-build/tests/CMakeFiles/tearing.dir/rule
@@ -1056,12 +1056,12 @@ _deps/glfw-build/tests/CMakeFiles/tearing.dir/clean:
 _deps/glfw-build/tests/CMakeFiles/threads.dir/all: _deps/glfw-build/src/CMakeFiles/glfw.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\threads.dir\build.make _deps/glfw-build/tests/CMakeFiles/threads.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\glfw-build\tests\CMakeFiles\threads.dir\build.make _deps/glfw-build/tests/CMakeFiles/threads.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=91 "Built target threads"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num= "Built target threads"
 .PHONY : _deps/glfw-build/tests/CMakeFiles/threads.dir/all
 
 # Build rule for subdir invocation for target.
 _deps/glfw-build/tests/CMakeFiles/threads.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 4
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 _deps/glfw-build/tests/CMakeFiles/threads.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 0
 .PHONY : _deps/glfw-build/tests/CMakeFiles/threads.dir/rule
@@ -1186,12 +1186,12 @@ _deps/glfw-build/tests/CMakeFiles/windows.dir/clean:
 _deps/glad-build/CMakeFiles/glad-generate-files.dir/all:
 	$(MAKE) $(MAKESILENT) -f _deps\glad-build\CMakeFiles\glad-generate-files.dir\build.make _deps/glad-build/CMakeFiles/glad-generate-files.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\glad-build\CMakeFiles\glad-generate-files.dir\build.make _deps/glad-build/CMakeFiles/glad-generate-files.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=72 "Built target glad-generate-files"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num= "Built target glad-generate-files"
 .PHONY : _deps/glad-build/CMakeFiles/glad-generate-files.dir/all
 
 # Build rule for subdir invocation for target.
 _deps/glad-build/CMakeFiles/glad-generate-files.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 1
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 0
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 _deps/glad-build/CMakeFiles/glad-generate-files.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles 0
 .PHONY : _deps/glad-build/CMakeFiles/glad-generate-files.dir/rule
@@ -1212,7 +1212,7 @@ _deps/glad-build/CMakeFiles/glad-generate-files.dir/clean:
 _deps/glad-build/CMakeFiles/glad.dir/all: _deps/glad-build/CMakeFiles/glad-generate-files.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\glad-build\CMakeFiles\glad.dir\build.make _deps/glad-build/CMakeFiles/glad.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\glad-build\CMakeFiles\glad.dir\build.make _deps/glad-build/CMakeFiles/glad.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num= "Built target glad"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=72 "Built target glad"
 .PHONY : _deps/glad-build/CMakeFiles/glad.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1264,7 +1264,7 @@ _deps/assimp-build/contrib/zlib/CMakeFiles/zlibstatic.dir/clean:
 _deps/assimp-build/code/CMakeFiles/assimp.dir/all: _deps/assimp-build/contrib/zlib/CMakeFiles/zlibstatic.dir/all
 	$(MAKE) $(MAKESILENT) -f _deps\assimp-build\code\CMakeFiles\assimp.dir\build.make _deps/assimp-build/code/CMakeFiles/assimp.dir/depend
 	$(MAKE) $(MAKESILENT) -f _deps\assimp-build\code\CMakeFiles\assimp.dir\build.make _deps/assimp-build/code/CMakeFiles/assimp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64 "Built target assimp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65 "Built target assimp"
 .PHONY : _deps/assimp-build/code/CMakeFiles/assimp.dir/all
 
 # Build rule for subdir invocation for target.

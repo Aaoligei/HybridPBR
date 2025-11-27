@@ -52,29 +52,13 @@ namespace HybridPBR {
         // 设置当前场景
         SetCurrentScene(scene);
         
-        // 构建上下文
-        RenderContext context;
-        context.scene = &scene;
-        context.gBuffer = gBuffer.get(); // 传递资源
-        context.outputFBO = 0;           // 最终输出到默认屏幕，或者 post-process FBO
-        context.width = m_width;
-        context.height = m_height;
-        if(!deferred){
-            // 执行所有渲染通道
-            for (auto& pass : forwardRenderPass) {
-                if (pass) {
-                    LOG_DEBUG("Executing forward render pass: " + pass->GetName());
-                    pass->Execute(context);
-                }
-            }
-        }else{ 
-            for (auto& pass : deferredRenderPass) {
-                if (pass) {
-                    LOG_DEBUG("Executing deferred render pass: " + pass->GetName());
-                    pass->Execute(context);
-                }
+        for (auto& pass : renderPass) {
+            if (pass) {
+                LOG_DEBUG("Executing forward render pass: " + pass->GetName());
+                pass->Execute(scene);
             }
         }
+        
         EndFrame();
     }
 
@@ -106,28 +90,20 @@ namespace HybridPBR {
         
     }
 
-    void Rasterizer::AddRenderPass(std::shared_ptr<RenderPass> pass, bool deferred) {
-        if(deferred){
-            if (pass) {
-                pass->Initialize();
-                deferredRenderPass.push_back(pass);
-                LOG_INFO("Added deferred render pass: " + deferredRenderPass.back()->GetName());
-            }
-        }else{
-            if (pass) {
-                pass->Initialize();
-                forwardRenderPass.push_back(pass);
-                LOG_INFO("Added forward render pass: " + forwardRenderPass.back()->GetName());
-            }
+    void Rasterizer::AddRenderPass(std::shared_ptr<RenderPass> pass) {
+        if (pass) {
+            pass->Initialize();
+            renderPass.push_back(pass);
+            LOG_INFO("Added forward render pass: " + renderPass.back()->GetName());
         }
-        
+
     }
 
     void Rasterizer::RemoveRenderPass(const std::string& passName) {
-        for (auto it = forwardRenderPass.begin(); it != forwardRenderPass.end(); ++it) {
+        for (auto it = renderPass.begin(); it != renderPass.end(); ++it) {
             if ((*it)->GetName() == passName) {
                 (*it)->Cleanup();
-                forwardRenderPass.erase(it);
+                renderPass.erase(it);
                 LOG_INFO("Removed render pass: " + passName);
                 break;
             }
@@ -135,12 +111,12 @@ namespace HybridPBR {
     }
 
     void Rasterizer::ClearRenderPasses() {
-        for (auto& pass : forwardRenderPass) {
+        for (auto& pass : renderPass) {
             if (pass) {
                 pass->Cleanup();
             }
         }
-        forwardRenderPass.clear();
+        renderPass.clear();
         LOG_INFO("Cleared all render passes");
     }
 
@@ -164,7 +140,7 @@ namespace HybridPBR {
     void Rasterizer::SetWireframe(bool enabled) {
         wireframe = enabled;
         // 更新几何通道的设置
-        for (auto& pass : forwardRenderPass) {
+        for (auto& pass : renderPass) {
             if (auto geometryPass = dynamic_cast<GeometryPass*>(pass.get())) {
                 geometryPass->SetWireframe(enabled);
             }
@@ -174,7 +150,7 @@ namespace HybridPBR {
     void Rasterizer::SetBackfaceCulling(bool enabled) {
         backfaceCulling = enabled;
         // 更新几何通道的设置
-        for (auto& pass : forwardRenderPass) {
+        for (auto& pass : renderPass) {
             if (auto geometryPass = dynamic_cast<GeometryPass*>(pass.get())) {
                 geometryPass->SetBackfaceCulling(enabled);
             }
@@ -183,7 +159,7 @@ namespace HybridPBR {
 
     std::vector<std::string> Rasterizer::GetRenderPassNames(){
             std::vector<std::string> names;
-            for (auto& pass : forwardRenderPass) {
+            for (auto& pass : renderPass) {
                 names.push_back(pass->GetName());
             }
             return names;

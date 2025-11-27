@@ -12,9 +12,8 @@ namespace HybridPBR {
         LOG_INFO("Initializing GeometryPass");
     }
 
-    void GeometryPass::Execute(RenderContext& context) {
-        auto& scene = context.scene;
-        auto camera = scene->GetMainCamera();
+    void GeometryPass::Execute(const Scene& scene) {
+        auto camera = scene.GetMainCamera();
         if (!camera) {
             LOG_WARNING("No main camera in scene for GeometryPass");
             return;
@@ -24,7 +23,7 @@ namespace HybridPBR {
         ApplyRenderState();
         
         // 渲染场景中的所有几何体
-        RenderSceneNode(*scene->GetRoot(), glm::mat4(1.0f), *scene);
+        RenderSceneNode(*scene.GetRoot(), glm::mat4(1.0f), scene);
     }
 
     void GeometryPass::Cleanup() {
@@ -115,11 +114,10 @@ namespace HybridPBR {
         LOG_INFO("Initializing SkyboxPass");
     }
 
-    void SkyboxPass::Execute(RenderContext& context) {
-        auto& scene = context.scene;
+    void SkyboxPass::Execute(const Scene& scene) {
         if (!skyboxTexture) return;
         
-        auto camera = scene->GetMainCamera();
+        auto camera = scene.GetMainCamera();
         if (!camera) return;
         
         auto& shaderManager = ShaderManager::GetInstance();
@@ -222,7 +220,7 @@ namespace HybridPBR {
         }
     }
 
-    void PostProcessPass::Execute(RenderContext& context) {
+    void PostProcessPass::Execute(const Scene& scene) {
         if (!postProcessShader) return;
         
         auto& shaderManager = ShaderManager::GetInstance();
@@ -260,37 +258,28 @@ namespace HybridPBR {
         gBufferShader = ShaderManager::GetInstance().GetShader("GBuffer"); 
     }
 
-    void GBufferPass::Execute(RenderContext& context) {
-        if (!context.gBuffer || !gBufferShader) return;
+    void GBufferPass::Execute(const Scene& scene) {
+        if (!gBuffer || !gBufferShader) return;
 
-        // 1. 绑定 GBuffer FBO 进行写入
-        context.gBuffer->BindForGeometryPass(); // 内部调用 glBindFramebuffer + glDrawBuffers
-        
-        // 2. 设置状态
-        glViewport(0, 0, context.width, context.height);
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        // 清除 GBuffer 的颜色和深度
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
-
-        glEnable(GL_DEPTH_TEST);
-        if (backfaceCulling) glEnable(GL_CULL_FACE);
-        else glDisable(GL_CULL_FACE);
-        if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-        // 3. 激活 Shader
-        ShaderManager::GetInstance().SetCurrentShader(gBufferShader);
-
-        // 4. 遍历场景渲染
-        // 注意：这里我们不再使用 Material 自带的 Shader，而是强制使用 GBufferShader
-        // 但我们仍然使用 Material 的纹理
-        if (context.scene->GetRoot()) {
-            RenderSceneNode(*context.scene->GetRoot(), glm::mat4(1.0f), *context.scene);
+        auto camera = scene.GetMainCamera();
+        if (!camera) {
+            LOG_WARNING("No main camera in scene for GeometryPass");
+            return;
         }
-
-        // 5. 解绑
-        //context.gBuffer->Unbind();
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // 恢复填充模式
+        
+        // 绑定G-Buffer进行写入
+        gBuffer->BindForGeometryPass();
+        
+        ApplyRenderState();
+        
+        // 设置相机统一变量
+        //SetupCameraUniforms(scene);
+        
+        // 渲染场景中的所有几何体
+        RenderSceneNode(*scene.GetRoot(), glm::mat4(1.0f), scene);
+        
+        // 解除FBO绑定
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     void GBufferPass::RenderSceneNode(const SceneNode& node, const glm::mat4& parentTransform,const Scene& scene) {
@@ -334,18 +323,34 @@ namespace HybridPBR {
         stats.triangleCount += mesh.GetTriangleCount();
         stats.vertexCount += mesh.GetVertexCount();
     }
-    void GBufferPass::Cleanup() {
-        // 清理资源
+     void GBufferPass::Cleanup() {
+        if (gBuffer) {
+            gBuffer->Destroy();
+        }
+    }
+
+    void GBufferPass::Resize(int width, int height) {
+        if (gBuffer) {
+            gBuffer->Resize(width, height);
+        }
+    }
+
+    void GBufferPass::ApplyRenderState() {
+        // 几何通道需要深度测试和背面剔除
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        
+        if (wireframe) {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        } else {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
     }
 
      // ================= LightingPass =================
-    void LightingPass::Initialize() {
-        auto& shaderManager = ShaderManager::GetInstance();
-        shaderManager.LoadShader("DeferredLighting", 
-                                FileIO::GetAssetsPath()+"shaders/deferred/lighting.vert",
-                                FileIO::GetAssetsPath()+"shaders/deferred/lighting.frag");
-        lightingShader = ShaderManager::GetInstance().GetShader("DeferredLighting");
-
+    LightingPass::LightingPass() {
+        // 初始化全屏四边形
         float quadVertices[] = {
             -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
             -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
@@ -366,81 +371,118 @@ namespace HybridPBR {
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     }
 
-    void LightingPass::Execute(RenderContext& context) {
-        if (!context.gBuffer || !lightingShader) return;
-
-        // 1. 绑定输出 FBO (通常是默认 FBO 或者 HDR 纹理 FBO)
-        glBindFramebuffer(GL_FRAMEBUFFER, context.outputFBO);
-        glClear(GL_COLOR_BUFFER_BIT); // 只需要清颜色，不需要清深度(因为要留给 Skybox 用)
+    void LightingPass::Initialize() {
+        LOG_INFO("Initializing LightingPass");
         
-        glDisable(GL_DEPTH_TEST); // 光照计算是全屏 Quad，不需要深度测试
-        glDisable(GL_CULL_FACE);
-
-        ShaderManager::GetInstance().SetCurrentShader(lightingShader);
-
-        // 2. 绑定 GBuffer 纹理资源到 Shader
-        // 假设 TextureUnit 0-4 分配给 GBuffer
-        context.gBuffer->BindForLightingPass();
-        
-        // 设置 Shader 中的采样器索引
-        lightingShader->SetInt("gPosition", 0);
-        lightingShader->SetInt("gNormal", 1);
-        lightingShader->SetInt("gAlbedo", 2);
-        // ...
-
-        // 3. 更新光照 Uniform (如果 Rasterizer 的 UBO 不够用，可以在这里传额外的)
-        
-        // 4. 绘制全屏四边形
-        RenderQuad();
-        
-        // 5. 关键步骤：Blit Depth Buffer
-        // 将 GBuffer 的深度缓冲复制到当前的 Output FBO
-        // 这样后续的 SkyboxPass 和 ForwardTransparentPass 才能正确进行深度测试
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, context.gBuffer->GetFBO());
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, context.outputFBO); 
-        glBlitFramebuffer(0, 0, context.width, context.height, 
-                          0, 0, context.width, context.height, 
-                          GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-        
-        glEnable(GL_DEPTH_TEST); // 恢复深度测试供后续 Pass 使用
-    }
-    void LightingPass::Cleanup() {
-        // 清理资源
+        // 加载光照通道着色器
+        auto& shaderManager = ShaderManager::GetInstance();
+        lightingShader = shaderManager.GetShader("LightingPass");
+        if (!lightingShader) {
+            if (!shaderManager.LoadShader("LightingPass", 
+                FileIO::GetAssetsPath()+"shaders/deferred/lighting.vert", 
+                FileIO::GetAssetsPath()+"shaders/deferred/lighting.frag")) {
+                LOG_ERROR("Failed to load lighting pass shader");
+                return;
+            }
+            lightingShader = shaderManager.GetShader("LightingPass");
+        }
     }
 
-    void LightingPass::RenderQuad() {
-        // 简化的四边形渲染
-        static unsigned int quadVAO = 0;
-        static unsigned int quadVBO = 0;
+    void LightingPass::Execute(const Scene& scene) {
+        if (!gbuffer || !lightingShader) return;
         
-        if (quadVAO == 0) {
-            float quadVertices[] = {
-                -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-                -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-                 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-                 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-            };
-            
-            glCreateVertexArrays(1, &quadVAO);
-            glCreateBuffers(1, &quadVBO);
-            glNamedBufferStorage(quadVBO, sizeof(quadVertices), &quadVertices, 0);
-
-            glVertexArrayVertexBuffer(quadVAO, 0, quadVBO, 0, 5 * sizeof(float));
-
-            glEnableVertexArrayAttrib(quadVAO, 0);
-            glVertexArrayAttribFormat(quadVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
-            glVertexArrayAttribBinding(quadVAO, 0, 0);
-
-            glEnableVertexArrayAttrib(quadVAO, 1);
-            glVertexArrayAttribFormat(quadVAO, 1, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(float));
-            glVertexArrayAttribBinding(quadVAO, 1, 0);
-
+        auto camera = scene.GetMainCamera();
+        if (!camera) {
+            LOG_WARNING("No main camera in scene for LightingPass");
+            return;
         }
         
+        // 设置光照通道状态（无深度测试，无背面剔除）
+        glDisable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
+        
+        auto& shaderManager = ShaderManager::GetInstance();
+        shaderManager.SetCurrentShader(lightingShader);
+        
+        // 设置G-Buffer纹理
+        SetupGBufferUniforms();
+        
+        // 设置相机统一变量
+        lightingShader->SetVec3("viewPos", camera->GetPosition());
+        
+        // 设置光源
+        //SetupLightingUniforms(scene);
+        
+        // 设置IBL
+        SetupIBLUniforms();
+        
+        // 渲染全屏四边形
+        RenderFullscreenQuad();
+        
+        // 恢复状态
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+    }
+
+    void LightingPass::Cleanup() {
+        if (quadVAO) {
+            glDeleteVertexArrays(1, &quadVAO);
+            glDeleteBuffers(1, &quadVBO);
+        }
+    }
+
+    void LightingPass::RenderFullscreenQuad() {
         glBindVertexArray(quadVAO);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         glBindVertexArray(0);
     }
 
+    //有待删除
+    void LightingPass::SetupLightingUniforms(const Scene& scene) {
+        if (!lightingShader) return;
+        
+        // 设置方向光
+        int directionalLightCount = 0;
+        for (const auto& light : scene.GetLights()) {
+            if (!light->IsEnabled()) continue;
+            
+            if (light->GetType() == LightType::DIRECTIONAL && directionalLightCount == 0) {
+                std::string prefix = "directionalLight";
+                lightingShader->SetVec3(prefix + ".direction", light->GetDirection());
+                lightingShader->SetVec3(prefix + ".color", light->GetProperties().color);
+                lightingShader->SetFloat(prefix + ".intensity", light->GetProperties().intensity);
+                directionalLightCount++;
+            }
+            
+            // 可以添加点光源和聚光灯的支持
+        }
+        
+        lightingShader->SetInt("directionalLightCount", directionalLightCount);
+        lightingShader->SetInt("pointLightCount", 0); // 简化处理
+        lightingShader->SetInt("spotLightCount", 0);  // 简化处理
+    }
 
+    void LightingPass::SetupGBufferUniforms() {
+        if (!lightingShader) return;
+        
+        // 绑定G-Buffer纹理
+        lightingShader->SetInt("gPosition", 0);
+        lightingShader->SetInt("gNormal", 1);
+        lightingShader->SetInt("gAlbedo", 2);
+        lightingShader->SetInt("gMRA", 3); // Metallic, Roughness, AO
+        lightingShader->SetInt("gEmissive", 4);
+        
+        gbuffer->BindTexture(GBufferTextureType::Position, 0);
+        gbuffer->BindTexture(GBufferTextureType::Normal, 1);
+        gbuffer->BindTexture(GBufferTextureType::Albedo, 2);
+        gbuffer->BindTexture(GBufferTextureType::MetallicRoughnessAO, 3);
+        gbuffer->BindTexture(GBufferTextureType::Emissive, 4);
+    }
+
+    void LightingPass::SetupIBLUniforms() {
+        if (!lightingShader || !iblSystem || !iblSystem->IsReady()) return;
+        
+        lightingShader->SetBool("useIBL", true);
+        iblSystem->BindIBLTextures(lightingShader);
+    }
 } // namespace HybridPBR

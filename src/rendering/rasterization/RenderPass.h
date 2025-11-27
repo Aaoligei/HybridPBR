@@ -6,20 +6,13 @@
 
 namespace HybridPBR {
     
-    struct RenderContext{
-        const Scene* scene = nullptr;
-        GBuffer* gBuffer = nullptr;       // 延迟渲染核心资源
-        uint32_t outputFBO = 0;           // 当前应该画到哪里
-        int width = 0;
-        int height = 0;
-    };
     // 渲染通道基类
     class RenderPass {
     public:
         virtual ~RenderPass() = default;
         
         virtual void Initialize() = 0;
-        virtual void Execute(RenderContext& context) = 0;
+        virtual void Execute(const Scene& scene) = 0;
         virtual void Cleanup() = 0;
         
         virtual std::string GetName() const = 0;
@@ -31,7 +24,7 @@ namespace HybridPBR {
         GeometryPass() = default;
         
         void Initialize() override;
-        void Execute(RenderContext& context) override;
+        void Execute(const Scene& scene) override;
         void Cleanup() override;
         
         std::string GetName() const override { return "GeometryPass"; }
@@ -52,15 +45,36 @@ namespace HybridPBR {
     // 光照通道 - 使用G-Buffer计算光照
     class LightingPass : public RenderPass {
     public:
+        LightingPass();
+        
         void Initialize() override;
-        void Execute(RenderContext& context) override;
+        void Execute(const Scene& scene) override;
         void Cleanup() override;
+        
         std::string GetName() const override { return "LightingPass"; }
+        
+        // 设置G-Buffer输入
+        void SetGBuffer(std::shared_ptr<GBuffer> gbuffer) { this->gbuffer = gbuffer; }
+        void SetIBLSystem(std::shared_ptr<IBL> ibl) { iblSystem = ibl; }
+        
+        // 光源管理
+        void SetMaxPointLights(int count) { maxPointLights = count; }
+        void SetMaxSpotLights(int count) { maxSpotLights = count; }
 
     private:
+        std::shared_ptr<GBuffer> gbuffer;
+        std::shared_ptr<IBL> iblSystem;
         std::shared_ptr<Shader> lightingShader;
+        
+        int maxPointLights = 32;
+        int maxSpotLights = 8;
+        
         uint32_t quadVAO = 0, quadVBO = 0;
-        void RenderQuad();
+        
+        void RenderFullscreenQuad();
+        void SetupLightingUniforms(const Scene& scene);
+        void SetupGBufferUniforms();
+        void SetupIBLUniforms();
     };
     
     // 天空盒通道
@@ -69,7 +83,7 @@ namespace HybridPBR {
         SkyboxPass() = default;
         
         void Initialize() override;
-        void Execute(RenderContext& context) override;
+        void Execute(const Scene& scene) override;
         void Cleanup() override;
         
         std::string GetName() const override { return "SkyboxPass"; }
@@ -130,7 +144,7 @@ namespace HybridPBR {
         PostProcessPass() = default;
         
         void Initialize() override;
-        void Execute(RenderContext& context) override;
+        void Execute(const Scene& scene) override;
         void Cleanup() override;
         
         std::string GetName() const override { return "PostProcessPass"; }
@@ -149,19 +163,25 @@ namespace HybridPBR {
     class GBufferPass : public RenderPass {
     public:
         void Initialize() override;
-        void Execute(RenderContext& context) override;
+        void Execute(const Scene& scene) override;
         void Cleanup() override;
         std::string GetName() const override { return "GBufferPass"; }
         
+        std::shared_ptr<GBuffer> GetGBuffer() const { return gBuffer; }
+        void Resize(int width, int height);
+
         void SetWireframe(bool enabled) { wireframe = enabled; }
         void SetBackfaceCulling(bool enabled) { backfaceCulling = enabled; }
 
     private:
         bool wireframe = false;
         bool backfaceCulling = true;
+        std::shared_ptr<GBuffer> gBuffer;
         std::shared_ptr<Shader> gBufferShader;
 
+        void ApplyRenderState();
         void RenderSceneNode(const SceneNode& node, const glm::mat4& parentTransform,const Scene& scene);
         void RenderMesh(const Mesh& mesh, const Material& material, const glm::mat4& transform);
+        //void SetupCameraUniforms(const Scene& scene);
     };
 } // namespace HybridPBR

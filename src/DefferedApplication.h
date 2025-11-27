@@ -14,6 +14,7 @@
 #include "rendering/ImGuiComponentManager.h"
 #include "pbr/IBL.h"
 #include "pbr/PBRMaterial.h"
+#include "rendering/deferred/DeferredRenderer.h"
 
 class ThreeDApp : public HybridPBR::Application {
 public:
@@ -169,21 +170,22 @@ public:
         if (!rasterizer->Initialize()) {
             return false;
         }
+
+        //创建延迟渲染器
+        deferredRenderer = std::make_unique<HybridPBR::DeferredRenderer>();
+        if (!deferredRenderer->Initialize(window->GetWidth(), window->GetHeight())){
+            return false;
+        }
+        deferredRenderer->SetIBLSystem(iblSystem);
+        deferredRenderer->SetSSAOEnabled(false);
+
         auto& shaderManager = HybridPBR::ShaderManager::GetInstance();
         iblSystem->BindIBLTextures(shaderManager.GetShader(HybridPBR::ShaderType::PBR));
-
-        //延迟渲染
-        auto gbufferPass = std::make_shared<HybridPBR::GBufferPass>();
-        rasterizer->AddRenderPass(std::move(gbufferPass), true);
-
-        auto lightingPass = std::make_shared<HybridPBR::LightingPass>();
-        rasterizer->AddRenderPass(std::move(lightingPass), true);
 
         //添加天空盒通道
         auto skyboxPass = std::make_shared<HybridPBR::SkyboxPass>();
         skyboxPass->SetSkyboxTexture(iblSystem->GetEnvironmentMap());
         rasterizer->AddRenderPass(skyboxPass);
-        rasterizer->AddRenderPass(skyboxPass, true);
         
         // 创建场景
         scene = std::make_unique<HybridPBR::Scene>();
@@ -242,9 +244,13 @@ public:
     }
     
     void OnRender() override {
-        rasterizer->SetViewport(GetWindow().GetWidth(), GetWindow().GetHeight());
-        rasterizer->Render(*scene);
-
+        if (useDeferred) {
+            deferredRenderer->Render(*scene);
+            return;
+        } else {
+            rasterizer->SetViewport(GetWindow().GetWidth(), GetWindow().GetHeight());
+            rasterizer->Render(*scene);
+        }
     }
 
     void OnImGuiRender() override {
@@ -283,6 +289,8 @@ public:
 
 private:
     std::unique_ptr<HybridPBR::Rasterizer> rasterizer;
+    std::unique_ptr<HybridPBR::DeferredRenderer> deferredRenderer;
+    bool useDeferred = false;
     std::shared_ptr<HybridPBR::Camera> camera;
     float rotationSpeed;
     std::shared_ptr<HybridPBR::IBL> iblSystem;

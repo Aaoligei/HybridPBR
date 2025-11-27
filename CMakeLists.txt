@@ -121,11 +121,18 @@ add_executable(HybridPBR
     src/rendering/common/Texture.cpp
     src/rendering/common/UniformBuffer.cpp
     src/rendering/deferred/GBuffer.cpp
+    src/rendering/deferred/DeferredRenderer.cpp
+    src/rendering/postprocess/SSAO.cpp
     src/rendering/rasterization/Camera.cpp
     src/rendering/rasterization/CameraController.cpp
     src/rendering/rasterization/Mesh.cpp
     src/rendering/rasterization/Rasterizer.cpp
     src/rendering/rasterization/RenderPass.cpp
+    src/rendering/raytracing/RayTracer.cpp
+    src/rendering/raytracing/Ray.cpp
+    src/rendering/raytracing/BVH.cpp
+    src/rendering/raytracing/Denoiser.cpp
+    src/rendering/raytracing/ComputeShader.cpp
     src/resources/ModelLoader.cpp
     src/resources/ResourceManager.cpp
     src/scene/Scene.cpp

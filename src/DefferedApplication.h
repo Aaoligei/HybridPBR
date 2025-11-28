@@ -15,6 +15,7 @@
 #include "pbr/IBL.h"
 #include "pbr/PBRMaterial.h"
 #include "rendering/deferred/DeferredRenderer.h"
+#include "rendering/raytracing/RayTracer.h"
 
 class ThreeDApp : public HybridPBR::Application {
 public:
@@ -173,11 +174,24 @@ public:
 
         //创建延迟渲染器
         deferredRenderer = std::make_unique<HybridPBR::DeferredRenderer>();
-        if (!deferredRenderer->Initialize(window->GetWidth(), window->GetHeight())){
+        // if (!deferredRenderer->Initialize(window->GetWidth(), window->GetHeight())){
+        //     return false;
+        // }
+        // deferredRenderer->SetIBLSystem(iblSystem);
+        // deferredRenderer->SetSSAOEnabled(false);
+
+        //创建光线追踪渲染器
+        HybridPBR::RayTracerConfig rtConfig;
+            rtConfig.width = GetWindow().GetWidth();
+            rtConfig.height = GetWindow().GetHeight();
+            rtConfig.maxBounces = 4;
+            rtConfig.samplesPerPixel = 1;
+            rtConfig.denoiseEnabled = false;
+        rayTracer = std::make_unique<HybridPBR::RayTracer>();
+        if (!rayTracer->Initialize(rtConfig)){
             return false;
         }
-        deferredRenderer->SetIBLSystem(iblSystem);
-        deferredRenderer->SetSSAOEnabled(false);
+        useRayTracing = true;
 
         auto& shaderManager = HybridPBR::ShaderManager::GetInstance();
         iblSystem->BindIBLTextures(shaderManager.GetShader(HybridPBR::ShaderType::PBR));
@@ -239,18 +253,51 @@ public:
         if (auto camera = scene->GetMainCamera()) {
             camera->SetViewport(GetWindow().GetWidth(), GetWindow().GetHeight());
         }
+        // 重置光线追踪累积（如果相机移动）
+        static glm::vec3 lastCameraPos = scene->GetMainCamera()->GetPosition();
+        glm::vec3 currentCameraPos = scene->GetMainCamera()->GetPosition();
         
+        if (glm::distance(lastCameraPos, currentCameraPos) > 0.01f) {
+            if (rayTracer) {
+                rayTracer->ResetAccumulation();
+            }
+            lastCameraPos = currentCameraPos;
+        }
         scene->Update();
     }
     
     void OnRender() override {
-        if (useDeferred) {
-            deferredRenderer->Render(*scene);
-            return;
+        
+        if (useRayTracing && !useHybridRendering) {
+            // 纯光线追踪模式
+            rayTracer->Render(*scene);
+            
+            // 在这里可以显示光线追踪结果
+            // 实际应用中需要将光线追踪纹理渲染到屏幕上
+            
+        } else if (useHybridRendering) {
+            // 混合渲染模式
+            if (useDeferredRendering) {
+                deferredRenderer->Render(*scene);
+                // 可以在这里组合光线追踪结果
+            } else {
+                rasterizer->Render(*scene);
+            }
+            
+            // 同时进行光线追踪（异步或同步）
+            if (rayTracer) {
+                rayTracer->Render(*scene);
+            }
         } else {
-            rasterizer->SetViewport(GetWindow().GetWidth(), GetWindow().GetHeight());
-            rasterizer->Render(*scene);
+            // 传统渲染模式
+            if (useDeferredRendering) {
+                deferredRenderer->Render(*scene);
+            } else {
+                rasterizer->SetViewport(window->GetWidth(), window->GetHeight());
+                rasterizer->Render(*scene);
+            }
         }
+        
     }
 
     void OnImGuiRender() override {
@@ -284,15 +331,27 @@ public:
     }
     
     void OnShutdown() override {
-        rasterizer->Shutdown();
+        if (rayTracer) {
+            rayTracer->Shutdown();
+        }
+        if (useDeferredRendering) {
+            deferredRenderer->Shutdown();
+        } else {
+            rasterizer->Shutdown();
+        }
     }
 
 private:
     std::unique_ptr<HybridPBR::Rasterizer> rasterizer;
     std::unique_ptr<HybridPBR::DeferredRenderer> deferredRenderer;
-    bool useDeferred = false;
+    std::unique_ptr<HybridPBR::RayTracer> rayTracer;
+
+    std::shared_ptr<HybridPBR::IBL> iblSystem;
     std::shared_ptr<HybridPBR::Camera> camera;
     float rotationSpeed;
-    std::shared_ptr<HybridPBR::IBL> iblSystem;
+
+    bool useDeferredRendering = false;
+    bool useRayTracing = false;
+    bool useHybridRendering = false;
 
 };

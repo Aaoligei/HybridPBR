@@ -20,6 +20,7 @@ namespace HybridPBR {
         // Uniform设置方法
         void SetBool(const std::string& name, bool value) const;
         void SetInt(const std::string& name, int value) const;
+        void SetUint(const std::string& name, unsigned int value) const;
         void SetFloat(const std::string& name, float value) const;
         void SetVec2(const std::string& name, const glm::vec2& value) const;
         void SetVec3(const std::string& name, const glm::vec3& value) const;
@@ -30,7 +31,7 @@ namespace HybridPBR {
         unsigned int GetID() const { return programID; }
         std::string GetName() const { return shaderName; }
 
-    private:
+    protected:
         unsigned int programID = 0;
         std::string shaderName; // 用于调试
         mutable std::unordered_map<std::string, int> uniformLocationCache;

@@ -1,0 +1,78 @@
+#version 460 core
+
+layout(local_size_x = 16, local_size_y = 16) in;
+
+struct Ray {
+    vec3 origin;
+    vec3 direction;
+    float tMin;
+    float tMax;
+};
+
+layout(std430, binding = 0) buffer RayBuffer {
+    Ray rays[];
+};
+
+layout(std430, binding = 1) buffer OutputBuffer {
+    vec4 outputPixels[];
+};
+
+uniform uint width;
+uniform uint height;
+uniform uint frameNumber;
+
+// 工具函数
+vec3 RandomInUnitSphere(uint pixelIndex, uint sampleIndex) {
+    // 简化随机数生成
+    uint seed = pixelIndex * 1973 + sampleIndex * 9277 + frameNumber * 26699;
+    seed = (seed ^ 61) ^ (seed >> 16);
+    seed *= 9;
+    seed = seed ^ (seed >> 4);
+    seed *= 0x27d4eb2d;
+    seed = seed ^ (seed >> 15);
+    
+    float theta = float(seed & 0xFFFF) / 65535.0 * 2.0 * 3.14159265;
+    float phi = float((seed >> 16) & 0xFFFF) / 65535.0 * 3.14159265;
+    float r = float((seed >> 32) & 0xFFFF) / 65535.0;
+    
+    return vec3(sin(phi) * cos(theta), sin(phi) * sin(theta), cos(phi)) * r;
+}
+
+void main() {
+    uint x = gl_GlobalInvocationID.x;
+    uint y = gl_GlobalInvocationID.y;
+    
+    if (x >= width || y >= height) return;
+    
+    uint pixelIndex = y * width + x;
+    
+    // 简化相机模型 - 生成主光线
+    vec2 uv = vec2(float(x) / float(width), float(y) / float(height));
+    uv = uv * 2.0 - 1.0; // 转换为NDC
+    
+    // 透视投影
+    float aspect = float(width) / float(height);
+    vec3 origin = vec3(0.0, 0.0, 3.0); // 相机位置
+    vec3 direction = normalize(vec3(uv.x * aspect, uv.y, -1.0));
+    
+    // 添加随机性用于抗锯齿
+    if (frameNumber > 0) {
+        vec2 jitter = vec2(
+            float((pixelIndex * 1973 + frameNumber) & 0xFF) / 255.0 - 0.5,
+            float((pixelIndex * 9277 + frameNumber) & 0xFF) / 255.0 - 0.5
+        ) / float(width);
+        
+        direction = normalize(vec3((uv.x + jitter.x) * aspect, uv.y + jitter.y, -1.0));
+    }
+    
+    // 存储光线
+    rays[pixelIndex].origin = origin;
+    rays[pixelIndex].direction = direction;
+    rays[pixelIndex].tMin = 0.001;
+    rays[pixelIndex].tMax = 10000.0;
+    
+    // 初始化输出像素
+    if (frameNumber == 0) {
+        outputPixels[pixelIndex] = vec4(0.0);
+    }
+}

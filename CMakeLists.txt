@@ -129,10 +129,10 @@ add_executable(HybridPBR
     src/rendering/rasterization/Rasterizer.cpp
     src/rendering/rasterization/RenderPass.cpp
     src/rendering/raytracing/RayTracer.cpp
-    src/rendering/raytracing/Ray.cpp
     src/rendering/raytracing/BVH.cpp
     src/rendering/raytracing/Denoiser.cpp
     src/rendering/raytracing/ComputeShader.cpp
+    src/rendering/raytracing/ComputeBuffer.cpp
     src/resources/ModelLoader.cpp
     src/resources/ResourceManager.cpp
     src/scene/Scene.cpp

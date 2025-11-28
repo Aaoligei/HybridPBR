@@ -526,12 +526,6 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/rendering/raytracing/Ray.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
 			"path" : "src/rendering/raytracing/BVH.cpp",
 			"sourceGroupIndex" : 0
 		},
@@ -545,6 +539,12 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/rendering/raytracing/ComputeShader.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/rendering/raytracing/ComputeBuffer.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

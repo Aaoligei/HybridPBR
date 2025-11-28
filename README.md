@@ -1,51 +1,112 @@
 # HybridPBR
+
+```
 HybridPBR/
 ├── CMakeLists.txt
 ├── src/
 │   ├── core/
-│   │   ├── Application.cpp/.h           # 主应用循环
-│   │   ├── Window.cpp/.h               # 窗口管理
-│   │   ├── Input.cpp/.h                # 输入处理
-│   │   └── Timer.cpp/.h                # 计时器
-│   ├── rendering/
-│   │   ├── interfaces/
-│   │   │   ├── IRenderer.h             # 渲染器接口
-│   │   │   ├── IRasterizer.h           # 光栅化接口
-│   │   │   └── IRayTracer.h            # 光追接口
-│   │   ├── rasterization/
-│   │   │   ├── Rasterizer.cpp/.h       # 光栅化渲染器
-│   │   │   ├── Shader.cpp/.h           # 着色器管理
-│   │   │   ├── GBuffer.cpp/.h          # G-Buffer
-│   │   │   ├── Mesh.cpp/.h             # 网格数据
-│   │   │   └── Camera.cpp/.h           # 相机
-│   │   ├── raytracing/
-│   │   │   ├── RayTracer.cpp/.h        # 光追渲染器
-│   │   │   ├── BVH.cpp/.h              # BVH加速结构
-│   │   │   ├── Ray.cpp/.h              # 光线定义
-│   │   │   └── Denoiser.cpp/.h         # 降噪器
-│   │   └── common/
-│   │       ├── Texture.cpp/.h          # 纹理管理
-│   │       ├── Material.cpp/.h         # 材质系统
-│   │       └── Light.cpp/.h            # 光源
+│   │   ├── Application.cpp
+│   │   ├── Application.h
+│   │   ├── Input.cpp
+│   │   ├── Input.h
+│   │   ├── Timer.cpp
+│   │   ├── Timer.h
+│   │   ├── Window.cpp
+│   │   └── Window.h
 │   ├── pbr/
-│   │   ├── PBRMaterial.cpp/.h          # PBR材质
-│   │   ├:: IBL.cpp/.h                  # 图像Based光照
-│   │   ├:: BRDF.cpp/.h                 # BRDF函数
-│   │   └:: LutGenerator.cpp/.h         # LUT生成器
+│   │   ├── BRDF.cpp
+│   │   ├── BRDF.h
+│   │   ├── IBL.cpp
+│   │   ├── IBL.h
+│   │   ├── PBRMaterial.cpp
+│   │   └── PBRMaterial.h
+│   ├── rendering/
+│   │   ├── common/
+│   │   │   ├── Light.cpp
+│   │   │   ├── Light.h
+│   │   │   ├── Material.cpp
+│   │   │   ├── Material.h
+│   │   │   ├── Texture.cpp
+│   │   │   ├── Texture.h
+│   │   │   ├── UniformBuffer.cpp
+│   │   │   └── UniformBuffer.h
+│   │   ├── deferred/
+│   │   │   ├── DeferredRenderer.cpp
+│   │   │   ├── DeferredRenderer.h
+│   │   │   ├── GBuffer.cpp
+│   │   │   └── GBuffer.h
+│   │   ├── interfaces/
+│   │   │   ├── IRasterizer.h
+│   │   │   ├── IRayTracer.h
+│   │   │   └── IRenderer.h
+│   │   ├── postprocess/
+│   │   │   ├── SSAO.cpp
+│   │   │   └── SSAO.h
+│   │   ├── rasterization/
+│   │   │   ├── Camera.cpp
+│   │   │   ├── Camera.h
+│   │   │   ├── CameraController.cpp
+│   │   │   ├── CameraController.h
+│   │   │   ├── Mesh.cpp
+│   │   │   ├── Mesh.h
+│   │   │   ├── Rasterizer.cpp
+│   │   │   ├── Rasterizer.h
+│   │   │   ├── RenderPass.cpp
+│   │   │   └── RenderPass.h
+│   │   ├── raytracing/
+│   │   │   ├── BVH.cpp
+│   │   │   ├── BVH.h
+│   │   │   ├── ComputeShader.cpp
+│   │   │   ├── ComputeShader.h
+│   │   │   ├── Denoiser.cpp
+│   │   │   ├── Denoiser.h
+│   │   │   ├── Ray.cpp
+│   │   │   ├── Ray.h
+│   │   │   ├── RayTracer.cpp
+│   │   │   └── RayTracer.h
+│   │   ├── ImGuiComponentManager.cpp
+│   │   ├── ImGuiComponentManager.h
+│   │   ├── ImGuiManager.cpp
+│   │   ├── ImGuiManager.h
+│   │   ├── Shader.cpp
+│   │   ├── Shader.h
+│   │   ├── ShaderManager.cpp
+│   │   └── ShaderManager.h
 │   ├── resources/
-│   │   ├:: ShaderLibrary.cpp/.h        # 着色器库
-│   │   ├:: ModelLoader.cpp/.h          # 模型加载
-│   │   └:: ResourceManager.cpp/.h      # 资源管理
-│   └── utils/
-│       ├:: MathUtils.cpp/.h            # 数学工具
-│       ├:: FileIO.cpp/.h               # 文件IO
-│       └:: Logger.cpp/.h               # 日志系统
+│   │   ├── ModelLoader.cpp
+│   │   ├── ModelLoader.h
+│   │   ├── ResourceManager.cpp
+│   │   └── ResourceManager.h
+│   ├── scene/
+│   │   ├── Scene.cpp
+│   │   ├── Scene.h
+│   │   ├── SceneNode.cpp
+│   │   ├── SceneNode.h
+│   │   ├── Transform.cpp
+│   │   └── Transform.h
+│   ├── utils/
+│   │   ├── FileIO.cpp
+│   │   ├── FileIO.h
+│   │   ├── GLCheck.h
+│   │   ├── Logger.cpp
+│   │   ├── Logger.h
+│   │   ├── MathUtils.cpp
+│   │   └── MathUtils.h
+│   ├── DefferedApplication.h
+│   └── main.cpp
 ├── assets/
-│   ├:: shaders/                        # 着色器文件
-│   │   ├:: raster/
-│   │   ├:: compute/
-│   │   └:: raytracing/
-│   ├:: textures/                       # 纹理资源
-│   └:: models/                         # 模型文件
-├── include/                            # 第三方库头文件
-└── external/                           # 第三方库
+│   ├── shaders/
+│   │   ├── raster/
+│   │   ├── compute/
+│   │   └── raytracing/
+│   ├── textures/
+│   └── models/
+├── include/                # 第三方库头文件
+├── external/               # 第三方库
+├── README.md
+├── document.md
+└── imgui.ini
+```
+
+## 项目概述
+基于物理的实时渲染引擎，支持混合渲染管线（光栅化 + 光线追踪）

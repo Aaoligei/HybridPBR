@@ -428,26 +428,11 @@ CMakeFiles/HybridPBR.dir/src/rendering/raytracing/RayTracer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/HybridPBR.dir/src/rendering/raytracing/RayTracer.cpp.s"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\raytracing\RayTracer.cpp -o CMakeFiles\HybridPBR.dir\src\rendering\raytracing\RayTracer.cpp.s
 
-CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.obj: CMakeFiles/HybridPBR.dir/flags.make
-CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
-CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/Ray.cpp
-CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.obj"
-	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\raytracing\Ray.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\raytracing\Ray.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\raytracing\Ray.cpp
-
-CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.i"
-	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\raytracing\Ray.cpp > CMakeFiles\HybridPBR.dir\src\rendering\raytracing\Ray.cpp.i
-
-CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.s"
-	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\raytracing\Ray.cpp -o CMakeFiles\HybridPBR.dir\src\rendering\raytracing\Ray.cpp.s
-
 CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.obj: CMakeFiles/HybridPBR.dir/flags.make
 CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/BVH.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\raytracing\BVH.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\raytracing\BVH.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\raytracing\BVH.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.i: cmake_force
@@ -462,7 +447,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Denoiser.cpp.obj: CMakeFiles/H
 CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Denoiser.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Denoiser.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/Denoiser.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Denoiser.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Denoiser.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Denoiser.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Denoiser.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\raytracing\Denoiser.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\raytracing\Denoiser.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\raytracing\Denoiser.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Denoiser.cpp.i: cmake_force
@@ -477,7 +462,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.obj: CMakeFi
 CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/ComputeShader.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\raytracing\ComputeShader.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\raytracing\ComputeShader.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\raytracing\ComputeShader.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.i: cmake_force
@@ -487,6 +472,21 @@ CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.i: cmake_for
 CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.s"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\raytracing\ComputeShader.cpp -o CMakeFiles\HybridPBR.dir\src\rendering\raytracing\ComputeShader.cpp.s
+
+CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.obj: CMakeFiles/HybridPBR.dir/flags.make
+CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
+CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/ComputeBuffer.cpp
+CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.obj"
+	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\raytracing\ComputeBuffer.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\raytracing\ComputeBuffer.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\raytracing\ComputeBuffer.cpp
+
+CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.i"
+	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\raytracing\ComputeBuffer.cpp > CMakeFiles\HybridPBR.dir\src\rendering\raytracing\ComputeBuffer.cpp.i
+
+CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.s"
+	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\raytracing\ComputeBuffer.cpp -o CMakeFiles\HybridPBR.dir\src\rendering\raytracing\ComputeBuffer.cpp.s
 
 CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.obj: CMakeFiles/HybridPBR.dir/flags.make
 CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
@@ -754,10 +754,10 @@ HybridPBR_OBJECTS = \
 "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Rasterizer.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/rendering/raytracing/RayTracer.cpp.obj" \
-"CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Denoiser.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.obj" \
+"CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/resources/ResourceManager.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/scene/Scene.cpp.obj" \
@@ -802,10 +802,10 @@ bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Mesh.cpp
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Rasterizer.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/rendering/raytracing/RayTracer.cpp.obj
-bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Denoiser.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.obj
+bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/resources/ResourceManager.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/scene/Scene.cpp.obj

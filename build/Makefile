@@ -1409,6 +1409,30 @@ src/rendering/raytracing/BVH.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.s
 .PHONY : src/rendering/raytracing/BVH.cpp.s
 
+src/rendering/raytracing/ComputeBuffer.obj: src/rendering/raytracing/ComputeBuffer.cpp.obj
+.PHONY : src/rendering/raytracing/ComputeBuffer.obj
+
+# target to build an object file
+src/rendering/raytracing/ComputeBuffer.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.obj
+.PHONY : src/rendering/raytracing/ComputeBuffer.cpp.obj
+
+src/rendering/raytracing/ComputeBuffer.i: src/rendering/raytracing/ComputeBuffer.cpp.i
+.PHONY : src/rendering/raytracing/ComputeBuffer.i
+
+# target to preprocess a source file
+src/rendering/raytracing/ComputeBuffer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.i
+.PHONY : src/rendering/raytracing/ComputeBuffer.cpp.i
+
+src/rendering/raytracing/ComputeBuffer.s: src/rendering/raytracing/ComputeBuffer.cpp.s
+.PHONY : src/rendering/raytracing/ComputeBuffer.s
+
+# target to generate assembly for a file
+src/rendering/raytracing/ComputeBuffer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.s
+.PHONY : src/rendering/raytracing/ComputeBuffer.cpp.s
+
 src/rendering/raytracing/ComputeShader.obj: src/rendering/raytracing/ComputeShader.cpp.obj
 .PHONY : src/rendering/raytracing/ComputeShader.obj
 
@@ -1456,30 +1480,6 @@ src/rendering/raytracing/Denoiser.s: src/rendering/raytracing/Denoiser.cpp.s
 src/rendering/raytracing/Denoiser.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Denoiser.cpp.s
 .PHONY : src/rendering/raytracing/Denoiser.cpp.s
-
-src/rendering/raytracing/Ray.obj: src/rendering/raytracing/Ray.cpp.obj
-.PHONY : src/rendering/raytracing/Ray.obj
-
-# target to build an object file
-src/rendering/raytracing/Ray.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.obj
-.PHONY : src/rendering/raytracing/Ray.cpp.obj
-
-src/rendering/raytracing/Ray.i: src/rendering/raytracing/Ray.cpp.i
-.PHONY : src/rendering/raytracing/Ray.i
-
-# target to preprocess a source file
-src/rendering/raytracing/Ray.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.i
-.PHONY : src/rendering/raytracing/Ray.cpp.i
-
-src/rendering/raytracing/Ray.s: src/rendering/raytracing/Ray.cpp.s
-.PHONY : src/rendering/raytracing/Ray.s
-
-# target to generate assembly for a file
-src/rendering/raytracing/Ray.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.s
-.PHONY : src/rendering/raytracing/Ray.cpp.s
 
 src/rendering/raytracing/RayTracer.obj: src/rendering/raytracing/RayTracer.cpp.obj
 .PHONY : src/rendering/raytracing/RayTracer.obj
@@ -1842,15 +1842,15 @@ help:
 	@echo ... src/rendering/raytracing/BVH.obj
 	@echo ... src/rendering/raytracing/BVH.i
 	@echo ... src/rendering/raytracing/BVH.s
+	@echo ... src/rendering/raytracing/ComputeBuffer.obj
+	@echo ... src/rendering/raytracing/ComputeBuffer.i
+	@echo ... src/rendering/raytracing/ComputeBuffer.s
 	@echo ... src/rendering/raytracing/ComputeShader.obj
 	@echo ... src/rendering/raytracing/ComputeShader.i
 	@echo ... src/rendering/raytracing/ComputeShader.s
 	@echo ... src/rendering/raytracing/Denoiser.obj
 	@echo ... src/rendering/raytracing/Denoiser.i
 	@echo ... src/rendering/raytracing/Denoiser.s
-	@echo ... src/rendering/raytracing/Ray.obj
-	@echo ... src/rendering/raytracing/Ray.i
-	@echo ... src/rendering/raytracing/Ray.s
 	@echo ... src/rendering/raytracing/RayTracer.obj
 	@echo ... src/rendering/raytracing/RayTracer.i
 	@echo ... src/rendering/raytracing/RayTracer.s

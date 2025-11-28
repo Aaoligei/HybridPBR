@@ -145,12 +145,6 @@
 },
 {
   "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
-  "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp  -g -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\raytracing\\Ray.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\raytracing\\Ray.cpp",
-  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/Ray.cpp",
-  "output": "CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Ray.cpp.obj"
-},
-{
-  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
   "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp  -g -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\raytracing\\BVH.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\raytracing\\BVH.cpp",
   "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/BVH.cpp",
   "output": "CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.obj"
@@ -166,6 +160,12 @@
   "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp  -g -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\raytracing\\ComputeShader.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\raytracing\\ComputeShader.cpp",
   "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/ComputeShader.cpp",
   "output": "CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.obj"
+},
+{
+  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
+  "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp  -g -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\raytracing\\ComputeBuffer.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\raytracing\\ComputeBuffer.cpp",
+  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/ComputeBuffer.cpp",
+  "output": "CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.obj"
 },
 {
   "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",

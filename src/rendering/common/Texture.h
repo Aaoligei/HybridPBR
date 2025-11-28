@@ -60,6 +60,7 @@ namespace HybridPBR {
         void GenerateMipmaps();
         
         // 绑定
+        void BindImage(uint32_t unit, uint32_t level, GLenum access) const;
         void Bind(uint32_t unit = 0) const;
         void Unbind() const;
         
@@ -70,6 +71,8 @@ namespace HybridPBR {
         TextureType GetType() const { return type; }
         bool GetIsCubeMap() const { return isCubemap; }
         const std::string& GetFilePath() const { return filePath; }
+        GLenum GetInternalFormat() const { return m_internalFormat; }
+        GLenum GetFormat() const { return m_format; }
         
         // 工具函数
         static GLenum GetGLInternalFormat(GLenum format, bool sRGB = false);
@@ -77,6 +80,8 @@ namespace HybridPBR {
 
     private:
         uint32_t textureID = 0;
+        GLenum m_internalFormat=0; // 内部格式
+        GLenum m_format=0; // 数据格式
         int width = 0;
         int height = 0;
         TextureType type = TextureType::DIFFUSE;

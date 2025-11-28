@@ -92,7 +92,10 @@
         "valarray": "cpp",
         "cfloat": "cpp",
         "climits": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "queue": "cpp",
+        "stack": "cpp",
+        "filesystem": "cpp"
     },
     "Codegeex.RepoIndex": true
 }

@@ -1,0 +1,298 @@
+#version 460 core
+
+layout(local_size_x = 8, local_size_y = 8) in;
+
+struct Ray {
+    vec3 origin;
+    vec3 direction;
+    float tMin;
+    float tMax;
+};
+
+struct HitRecord {
+    float t;
+    vec3 position;
+    vec3 normal;
+    vec2 texcoord;
+    uint materialIndex;
+    uint triangleIndex;
+    bool frontFace;
+};
+
+struct Triangle {
+    vec3 v0, v1, v2;
+    vec3 n0, n1, n2;
+    vec2 uv0, uv1, uv2;
+    uint materialIndex;
+};
+
+struct BVHNode {
+    vec3 min;
+    vec3 max;
+    int leftChild;
+    int firstPrim;
+    int primCount;
+};
+
+struct GPUMaterial {
+    vec4 albedo;
+    vec4 emissive;
+    float metallic;
+    float roughness;
+    float ao;
+    uint albedoTexture;
+    uint normalTexture;
+    uint metallicTexture;
+    uint roughnessTexture;
+    uint aoTexture;
+    uint emissiveTexture;
+};
+
+// 缓冲区
+layout(std430, binding = 0) buffer RayBuffer {
+    Ray rays[];
+};
+
+layout(std430, binding = 1) buffer HitBuffer {
+    HitRecord hits[];
+};
+
+layout(std430, binding = 2) buffer OutputBuffer {
+    vec4 outputPixels[];
+};
+
+layout(std430, binding = 3) buffer AccumulationBuffer {
+    vec4 accumulationPixels[];
+};
+
+layout(std430, binding = 4) buffer BVHNodesBuffer {
+    BVHNode bvhNodes[];
+};
+
+layout(std430, binding = 5) buffer TrianglesBuffer {
+    Triangle triangles[];
+};
+
+layout(std430, binding = 6) buffer MaterialsBuffer {
+    GPUMaterial materials[];
+};
+
+uniform uint width;
+uniform uint height;
+uniform uint maxBounces;
+uniform uint samplesPerPixel;
+uniform uint frameNumber;
+
+const float PI = 3.14159265359;
+
+// 工具函数
+uint WangHash(uint seed) {
+    seed = (seed ^ 61) ^ (seed >> 16);
+    seed *= 9;
+    seed = seed ^ (seed >> 4);
+    seed *= 0x27d4eb2d;
+    seed = seed ^ (seed >> 15);
+    return seed;
+}
+
+float RandomFloat(inout uint seed) {
+    seed = WangHash(seed);
+    return float(seed) / 4294967296.0;
+}
+
+vec3 RandomInUnitSphere(inout uint seed) {
+    float theta = RandomFloat(seed) * 2.0 * PI;
+    float phi = RandomFloat(seed) * PI;
+    float r = RandomFloat(seed);
+    return vec3(sin(phi) * cos(theta), sin(phi) * sin(theta), cos(phi)) * r;
+}
+
+vec3 RandomInHemisphere(vec3 normal, inout uint seed) {
+    vec3 inSphere = RandomInUnitSphere(seed);
+    if (dot(inSphere, normal) > 0.0) {
+        return inSphere;
+    } else {
+        return -inSphere;
+    }
+}
+
+// 射线-三角形相交
+bool TriangleIntersect(Triangle tri, Ray ray, float tMin, float tMax, inout HitRecord rec) {
+    vec3 edge1 = tri.v1 - tri.v0;
+    vec3 edge2 = tri.v2 - tri.v0;
+    vec3 h = cross(ray.direction, edge2);
+    float a = dot(edge1, h);
+    
+    if (a > -0.000001 && a < 0.000001) {
+        return false;
+    }
+    
+    float f = 1.0 / a;
+    vec3 s = ray.origin - tri.v0;
+    float u = f * dot(s, h);
+    
+    if (u < 0.0 || u > 1.0) {
+        return false;
+    }
+    
+    vec3 q = cross(s, edge1);
+    float v = f * dot(ray.direction, q);
+    
+    if (v < 0.0 || u + v > 1.0) {
+        return false;
+    }
+    
+    float t = f * dot(edge2, q);
+    
+    if (t > tMin && t < tMax) {
+        rec.t = t;
+        rec.position = ray.origin + ray.direction * t;
+        
+        // 插值法线
+        float w = 1.0 - u - v;
+        rec.normal = normalize(tri.n0 * w + tri.n1 * u + tri.n2 * v);
+        
+        // 插值纹理坐标
+        rec.texcoord = tri.uv0 * w + tri.uv1 * u + tri.uv2 * v;
+        
+        rec.materialIndex = tri.materialIndex;
+        rec.frontFace = dot(ray.direction, rec.normal) < 0.0;
+        if (!rec.frontFace) {
+            rec.normal = -rec.normal;
+        }
+        
+        return true;
+    }
+    
+    return false;
+}
+
+// BVH遍历
+bool BVHIntersect(Ray ray, float tMin, float tMax, inout HitRecord rec) {
+    int stack[64];
+    int stackPtr = 0;
+    stack[stackPtr++] = 0; // 根节点
+    
+    bool hit = false;
+    rec.t = tMax;
+    
+    while (stackPtr > 0) {
+        int nodeIndex = stack[--stackPtr];
+        BVHNode node = bvhNodes[nodeIndex];
+        
+        // 检查AABB相交
+        bool aabbHit = true;
+        for (int i = 0; i < 3; i++) {
+            float invD = 1.0 / ray.direction[i];
+            float t0 = (node.min[i] - ray.origin[i]) * invD;
+            float t1 = (node.max[i] - ray.origin[i]) * invD;
+            
+            if (invD < 0.0) {
+                float temp = t0;
+                t0 = t1;
+                t1 = temp;
+            }
+            
+            tMin = max(t0, tMin);
+            tMax = min(t1, tMax);
+            
+            if (tMax <= tMin) {
+                aabbHit = false;
+                break;
+            }
+        }
+        
+        if (!aabbHit) continue;
+        
+        if (node.primCount > 0) {
+            // 叶节点：检查所有三角形
+            for (int i = 0; i < node.primCount; i++) {
+                Triangle tri = triangles[node.firstPrim + i];
+                HitRecord tempRec;
+                
+                if (TriangleIntersect(tri, ray, tMin, rec.t, tempRec)) {
+                    rec = tempRec;
+                    hit = true;
+                }
+            }
+        } else {
+            // 内部节点：将子节点压入堆栈
+            stack[stackPtr++] = node.leftChild;
+            stack[stackPtr++] = node.firstPrim;
+        }
+    }
+    
+    return hit;
+}
+
+// 路径追踪核心
+vec3 TracePath(Ray ray, inout uint seed) {
+    vec3 throughput = vec3(1.0);
+    vec3 radiance = vec3(0.0);
+    
+    for (int bounce = 0; bounce < maxBounces; bounce++) {
+        HitRecord rec;
+        
+        if (!BVHIntersect(ray, ray.tMin, ray.tMax, rec)) {
+            // 命中天空 - 添加环境光
+            radiance += throughput * vec3(0.1, 0.2, 0.5);
+            break;
+        }
+        
+        GPUMaterial mat = materials[rec.materialIndex];
+        
+        // 添加自发光
+        radiance += throughput * mat.emissive.rgb;
+        
+        // 俄罗斯轮盘赌终止
+        float continueProbability = min(max(max(throughput.r, throughput.g), throughput.b), 1.0);
+        if (RandomFloat(seed) > continueProbability) {
+            break;
+        }
+        throughput /= continueProbability;
+        
+        // 计算新的射线方向（简化版，实际应该基于BRDF采样）
+        vec3 newDirection = RandomInHemisphere(rec.normal, seed);
+        
+        // 更新吞吐量
+        throughput *= mat.albedo.rgb;
+        
+        // 设置新的射线
+        ray.origin = rec.position + rec.normal * 0.001; // 偏移避免自相交
+        ray.direction = newDirection;
+        ray.tMin = 0.001;
+        ray.tMax = 10000.0;
+    }
+    
+    return radiance;
+}
+
+void main() {
+    uint x = gl_GlobalInvocationID.x;
+    uint y = gl_GlobalInvocationID.y;
+    
+    if (x >= width || y >= height) return;
+    
+    uint pixelIndex = y * width + x;
+    uint seed = pixelIndex * 1973 + frameNumber * 26699;
+    
+    Ray ray = rays[pixelIndex];
+    vec3 color = vec3(0.0);
+    
+    // 多重采样
+    for (uint sample = 0; sample < samplesPerPixel; sample++) {
+        color += TracePath(ray, seed);
+    }
+    color /= float(samplesPerPixel);
+    
+    // 累积
+    if (frameNumber == 0) {
+        outputPixels[pixelIndex] = vec4(color, 1.0);
+        accumulationPixels[pixelIndex] = vec4(color, 1.0);
+    } else {
+        vec4 accumulated = accumulationPixels[pixelIndex];
+        vec4 newColor = (accumulated * float(frameNumber) + vec4(color, 1.0)) / float(frameNumber + 1);
+        outputPixels[pixelIndex] = newColor;
+        accumulationPixels[pixelIndex] = newColor;
+    }
+}

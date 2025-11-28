@@ -41,6 +41,8 @@ namespace HybridPBR {
         width = w;
         height = h;
         isCubemap = false;
+        m_internalFormat = internalFormat;
+        m_format = format;
         
         /* 1. 创建 + 一次性分配存储 */
         if (textureID) glDeleteTextures(1, &textureID);
@@ -180,6 +182,19 @@ namespace HybridPBR {
 
     void Texture::Bind(uint32_t unit) const {
         glBindTextureUnit(unit, textureID);
+    }
+
+    void Texture::BindImage(uint32_t unit, uint32_t level, GLenum access) const {
+        // 1. 激活图像单元
+        glBindImageTexture(
+            unit,                       // 图像单元索引 0
+            textureID,                  // 纹理对象名（OpenGL 名字）
+            level,                      // mipmap level 0
+            GL_FALSE,                   // 不是分层纹理（3D/数组）
+            0,                          // 单层索引 0
+            access,                     // GL_WRITE_ONLY / READ_ONLY / READ_WRITE
+            m_internalFormat            // 纹理创建时的内部格式，例如 GL_RGBA32F
+        );
     }
 
     void Texture::Unbind() const {

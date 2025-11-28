@@ -48,6 +48,8 @@ namespace HybridPBR {
         uint32_t GetVertexCount() const { return static_cast<uint32_t>(vertices.size()); }
         uint32_t GetIndexCount() const { return static_cast<uint32_t>(indices.size()); }
         uint32_t GetTriangleCount() const { return GetIndexCount() / 3; }
+        const std::vector<Vertex>& GetVertices() const { return vertices; }
+        const std::vector<uint32_t>& GetIndices() const { return indices; }
         
         // 边界体积
         const glm::vec3& GetMinBounds() const { return minBounds; }

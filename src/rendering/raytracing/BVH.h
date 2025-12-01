@@ -122,11 +122,17 @@ namespace HybridPBR {
         uint32_t GetNodeCount() const { return static_cast<uint32_t>(nodes.size()); }
         uint32_t GetTriangleCount() const { return static_cast<uint32_t>(triangles.size()); }
         uint32_t GetMaxDepth() const { return maxDepth; }
+        // 在 Build 函数里把传入的 materials 存下来
+        const std::vector<std::shared_ptr<Material>>& GetSourceMaterials() const { return sourceMaterials; }
+        
+        // 允许修改 gpuMaterials (为了更新 texture index)
+        std::vector<GPUMaterial>& GetGPUMaterialsMutable() { return gpuMaterials; } 
 
     private:
         std::vector<BVHNode> nodes;
         std::vector<Triangle> triangles;
         std::vector<GPUMaterial> gpuMaterials;
+        std::vector<std::shared_ptr<Material>> sourceMaterials; // 新增
         uint32_t maxDepth = 0;
         
         struct BuildPrimitive {

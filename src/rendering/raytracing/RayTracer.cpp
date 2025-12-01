@@ -97,7 +97,7 @@ namespace HybridPBR {
         if (config.denoiseEnabled) {
             DenoiseResult();
         }
-        DrawOutputToScreen();
+        //DrawOutputToScreen();
 
         accumulatedFrames++;
         
@@ -199,7 +199,72 @@ namespace HybridPBR {
         if (!BuildBVH(scene)) {
             return false;
         }
+            sceneTextures.clear();
+    
+        // [重要] 索引 0 留空，作为“无纹理”的默认值 (或者是纯白纹理)
+        // 你可以创建一个 1x1 的纯白纹理放在 slot 0，防止 shader 访问空纹理报错
+        auto whiteTexture = std::make_shared<Texture>();
+        unsigned char whitePixel[] = {255, 255, 255, 255};
+        whiteTexture->Create2D(1, 1, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE, whitePixel);
+        sceneTextures.push_back(whiteTexture);
+
+        // 获取 BVH 生成的材质列表的引用（我们需要修改它，所以不用 const）
+        // 注意：你需要修改 BVH 类，允许非 const 访问 gpuMaterials，或者在这里拷贝一份
+        std::vector<GPUMaterial> materials = bvh->GetGPUMaterials(); 
         
+        // 为了去重，可以用个 map
+        std::unordered_map<uint32_t, uint32_t> textureIDToSlotIndex;
+        
+        // 辅助 lambda：处理单个纹理
+        auto ProcessTexture = [&](uint32_t& matTexIndex, std::shared_ptr<Texture> tex) {
+            if (tex) {
+                uint32_t texID = tex->GetID();
+                // 如果这个纹理已经加过了，直接复用索引
+                if (textureIDToSlotIndex.find(texID) != textureIDToSlotIndex.end()) {
+                    matTexIndex = textureIDToSlotIndex[texID];
+                } else {
+                    // 如果没加过，加到列表尾部
+                    if (sceneTextures.size() < 32) { // 限制最大数量
+                        uint32_t newIndex = static_cast<uint32_t>(sceneTextures.size());
+                        sceneTextures.push_back(tex);
+                        textureIDToSlotIndex[texID] = newIndex;
+                        matTexIndex = newIndex;
+                    } else {
+                        LOG_WARNING("Texture limit (32) reached!");
+                        matTexIndex = 0; // 超过限制就用白色
+                    }
+                }
+            } else {
+                matTexIndex = 0; // 无纹理
+            }
+        };
+
+        // 重新遍历材质，修正索引
+        // 注意：这里需要能访问到原始的 Scene Material 对象
+        // 这意味着 BVH 构建时最好保留了 Scene Material 的指针列表
+        // 假设 bvh->GetMaterials() 返回原始材质指针列表 (你需要去 BVH.h 加这个 getter)
+        const auto& sourceMaterials = bvh->GetSourceMaterials(); // 需要你在 BVH 类里加这个
+        
+        LOG_INFO("Processing materials"+std::to_string(materials.size()));
+        for (size_t i = 0; i < materials.size(); i++) {
+            if (i >= sourceMaterials.size()) break;
+            auto srcMat = sourceMaterials[i];
+            LOG_INFO("Processing material "+srcMat->GetName());
+            if (!srcMat) continue;
+            
+            // 处理 Albedo
+            ProcessTexture(materials[i].albedoTexture, srcMat->GetTexture(TextureType::DIFFUSE));
+            // 处理 Normal, Metallic 等同理...
+            ProcessTexture(materials[i].normalTexture, srcMat->GetTexture(TextureType::NORMAL));
+            ProcessTexture(materials[i].metallicTexture, srcMat->GetTexture(TextureType::METALLIC));
+            ProcessTexture(materials[i].roughnessTexture, srcMat->GetTexture(TextureType::ROUGHNESS));
+            ProcessTexture(materials[i].aoTexture, srcMat->GetTexture(TextureType::AMBIENT_OCCLUSION));
+            ProcessTexture(materials[i].emissiveTexture, srcMat->GetTexture(TextureType::EMISSIVE));
+        }
+
+        // 上传修正后的材质数据到 GPU
+        if (!materialsBuffer.Create(materials)) return false;
+
         // 更新BVH节点缓冲区
         const auto& nodes = bvh->GetNodes();
         if (!bvhNodesBuffer.Create(nodes)) {
@@ -211,13 +276,7 @@ namespace HybridPBR {
         if (!trianglesBuffer.Create(triangles)) {
             return false;
         }
-        
-        // 更新材质缓冲区
-        const auto& materials = bvh->GetGPUMaterials();
-        if (!materialsBuffer.Create(materials)) {
-            return false;
-        }
-        
+
         return true;
     }
 
@@ -300,6 +359,20 @@ namespace HybridPBR {
         bvhNodesBuffer.Bind(4);
         trianglesBuffer.Bind(5);
         materialsBuffer.Bind(6);
+
+        // 绑定所有纹理
+        LOG_INFO("Textures: "+std::to_string(sceneTextures.size()));
+        for (int i = 0; i < sceneTextures.size(); ++i) {
+            if (sceneTextures[i]) {
+                // 绑定到纹理单元 i
+                glActiveTexture(GL_TEXTURE0 + i);
+                glBindTexture(GL_TEXTURE_2D, sceneTextures[i]->GetID());
+                
+                // 告诉 shader，uniform 数组的第 i 个元素对应纹理单元 i
+                std::string name = "textureMaps[" + std::to_string(i) + "]";
+                pathTracingShader->SetInt(name, i);
+            }
+        }
         
         // 分派计算着色器
         uint32_t groupsX = (config.width + 7) / 8;
@@ -382,8 +455,9 @@ namespace HybridPBR {
         auto camera = scene.GetMainCamera();
         if (camera) {
             CameraData camData;
-            camData.view = camera->GetViewMatrix();
-            camData.projection = camera->GetProjectionMatrix();
+            //光追需要获取逆矩阵
+            camData.view =glm::inverse(camera->GetViewMatrix());
+            camData.projection = glm::inverse(camera->GetProjectionMatrix());
             camData.viewPos = camera->GetPosition();
             cameraUBO->SetData(&camData, sizeof(CameraData));
         }

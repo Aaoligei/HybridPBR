@@ -15,12 +15,13 @@ namespace HybridPBR {
     bool BVH::Build(const std::vector<std::shared_ptr<Mesh>>& meshes,
                    const std::vector<std::shared_ptr<Material>>& materials,
                     const std::vector<glm::mat4>& transforms) {
-        LOG_INFO("Building BVH acceleration structure...");
+        //LOG_INFO("Building BVH acceleration structure...");
         
         nodes.clear();
         triangles.clear();
         gpuMaterials.clear();
         maxDepth = 0;
+        sourceMaterials = materials; 
         
         // 从网格提取三角形
         ExtractTrianglesFromMeshes(meshes, materials,transforms);
@@ -29,7 +30,7 @@ namespace HybridPBR {
             LOG_WARNING("No triangles to build BVH");
             return false;
         }else {
-            LOG_INFO("Triangles extracted: " + std::to_string(triangles.size()));
+            //LOG_INFO("Triangles extracted: " + std::to_string(triangles.size()));
         }
         
         // 创建GPU材质
@@ -67,9 +68,9 @@ namespace HybridPBR {
         // 3. 用排序后的三角形替换原始三角形
         triangles = std::move(sortedTriangles);
             
-            LOG_INFO("BVH built: " + std::to_string(nodes.size()) + " nodes, " + 
-                    std::to_string(triangles.size()) + " triangles, max depth: " + 
-                    std::to_string(maxDepth));
+            // LOG_INFO("BVH built: " + std::to_string(nodes.size()) + " nodes, " + 
+            //         std::to_string(triangles.size()) + " triangles, max depth: " + 
+            //         std::to_string(maxDepth));
             
             return true;
         }

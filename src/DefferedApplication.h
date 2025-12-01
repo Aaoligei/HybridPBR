@@ -255,7 +255,17 @@ public:
         }
         // 重置光线追踪累积（如果相机移动）
         static glm::vec3 lastCameraPos = scene->GetMainCamera()->GetPosition();
+        static glm::mat4 lastCameraView = scene->GetMainCamera()->GetViewMatrix();
+
         glm::vec3 currentCameraPos = scene->GetMainCamera()->GetPosition();
+        glm::mat4 currentCameraView = scene->GetMainCamera()->GetViewMatrix();
+        
+        if (currentCameraView!= lastCameraView) {
+            if (rayTracer) {
+                rayTracer->ResetAccumulation();
+            }
+            lastCameraView = currentCameraView;
+        }
         
         if (glm::distance(lastCameraPos, currentCameraPos) > 0.01f) {
             if (rayTracer) {
@@ -271,9 +281,9 @@ public:
         if (useRayTracing && !useHybridRendering) {
             // 纯光线追踪模式
             rayTracer->Render(*scene);
-            
             // 在这里可以显示光线追踪结果
             // 实际应用中需要将光线追踪纹理渲染到屏幕上
+            rayTracer->DrawOutputToScreen();
             
         } else if (useHybridRendering) {
             // 混合渲染模式

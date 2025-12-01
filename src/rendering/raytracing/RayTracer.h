@@ -36,6 +36,7 @@ namespace HybridPBR {
         
         // 获取输出
         std::shared_ptr<Texture> GetOutputTexture() const { return outputTexture; }
+        void DrawOutputToScreen();
         
         // 配置
         void SetConfig(const RayTracerConfig& config) { this->config = config; }
@@ -73,7 +74,8 @@ namespace HybridPBR {
         // 输出纹理
         std::shared_ptr<Texture> outputTexture;
         std::shared_ptr<Texture> denoisedTexture;
-        
+        // 用于存储当前场景所有被引用的纹理，顺序对应 Shader 中的索引
+        std::vector<std::shared_ptr<Texture>> sceneTextures;
         // 降噪器
         std::unique_ptr<class Denoiser> denoiser;
         uint32_t blitFBO = 0; // 用于屏幕绘制的FBO
@@ -94,7 +96,7 @@ namespace HybridPBR {
         void TracePaths();
         void DenoiseResult();
         void CopyToTexture();
-        void DrawOutputToScreen();
+        
         
         // 清理
         void Cleanup();

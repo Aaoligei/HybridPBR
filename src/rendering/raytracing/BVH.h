@@ -7,20 +7,43 @@
 
 namespace HybridPBR {
 
+#pragma pack(push, 16)
     struct BVHNode {
-        AABB bounds;
+        glm::vec3 min;
+        float pad0;
+        glm::vec3 max;
+        float pad1;
         int leftChild = -1;
         int firstPrim = 0;
         int primCount = 0;
+        int pad2;
         
         bool IsLeaf() const { return primCount > 0; }
+        
+        BVHNode() : min(FLT_MAX), max(-FLT_MAX), pad0(0.0f), pad1(0.0f), pad2(0) {}
     };
 
     struct Triangle {
-        glm::vec3 v0, v1, v2;
-        glm::vec3 n0, n1, n2;
-        glm::vec2 uv0, uv1, uv2;
+        glm::vec3 v0;
+        float pad0;
+        glm::vec3 v1;
+        float pad1;
+        glm::vec3 v2;
+        float pad2;
+        glm::vec3 n0;
+        float pad3;
+        glm::vec3 n1;
+        float pad4;
+        glm::vec3 n2;
+        float pad5;
+        glm::vec2 uv0;
+        glm::vec2 pad6;
+        glm::vec2 uv1;
+        glm::vec2 pad7;
+        glm::vec2 uv2;
+        glm::vec2 pad8;
         uint32_t materialIndex;
+        uint32_t pad9, pad10, pad11;
         
         AABB GetBounds() const {
             AABB bbox;
@@ -77,6 +100,8 @@ namespace HybridPBR {
             return false;
         }
     };
+#pragma pack(pop)
+
     struct GPUMaterial;
     class BVH {
     public:
@@ -84,7 +109,8 @@ namespace HybridPBR {
         ~BVH();
         
         bool Build(const std::vector<std::shared_ptr<Mesh>>& meshes,
-                  const std::vector<std::shared_ptr<Material>>& materials);
+                  const std::vector<std::shared_ptr<Material>>& materials,
+                    const std::vector<glm::mat4>& transforms);
         bool Intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const;
         
         // GPU数据准备
@@ -107,11 +133,13 @@ namespace HybridPBR {
             AABB bounds;
             glm::vec3 center;
             int triangleIndex;
+            int pad0; // 填充字段
         };
         
         struct BuildNode {
             AABB bounds;
             int start, end;
+            int pad0; // 填充字段
         };
         
         // 构建方法
@@ -124,10 +152,12 @@ namespace HybridPBR {
         
         // 工具方法
         void ExtractTrianglesFromMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes,
-                                       const std::vector<std::shared_ptr<Material>>& materials);
+                                       const std::vector<std::shared_ptr<Material>>& materials,
+                                        const std::vector<glm::mat4>& transforms);
         void CreateGPUMaterials(const std::vector<std::shared_ptr<Material>>& materials);
     };
 
+#pragma pack(push, 16)
     // GPU材质结构（与着色器匹配）
     struct GPUMaterial {
         glm::vec4 albedo;
@@ -141,11 +171,14 @@ namespace HybridPBR {
         uint32_t roughnessTexture;
         uint32_t aoTexture;
         uint32_t emissiveTexture;
+        uint32_t pad0, pad1, pad2; // 填充以确保16字节对齐
         
         GPUMaterial() : albedo(0.8f, 0.8f, 0.8f, 1.0f), emissive(0.0f), 
                        metallic(0.0f), roughness(0.5f), ao(1.0f),
                        albedoTexture(0), normalTexture(0), metallicTexture(0),
-                       roughnessTexture(0), aoTexture(0), emissiveTexture(0) {}
+                       roughnessTexture(0), aoTexture(0), emissiveTexture(0),
+                       pad0(0), pad1(0), pad2(0) {}
     };
+#pragma pack(pop)
 
 } // namespace HybridPBR

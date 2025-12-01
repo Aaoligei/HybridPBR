@@ -5,6 +5,8 @@
 #include "BVH.h"
 #include "../common/Texture.h"
 #include <memory>
+#include "rendering/common/UniformBuffer.h"
+#include "rendering/interfaces/IRenderer.h"
 
 namespace HybridPBR {
 
@@ -56,7 +58,9 @@ namespace HybridPBR {
         std::shared_ptr<ComputeShader> rayGenerationShader;
         std::shared_ptr<ComputeShader> pathTracingShader;
         std::shared_ptr<ComputeShader> denoiserShader;
-        
+        // UBO
+        std::unique_ptr<UniformBuffer> cameraUBO;
+        std::unique_ptr<UniformBuffer> lightUBO;
         // 计算缓冲区
         ComputeBuffer bvhNodesBuffer;
         ComputeBuffer trianglesBuffer;
@@ -72,7 +76,7 @@ namespace HybridPBR {
         
         // 降噪器
         std::unique_ptr<class Denoiser> denoiser;
-
+        uint32_t blitFBO = 0; // 用于屏幕绘制的FBO
         glm::vec4 clearColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
         
         // 初始化方法
@@ -81,6 +85,7 @@ namespace HybridPBR {
         bool CreateTextures();
         
         // 场景更新
+        void UpdateGlobalUniforms(const Scene& scene);
         bool UpdateSceneData(const Scene& scene);
         bool BuildBVH(const Scene& scene);
         
@@ -89,6 +94,7 @@ namespace HybridPBR {
         void TracePaths();
         void DenoiseResult();
         void CopyToTexture();
+        void DrawOutputToScreen();
         
         // 清理
         void Cleanup();

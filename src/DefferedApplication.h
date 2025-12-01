@@ -221,7 +221,7 @@ public:
         
         // 加载3D模型
         LoadModels();
-        LoadModels2();
+        //LoadModels2();
         // 创建光源
         CreateLights();
         

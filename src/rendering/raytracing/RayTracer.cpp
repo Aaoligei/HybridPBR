@@ -5,6 +5,11 @@
 #include <chrono>
 
 namespace HybridPBR {
+    struct MeshInstance {
+        std::shared_ptr<Mesh> mesh;
+        std::shared_ptr<Material> material;
+        glm::mat4 transform; // 新增：模型矩阵
+    };
 
     RayTracer::RayTracer() {
         bvh = std::make_unique<BVH>();
@@ -43,6 +48,9 @@ namespace HybridPBR {
         if (!denoiser->Initialize(config.width, config.height)) {
             LOG_WARNING("Failed to initialize denoiser, continuing without denoising");
         }
+
+        cameraUBO = std::make_unique<UniformBuffer>(sizeof(CameraData), 8);
+        lightUBO = std::make_unique<UniformBuffer>(sizeof(LightData), 9);
         
         initialized = true;
         accumulatedFrames = 0;
@@ -64,10 +72,12 @@ namespace HybridPBR {
     void RayTracer::Render(const Scene& scene) {
         if (!initialized) return;
         // 清除缓冲区
-        glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         auto startTime = std::chrono::high_resolution_clock::now();
         
+        UpdateGlobalUniforms(scene);
+
         // 更新场景数据（如果发生变化）
         if (!UpdateSceneData(scene)) {
             LOG_ERROR("Failed to update scene data for ray tracing");
@@ -80,14 +90,15 @@ namespace HybridPBR {
         // 路径追踪
         TracePaths();
         
+        // 复制到纹理
+        CopyToTexture();
+
         // 降噪
         if (config.denoiseEnabled) {
             DenoiseResult();
         }
-        
-        // 复制到纹理
-        CopyToTexture();
-        
+        DrawOutputToScreen();
+
         accumulatedFrames++;
         
         auto endTime = std::chrono::high_resolution_clock::now();
@@ -135,12 +146,12 @@ namespace HybridPBR {
     bool RayTracer::CreateBuffers() {
         // 创建光线缓冲区
         uint32_t rayCount = config.width * config.height;
-        if (!rayBuffer.Create<std::uint32_t>(rayCount * 8)) { // 简化大小估计
+        if (!rayBuffer.Create<Ray>(rayCount)) { // 简化大小估计
             return false;
         }
         
         // 创建命中缓冲区
-        if (!hitBuffer.Create<std::uint32_t>(rayCount * 4)) {
+        if (!hitBuffer.Create<HitRecord>(rayCount)) {
             return false;
         }
         
@@ -175,6 +186,10 @@ namespace HybridPBR {
         
         denoisedTexture->SetWrapMode(TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE);
         denoisedTexture->SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
+
+        if (blitFBO == 0) {
+            glGenFramebuffers(1, &blitFBO);
+        }
         
         return true;
     }
@@ -207,20 +222,20 @@ namespace HybridPBR {
     }
 
     bool RayTracer::BuildBVH(const Scene& scene) {
-        // 收集所有网格
-        std::vector<std::shared_ptr<Mesh>> meshes;
-        std::vector<std::shared_ptr<Material>> materials;
+        std::vector<MeshInstance> instances;
         
         // 从场景中提取网格和材质
         std::function<void(const SceneNode&)> extractNodeData = [&](const SceneNode& node) {
             if (auto mesh = node.GetMesh()) {
-                meshes.push_back(mesh);
+                MeshInstance instance;
+                instance.mesh = mesh;
                 if (auto material = node.GetMaterial()) {
-                    materials.push_back(material);
+                    instance.material= material;
                 } else {
-                    // 添加默认材质
-                    materials.push_back(std::make_shared<Material>("Default"));
+                    instance.material = std::make_shared<Material>("Default");
                 }
+                instance.transform = node.GetTransform().GetWorldMatrix();
+                instances.push_back(instance);
             }
             
             for (const auto& child : node.GetChildren()) {
@@ -230,8 +245,17 @@ namespace HybridPBR {
         
         extractNodeData(*scene.GetRoot());
         
-        // 构建BVH
-        return bvh->Build(meshes, materials);
+        std::vector<std::shared_ptr<Mesh>> meshes;
+        std::vector<std::shared_ptr<Material>> materials;
+        std::vector<glm::mat4> transforms;
+        
+        for(const auto& inst : instances) {
+            meshes.push_back(inst.mesh);
+            materials.push_back(inst.material);
+            transforms.push_back(inst.transform);
+        }
+
+        return bvh->Build(meshes, materials, transforms);
     }
 
     void RayTracer::GenerateRays() {
@@ -310,6 +334,85 @@ namespace HybridPBR {
         hitBuffer.Destroy();
         outputBuffer.Destroy();
         accumulationBuffer.Destroy();
+        if (blitFBO != 0) {
+        glDeleteFramebuffers(1, &blitFBO);
+        blitFBO = 0;
+    }
+    }
+    void RayTracer::DrawOutputToScreen() {
+        if (!initialized || blitFBO == 0) return;
+
+        // 1. 确定要显示的纹理
+        // 如果开启了降噪且降噪纹理存在，就显示降噪纹理，否则显示原始输出
+        std::shared_ptr<Texture> textureToShow = outputTexture;
+        if (config.denoiseEnabled && denoisedTexture) {
+            textureToShow = denoisedTexture;
+        }
+
+        if (!textureToShow) return;
+
+        // 保存当前的视口和FBO状态（可选，视你的引擎架构而定，为了安全起见建议保存）
+        GLint lastReadFBO, lastDrawFBO;
+        glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &lastReadFBO);
+        glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &lastDrawFBO);
+
+        // 2. 准备读取源 (Read Framebuffer)
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, blitFBO);
+        // 将纹理附加到 FBO 的颜色附件0
+        // 注意：glFramebufferTexture2D 开销很小，每帧调用没问题
+        glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+                            GL_TEXTURE_2D, textureToShow->GetID(), 0);
+
+        // 3. 准备绘制目标 (Draw Framebuffer) -> 屏幕 (ID 0)
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+        // 4. 执行 Blit (拷贝)
+        // 参数：srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter
+        glBlitFramebuffer(0, 0, config.width, config.height,  // 源矩形
+                        0, 0, config.width, config.height,  // 目标矩形 (假设铺满窗口)
+                        GL_COLOR_BUFFER_BIT,                // 拷贝颜色缓冲
+                        GL_NEAREST);                        // 过滤方式 (点对点拷贝用 NEAREST 即可)
+
+        // 5. 恢复状态
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, lastReadFBO);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, lastDrawFBO);
+    }
+
+    void RayTracer::UpdateGlobalUniforms(const Scene& scene) {
+        auto camera = scene.GetMainCamera();
+        if (camera) {
+            CameraData camData;
+            camData.view = camera->GetViewMatrix();
+            camData.projection = camera->GetProjectionMatrix();
+            camData.viewPos = camera->GetPosition();
+            cameraUBO->SetData(&camData, sizeof(CameraData));
+        }
+
+        // 收集光源数据
+        LightData lightData;
+        const auto& lights = scene.GetLights();
+        lightData.lightCount = std::min((int)lights.size(), 16);
+        
+        for(int i=0; i < lightData.lightCount; ++i) {
+            auto& l = lights[i];
+            auto& props = l->GetProperties();
+            
+            lightData.lights[i].position = l->GetPosition();
+            lightData.lights[i].direction = l->GetDirection();
+            lightData.lights[i].color = props.color;
+            lightData.lights[i].intensity = props.intensity;
+
+            lightData.lights[i].range = props.range;
+            lightData.lights[i].constant = props.constant;
+            lightData.lights[i].linear = props.linear;
+            lightData.lights[i].quadratic = props.quadratic;
+
+            lightData.lights[i].innerCutoff = props.innerCutoff;
+            lightData.lights[i].outerCutoff = props.outerCutoff;
+            lightData.lights[i].type = (int)l->GetType();
+        }
+        
+        lightUBO->SetData(&lightData, sizeof(LightData));
     }
 
 } // namespace HybridPBR

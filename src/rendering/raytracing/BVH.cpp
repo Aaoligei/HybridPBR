@@ -299,6 +299,10 @@ namespace HybridPBR {
                     tri.n0 = TransformNormal(vertices[i0].normal);
                     tri.n1 = TransformNormal(vertices[i1].normal);
                     tri.n2 = TransformNormal(vertices[i2].normal);
+
+                    tri.t0 = TransformNormal(vertices[i0].tangent);
+                    tri.t1 = TransformNormal(vertices[i1].tangent);
+                    tri.t2 = TransformNormal(vertices[i2].tangent);
                     
                     tri.uv0 = vertices[i0].texcoord;
                     tri.uv1 = vertices[i1].texcoord;
@@ -310,6 +314,7 @@ namespace HybridPBR {
                     tri.pad0 = tri.pad1 = tri.pad2 = 0.0f;
                     tri.pad3 = tri.pad4 = tri.pad5 = 0.0f;
                     tri.pad6 = tri.pad7 = tri.pad8 = glm::vec2(0.0f);
+                    tri.padTangent0 = tri.padTangent1 = tri.padTangent2 = 0.0f;
                     tri.pad9 = tri.pad10 = tri.pad11 = 0;
                     triangles.push_back(tri);
                 }

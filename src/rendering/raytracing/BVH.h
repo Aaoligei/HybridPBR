@@ -24,26 +24,19 @@ namespace HybridPBR {
     };
 
     struct Triangle {
-        glm::vec3 v0;
-        float pad0;
-        glm::vec3 v1;
-        float pad1;
-        glm::vec3 v2;
-        float pad2;
-        glm::vec3 n0;
-        float pad3;
-        glm::vec3 n1;
-        float pad4;
-        glm::vec3 n2;
-        float pad5;
-        glm::vec2 uv0;
-        glm::vec2 pad6;
-        glm::vec2 uv1;
-        glm::vec2 pad7;
-        glm::vec2 uv2;
-        glm::vec2 pad8;
-        uint32_t materialIndex;
-        uint32_t pad9, pad10, pad11;
+        glm::vec3 v0;       float pad0;//16
+        glm::vec3 v1;       float pad1;//32
+        glm::vec3 v2;       float pad2;//48
+        glm::vec3 n0;       float pad3;//64
+        glm::vec3 n1;       float pad4;//80
+        glm::vec3 n2;       float pad5;//96
+        glm::vec3 t0;       float padTangent0; // 112 bytes
+        glm::vec3 t1;       float padTangent1; // 128 bytes
+        glm::vec3 t2;       float padTangent2; // 144 bytes
+        glm::vec2 uv0;      glm::vec2 pad6;//112
+        glm::vec2 uv1;      glm::vec2 pad7;//128
+        glm::vec2 uv2;      glm::vec2 pad8;//144
+        uint32_t materialIndex;     uint32_t pad9, pad10, pad11;
         
         AABB GetBounds() const {
             AABB bbox;
@@ -87,6 +80,7 @@ namespace HybridPBR {
                 // 插值法线
                 float w = 1.0f - u - v;
                 rec.normal = glm::normalize(n0 * w + n1 * u + n2 * v);
+                rec.tangent = glm::normalize(t0 * w + t1 * u + t2 * v);
                 
                 // 插值纹理坐标
                 rec.texcoord = uv0 * w + uv1 * u + uv2 * v;

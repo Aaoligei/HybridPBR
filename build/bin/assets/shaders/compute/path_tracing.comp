@@ -67,6 +67,34 @@ struct GPUMaterial {
     uint pad1;
     uint pad2; 
 };
+// 光源
+// 对应 C++ 的 GPULight
+struct Light {
+    vec3 position;  float pad0;
+    vec3 direction; float pad1;
+    vec3 color;     float intensity;
+    float range;
+    float constant;
+    float linear;
+    float quadratic;
+    float innerCutoff;
+    float outerCutoff;
+    int type;       
+    float pad2, pad3, pad4; // 补齐 std140
+};
+// 这是一个临时结构，用于存储从纹理或固定值中解析出的最终属性
+struct SurfaceMaterial {
+    vec3 albedo;
+    float metallic;
+    float roughness;
+    float ao;
+    vec3 emissive;
+};
+layout (std140, binding = 9) uniform LightData {
+    int lightCount;
+    Light lights[16];
+};
+
 
 // 缓冲区
 layout(std430, binding = 0) buffer RayBuffer {
@@ -103,7 +131,188 @@ uniform uint maxBounces;
 uniform uint samplesPerPixel;
 uniform uint frameNumber;
 
+uniform sampler2D textureMaps[32];
+
 const float PI = 3.14159265359;
+
+// 简单的 PBR 工具函数
+float DistributionGGX(vec3 N, vec3 H, float roughness) {
+    float a = roughness*roughness;
+    float a2 = a*a;
+    float NdotH = max(dot(N, H), 0.0);
+    float NdotH2 = NdotH*NdotH;
+    float num = a2;
+    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+    denom = PI * denom * denom;
+    return num / max(denom, 0.0000001);
+}
+
+float GeometrySchlickGGX(float NdotV, float roughness) {
+    float r = (roughness + 1.0);
+    float k = (r*r) / 8.0;
+    float num = NdotV;
+    float denom = NdotV * (1.0 - k) + k;
+    return num / max(denom, 0.0000001);
+}
+
+float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+    float ggx2 = GeometrySchlickGGX(NdotV, roughness);
+    float ggx1 = GeometrySchlickGGX(NdotL, roughness);
+    return ggx1 * ggx2;
+}
+
+vec3 FresnelSchlick(float cosTheta, vec3 F0) {
+    return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}
+bool BVHIntersect(Ray ray, float tMin, float tMax, inout HitRecord rec);
+// 防止除零错误的辅助函数
+vec3 SafeDivide(vec3 numerator,  float denominator) {
+    return (denominator < 0.0001) ? vec3(0.0) : numerator / denominator;
+}
+
+// 将 sRGB 转换为 Linear 空间 (用于 Albedo)
+vec3 sRGBToLinear(vec3 color) {
+    return pow(color, vec3(2.2));
+}
+
+// 核心函数：根据 UV 和材质索引，获取最终的表面属性
+SurfaceMaterial ResolveMaterial(GPUMaterial mat, vec2 uv) {
+    SurfaceMaterial surf;
+    
+    // --- 1. 处理 Albedo (漫反射颜色) ---
+    // 假设索引 0 代表无纹理
+    if (mat.albedoTexture > 0 && mat.albedoTexture < 32) {
+        vec4 texColor = texture(textureMaps[mat.albedoTexture], uv);
+        
+        // 注意：漫反射贴图通常是 sRGB，必须转线性！
+        surf.albedo = sRGBToLinear(texColor.rgb);
+        
+        // 进阶技巧：你也可以选择 纹理 * 固定颜色 (Tint)，这样可以给纹理染色
+        // surf.albedo *= mat.albedo.rgb; 
+    } else {
+        // 没有贴图，使用固定的 albedo 参数
+        surf.albedo = mat.albedo.rgb;
+    }
+
+    // --- 2. 处理 Metallic (金属度) ---
+    if (mat.metallicTexture > 0 && mat.metallicTexture < 32) {
+        // 假设金属度在 R 通道
+        surf.metallic = texture(textureMaps[mat.metallicTexture], uv).r;
+    } else {
+        surf.metallic = mat.metallic;
+    }
+
+    // --- 3. 处理 Roughness (粗糙度) ---
+    if (mat.roughnessTexture > 0 && mat.roughnessTexture < 32) {
+        // 假设粗糙度在 G 通道 (或者是 R，取决于你的贴图打包方式)
+        surf.roughness = texture(textureMaps[mat.roughnessTexture], uv).r; 
+    } else {
+        surf.roughness = mat.roughness;
+    }
+
+    // --- 4. 处理 AO ---
+    if (mat.aoTexture > 0 && mat.aoTexture < 32) {
+        surf.ao = texture(textureMaps[mat.aoTexture], uv).r;
+    } else {
+        surf.ao = mat.ao;
+    }
+
+    // --- 5. 处理 Emissive (自发光) ---
+    if (mat.emissiveTexture > 0 && mat.emissiveTexture < 32) {
+        vec3 emitTex = texture(textureMaps[mat.emissiveTexture], uv).rgb;
+        surf.emissive = sRGBToLinear(emitTex) * 10.0; // 可能需要乘强度
+    } else {
+        surf.emissive = mat.emissive.rgb; // mat.emissive 包含了颜色*强度
+    }
+
+    return surf;
+}
+
+vec3 CalculateDirectLight(HitRecord rec, vec3 viewDir, SurfaceMaterial surf, inout uint seed) {
+    vec3 directLight = vec3(0.0);
+    
+    for(int i = 0; i < lightCount; i++) {
+        Light light = lights[i];
+        vec3 L = vec3(0.0);
+        float attenuation = 1.0;
+        float distanceToLight = 10000.0;
+
+        // 1. 处理光源类型 (保持不变)
+        if(light.type == 0) { // Directional
+            L = normalize(-light.direction);
+            distanceToLight = 10000.0;
+        } else { // Point or Spot
+            L = light.position - rec.position;
+            distanceToLight = length(L);
+            L = normalize(L);
+            attenuation = 1.0 / (light.constant + light.linear * distanceToLight + light.quadratic * (distanceToLight * distanceToLight));
+            
+            if(light.type == 2) { // Spot
+                 float theta = dot(L, normalize(-light.direction));
+                 float epsilon = light.innerCutoff - light.outerCutoff;
+                 float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
+                 attenuation *= intensity;
+            }
+        }
+        
+        // === 修复 2: 几何检查 (核心) ===
+        // 如果光源在表面法线的背面，直接跳过，不要发射射线，也不要计算光照
+        float NdotL = dot(rec.normal, L);
+        if (NdotL <= 0.0) continue; 
+
+        // === 修复 3: 增强的阴影射线偏移 (Shadow Bias) ===
+        Ray shadowRay;
+        // 使用更大的偏移量，或者根据 NdotL 动态调整偏移量
+        // 当光线与表面夹角越小，需要的偏移量越大
+        float bias = max(0.01 * (1.0 - NdotL), 0.005); 
+        
+        shadowRay.origin = rec.position + rec.normal * bias; 
+        shadowRay.direction = L;
+        shadowRay.tMin = 0.001; // 这里的 tMin 也要有一点，双重保险
+        shadowRay.tMax = distanceToLight - 0.05; // 稍微多减一点，防止打到光源自己
+
+        HitRecord shadowRec;
+        if (BVHIntersect(shadowRay, shadowRay.tMin, shadowRay.tMax, shadowRec)) {
+            // 在阴影中
+            continue; 
+        }
+
+        // 3. 计算 PBR 贡献
+        vec3 N = rec.normal;
+        vec3 V = viewDir;
+        vec3 H = normalize(V + L);
+        
+        vec3 F0 = vec3(0.04); 
+        F0 = mix(F0, surf.albedo, surf.metallic);
+        
+        // Specular (使用钳制后的 roughness)
+        float NDF = DistributionGGX(N, H, surf.roughness);
+        float G = GeometrySmith(N, V, L, surf.roughness);
+        vec3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
+        
+        vec3 numerator = NDF * G * F;
+        // === 修复 4: 防止分母为 0 ===
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
+        vec3 specular = SafeDivide(numerator, denominator); // 这里简化处理，避免复杂的 vec3除法
+        // 或者简单写: vec3 specular = numerator / max(denominator, 0.001);
+        specular = clamp(specular, vec3(0.0), vec3(10.0));
+        
+        // Diffuse
+        vec3 kS = F;
+        vec3 kD = vec3(1.0) - kS;
+        kD *= 1.0 - surf.metallic;
+        
+        vec3 radianceIn = light.color * light.intensity * attenuation;
+        
+        // 最终累加
+        // 注意：NdotL 已经在上面计算过并且保证 > 0
+        directLight += (kD * surf.albedo / PI + specular) * radianceIn * NdotL;
+    }
+    
+    return directLight;
+}
 
 // 工具函数
 uint WangHash(uint seed) {
@@ -251,43 +460,71 @@ bool BVHIntersect(Ray ray, float tMin, float tMax, inout HitRecord rec) {
 // 路径追踪核心
 vec3 TracePath(Ray ray, inout uint seed) {
     vec3 throughput = vec3(1.0);
-    vec3 radiance = vec3(0.0);
+    vec3 totalRadiance = vec3(0.0);
     
     for (int bounce = 0; bounce < maxBounces; bounce++) {
         HitRecord rec;
         
+        // 1. 射线求交
         if (!BVHIntersect(ray, ray.tMin, ray.tMax, rec)) {
-            // 命中天空 - 添加环境光
-            radiance += throughput * vec3(0.1, 0.2, 0.5);
+            // 击中天空
+            vec3 skyColor = vec3(0.1, 0.2, 0.3); // 简单的天空色
+            totalRadiance += throughput * skyColor;
             break;
         }
+        // 获取原始 GPU 材质数据
+        GPUMaterial rawMat = materials[rec.materialIndex];
         
-        GPUMaterial mat = materials[rec.materialIndex];
-        
-        // 添加自发光
-        radiance += throughput * mat.emissive.rgb;
-        
-        // 俄罗斯轮盘赌终止
-        float continueProbability = min(max(max(throughput.r, throughput.g), throughput.b), 1.0);
-        if (RandomFloat(seed) > continueProbability) {
-            break;
+        // === 关键修改：解析最终材质属性 ===
+        // 传入 rawMat 和击中点的 UV，得到最终用于计算的 surf
+        SurfaceMaterial surf = ResolveMaterial(rawMat, rec.texcoord);
+
+        // 自发光
+        if (bounce == 0) {
+            totalRadiance += throughput * surf.emissive;
         }
-        throughput /= continueProbability;
+
+        // 直接光照 (需要把 surf 传进去)
+        if (surf.roughness > 0.05) {
+            vec3 viewDir = -ray.direction;
+            // 注意：需要修改 CalculateDirectLight 接受 SurfaceMaterial
+            totalRadiance += throughput * CalculateDirectLight(rec, viewDir, surf, seed);
+        }
+
+        // 俄罗斯轮盘赌
+        float p = max(max(throughput.r, throughput.g), throughput.b);
+        if (RandomFloat(seed) > p) break;
+        throughput /= p;
         
-        // 计算新的射线方向（简化版，实际应该基于BRDF采样）
-        vec3 newDirection = RandomInHemisphere(rec.normal, seed);
+        // 生成新光线方向 (使用 surf 属性)
+        vec3 V = -ray.direction;
+        vec3 N = rec.normal;
+        vec3 F0 = vec3(0.04); 
+        F0 = mix(F0, surf.albedo, surf.metallic); // 使用 surf.albedo 和 surf.metallic
         
-        // 更新吞吐量
-        throughput *= mat.albedo.rgb;
+        vec3 F = FresnelSchlick(max(dot(N, V), 0.0), F0);
+        float specProb = (F.r + F.g + F.b) / 3.0;
+        specProb = mix(specProb, 1.0, surf.metallic);
         
-        // 设置新的射线
-        ray.origin = rec.position + rec.normal * 0.001; // 偏移避免自相交
-        ray.direction = newDirection;
-        ray.tMin = 0.001;
-        ray.tMax = 10000.0;
+        vec3 nextDir;
+        if (RandomFloat(seed) < specProb) {
+            // 镜面反射
+            vec3 reflectDir = reflect(-V, N);
+            nextDir = normalize(reflectDir + RandomInUnitSphere(seed) * surf.roughness); // 使用 surf.roughness
+            if(dot(nextDir, N) < 0.0) nextDir = -nextDir;
+            throughput *= F; 
+        } else {
+            // 漫反射
+            nextDir = normalize(N + RandomInUnitSphere(seed));
+            if (dot(nextDir, N) < 0.0) nextDir = -nextDir; 
+            throughput *= surf.albedo; // 使用 surf.albedo
+        }
+
+        ray.origin = rec.position + N * 0.001;
+        ray.direction = nextDir;
     }
     
-    return radiance;
+    return totalRadiance;
 }
 
 vec3 testBVH(Ray ray, float tMin, float tMax, inout HitRecord rec){
@@ -317,7 +554,6 @@ vec3 testBVH(Ray ray, float tMin, float tMax, inout HitRecord rec){
     else return vec3(1.0, 0.0, 0.0);
 }
 
-
 vec3 TracePathsTest(Ray ray, inout uint seed){
     vec3 result= vec3(0.0);
     for (int bounce = 0; bounce < maxBounces; bounce++) {
@@ -338,23 +574,55 @@ void main() {
     uint seed = pixelIndex * 1973 + frameNumber * 26699;
     
     Ray ray = rays[pixelIndex];
-    vec3 color = vec3(0.0);
+    vec3 accumulatedColor = vec3(0.0);
+    float validSamples = 0.0; // 记录有效采样数
     
-    // 多重采样
+    // 多重采样循环
     for (uint i = 0; i < samplesPerPixel; i++) {
-        color += TracePath(ray, seed);
+        vec3 pathColor = TracePath(ray, seed);
+        
+        // === 修复核心：如果采样是 NaN/Inf，直接丢弃，不计入总数 ===
+        if (any(isnan(pathColor)) || any(isinf(pathColor))) {
+            continue; // 跳过这次采样
+        }
+        
+        // 钳制高光，防止萤火虫噪点
+        pathColor = clamp(pathColor, 0.0, 10.0);
+        
+        accumulatedColor += pathColor;
+        validSamples += 1.0;
     }
-    color /= float(samplesPerPixel);
     
-    // 累积
+    // 如果所有采样都失败了（极罕见），或者采样数为0
+    if (validSamples < 0.5) {
+        // 如果是第一帧，没办法只能黑
+        // 如果是累积帧，复用上一帧的结果，防止变黑！
+        if (frameNumber > 0) {
+            outputPixels[pixelIndex] = accumulationPixels[pixelIndex];
+        } else {
+            outputPixels[pixelIndex] = vec4(0.0, 0.0, 0.0, 1.0);
+        }
+        return;
+    }
+    
+    // 计算当前帧的平均颜色
+    vec3 currentColor = accumulatedColor / validSamples;
+
+    // === 累积混合 ===
     if (frameNumber == 0) {
-        outputPixels[pixelIndex] = vec4(color, 1.0);
-        accumulationPixels[pixelIndex] = vec4(color, 1.0);
+        outputPixels[pixelIndex] = vec4(currentColor, 1.0);
+        accumulationPixels[pixelIndex] = vec4(currentColor, 1.0);
     } else {
-        vec4 accumulated = accumulationPixels[pixelIndex];
-        vec4 newColor = (accumulated * float(frameNumber) + vec4(color, 1.0)) / float(frameNumber + 1);
-        outputPixels[pixelIndex] = newColor;
-        accumulationPixels[pixelIndex] = newColor;
+        vec4 history = accumulationPixels[pixelIndex];
+        
+        // 双重保险：如果历史数据坏了，重置
+        if (any(isnan(history.rgb)) || any(isinf(history.rgb))) history = vec4(0.0);
+        
+        // 正常的累积公式
+        vec3 newColor = mix(history.rgb, currentColor, 1.0 / float(frameNumber + 1));
+        
+        outputPixels[pixelIndex] = vec4(newColor, 1.0);
+        accumulationPixels[pixelIndex] = vec4(newColor, 1.0);
     }
     
 }

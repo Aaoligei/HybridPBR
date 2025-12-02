@@ -27,6 +27,8 @@ namespace HybridPBR {
         float pad0;
         glm::vec3 normal;
         float pad1;
+        glm::vec3 tangent;
+        float padTangent0;
         glm::vec2 texcoord;
         float pad2, pad3;
         float t = -1.0f;

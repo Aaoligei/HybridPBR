@@ -2,11 +2,33 @@
 
 layout(local_size_x = 16, local_size_y = 16) in;
 
-layout (std140, binding = 0) uniform CameraData {
+layout (std140, binding = 8) uniform CameraData {
     mat4 view;
     mat4 projection;
     vec3 viewPos;
 };
+
+// 光源
+// 对应 C++ 的 GPULight
+struct Light {
+    vec3 position;  float pad0;
+    vec3 direction; float pad1;
+    vec3 color;     float intensity;
+    float range;
+    float constant;
+    float linear;
+    float quadratic;
+    float innerCutoff;
+    float outerCutoff;
+    int type;       
+    float pad2, pad3, pad4; // 补齐 std140
+};
+
+layout (std140, binding = 9) uniform LightData {
+    int lightCount;
+    Light lights[16];
+};
+
 
 struct Ray {
     vec3 origin;
@@ -54,13 +76,7 @@ void main() {
     
     // 简化相机模型 - 生成主光线
     vec2 uv = vec2(float(x) / float(width), float(y) / float(height));
-    uv = uv * 2.0 - 1.0; // 转换为NDC
-    
-    // 透视投影
-    float aspect = float(width) / float(height);
-    vec3 origin = vec3(0.0, 0.0, 10.0); // 相机位置
-    vec3 direction = normalize(vec3(uv.x * aspect, uv.y, -1.0));
-    
+
     // 添加随机性用于抗锯齿
     if (frameNumber > 0) {
         vec2 jitter = vec2(
@@ -68,12 +84,20 @@ void main() {
             float((pixelIndex * 9277 + frameNumber) & 0xFF) / 255.0 - 0.5
         ) / float(width);
         
-        direction = normalize(vec3((uv.x + jitter.x) * aspect, uv.y + jitter.y, -1.0));
+        uv += jitter;
     }
+    vec2 d=uv * 2.0 - 1.0;
+    // === 核心修复：使用矩阵构建光线 ===
+    // 1. 屏幕空间 -> 观察空间
+    vec4 target = projection * vec4(d.x, d.y, 1.0, 1.0);
+    vec3 rayDirView = normalize(target.xyz / target.w);
+    
+    // 2. 观察空间 -> 世界空间
+    vec3 rayDirWorld = (view * vec4(rayDirView, 0.0)).xyz;
     
     // 存储光线
-    rays[pixelIndex].origin = origin;
-    rays[pixelIndex].direction = direction;
+    rays[pixelIndex].origin = viewPos;
+    rays[pixelIndex].direction = normalize(rayDirWorld);
     rays[pixelIndex].tMin = 0.001;
     rays[pixelIndex].tMax = 10000.0;
     

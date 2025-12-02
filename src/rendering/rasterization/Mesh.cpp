@@ -152,6 +152,8 @@ namespace HybridPBR {
                 vertex.position = glm::vec3(xPos, yPos, 0.0f);
                 vertex.normal = glm::vec3(0.0f, 0.0f, 1.0f);
                 vertex.texcoord = glm::vec2(x * stepU, 1.0f - y * stepV); // 翻转V坐标
+                vertex.tangent = glm::vec3(0.0f);
+                vertex.bitangent = glm::vec3(0.0f);
                 
                 vertices.push_back(vertex);
             }

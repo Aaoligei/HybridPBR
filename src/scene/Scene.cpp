@@ -18,6 +18,7 @@ namespace HybridPBR {
                 nodeCount++;
             }
         }
+        sceneDirty = true;
     }
 
     Scene::~Scene() {
@@ -44,6 +45,9 @@ namespace HybridPBR {
                 nodeCount++;
             }
         }
+        
+        // 场景发生变化，设置脏标记
+        sceneDirty = true;
     }
 
     void Scene::RemoveNode(SceneNode* node) {
@@ -58,6 +62,9 @@ namespace HybridPBR {
                 nodeCount++;
             }
         }
+        
+        // 场景发生变化，设置脏标记
+        sceneDirty = true;
     }
 
     std::shared_ptr<SceneNode> Scene::FindNode(const std::string& name) {
@@ -70,6 +77,8 @@ namespace HybridPBR {
 
     void Scene::SetMainCamera(std::shared_ptr<Camera> camera) {
         mainCamera = camera;
+        // 相机变化也视为场景变化
+        sceneDirty = true;
     }
 
     void Scene::AddLight(std::shared_ptr<Light> light) {
@@ -77,6 +86,8 @@ namespace HybridPBR {
         
         lights.push_back(light);
         LOG_INFO("Added light to scene: " + light->GetName());
+        // 光照变化也视为场景变化
+        sceneDirty = true;
     }
 
     void Scene::RemoveLight(Light* lightToRemove) {
@@ -84,6 +95,8 @@ namespace HybridPBR {
             if (it->get() == lightToRemove) {
                 lights.erase(it);
                 LOG_INFO("Removed light from scene");
+                // 光照变化也视为场景变化
+                sceneDirty = true;
                 break;
             }
         }
@@ -91,6 +104,10 @@ namespace HybridPBR {
 
     void Scene::Update() {
         root->Update();
+    }
+
+    void Scene::SetDirty() {
+        sceneDirty = true;
     }
 
     bool Scene::SaveToFile(const std::string& filepath) {

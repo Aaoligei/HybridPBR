@@ -36,6 +36,11 @@ namespace HybridPBR {
         // 更新
         void Update();
         
+        // 脏标记管理
+        void SetDirty();
+        bool IsDirty() const { return sceneDirty; }
+        void ClearDirtyFlag() { sceneDirty = false; }
+        
         // 序列化
         bool SaveToFile(const std::string& filepath);
         bool LoadFromFile(const std::string& filepath);
@@ -48,7 +53,11 @@ namespace HybridPBR {
         std::unordered_map<std::string, std::shared_ptr<SceneNode>> nodeMap;
         size_t nodeCount = 0; // 节点计数器
         
+        // 脏标记 - 用于通知渲染器场景是否发生变化
+        bool sceneDirty = true;
+        
         void BuildNodeMap(SceneNode* node);
+        void CountNodes(SceneNode* node, int& count) const;
     };
 
 } // namespace HybridPBR

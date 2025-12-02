@@ -46,6 +46,8 @@ namespace HybridPBR {
         bool IsInitialized() const { return initialized; }
         float GetLastRenderTime() const { return lastRenderTime; }
 
+        void SetDirty() { sceneDirty = true; }
+
     private:
         RayTracerConfig config;
         bool initialized = false;
@@ -54,6 +56,7 @@ namespace HybridPBR {
         
         // BVH加速结构
         std::unique_ptr<BVH> bvh;
+        bool sceneDirty = true; // 场景是否需要更新
         
         // 计算着色器
         std::shared_ptr<ComputeShader> rayGenerationShader;

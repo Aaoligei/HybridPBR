@@ -71,17 +71,20 @@ namespace HybridPBR {
 
     void RayTracer::Render(const Scene& scene) {
         if (!initialized) return;
-        // 清除缓冲区
-        //glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
         auto startTime = std::chrono::high_resolution_clock::now();
         
         UpdateGlobalUniforms(scene);
 
-        // 更新场景数据（如果发生变化）
-        if (!UpdateSceneData(scene)) {
-            LOG_ERROR("Failed to update scene data for ray tracing");
-            return;
+        // 检查Scene是否为脏或我们自己的脏标记是否设置
+        if(sceneDirty || scene.IsDirty()){
+            LOG_INFO("Scene dirty, updating scene data");
+            // 更新场景数据（如果发生变化）
+            if (!UpdateSceneData(scene)) {
+                LOG_ERROR("Failed to update scene data for ray tracing");
+                return;
+            }
+            sceneDirty = false;
         }
         
         // 生成主光线
@@ -97,12 +100,11 @@ namespace HybridPBR {
         if (config.denoiseEnabled) {
             DenoiseResult();
         }
-        //DrawOutputToScreen();
 
         accumulatedFrames++;
         
         auto endTime = std::chrono::high_resolution_clock::now();
-        lastRenderTime = std::chrono::duration<float>(endTime - startTime).count();
+        lastRenderTime = std::chrono::duration<float, std::milli>(endTime - startTime).count();
     }
 
     void RayTracer::Resize(uint32_t width, uint32_t height) {

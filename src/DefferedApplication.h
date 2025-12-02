@@ -112,7 +112,7 @@ public:
             auto modelNode = scene->CreateNode("Model");
             modelNode->SetMesh(mesh);
             modelNode->SetMaterial(material);
-            modelNode->GetTransform().SetPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+            modelNode->GetTransform().SetPosition(glm::vec3(0.0f, -1.0f, 2.0f));
         } 
     }
 
@@ -253,26 +253,44 @@ public:
         if (auto camera = scene->GetMainCamera()) {
             camera->SetViewport(GetWindow().GetWidth(), GetWindow().GetHeight());
         }
-        // 重置光线追踪累积（如果相机移动）
+        
+        // 重置光线追踪累积（如果场景发生变化）
+        static bool lastSceneDirty = true;
+        bool currentSceneDirty = scene->IsDirty();
+        
+        if (currentSceneDirty != lastSceneDirty) {
+            if (rayTracer && currentSceneDirty) {
+                rayTracer->ResetAccumulation();
+            }
+            lastSceneDirty = currentSceneDirty;
+            
+            // 清除场景的脏标记
+            if (currentSceneDirty) {
+                scene->ClearDirtyFlag();
+            }
+        }
+        
+        // 检查相机是否移动
         static glm::vec3 lastCameraPos = scene->GetMainCamera()->GetPosition();
         static glm::mat4 lastCameraView = scene->GetMainCamera()->GetViewMatrix();
 
         glm::vec3 currentCameraPos = scene->GetMainCamera()->GetPosition();
         glm::mat4 currentCameraView = scene->GetMainCamera()->GetViewMatrix();
-        
-        if (currentCameraView!= lastCameraView) {
+    
+        if (currentCameraView != lastCameraView) {
             if (rayTracer) {
                 rayTracer->ResetAccumulation();
             }
             lastCameraView = currentCameraView;
         }
-        
+    
         if (glm::distance(lastCameraPos, currentCameraPos) > 0.01f) {
             if (rayTracer) {
                 rayTracer->ResetAccumulation();
             }
             lastCameraPos = currentCameraPos;
         }
+    
         scene->Update();
     }
     

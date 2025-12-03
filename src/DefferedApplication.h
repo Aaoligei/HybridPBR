@@ -334,6 +334,7 @@ public:
         auto stats = rasterizer->GetStats();
         ImGui::Begin("Renderer Stats");
         ImGui::Text("Renderer Stats");
+        ImGui::Checkbox("Use ray tracing",&useRayTracing);
         ImGui::Text("Draw calls: %d", stats.drawCalls);
         ImGui::Text("Triangles: %d", stats.triangleCount);
         ImGui::Text("Vertices: %d", stats.vertexCount);

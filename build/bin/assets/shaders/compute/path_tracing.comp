@@ -12,6 +12,7 @@ struct Ray {
 struct HitRecord {
     vec3 position;
     vec3 normal;
+    vec3 tangent;
     vec2 texcoord;
     float pad0, pad1;
     float t;
@@ -29,6 +30,10 @@ struct Triangle {
     vec3 n1; float pad4;      // 对应 C++: n1, pad4
     vec3 n2; float pad5;      // 对应 C++: n2, pad5
     
+    vec3 t0; float padTangent0;      // 对应 C++: t0, padTangent0
+    vec3 t1; float padTangent1;      // 对应 C++: t1, padTangent1
+    vec3 t2; float padTangent2;      // 对应 C++: t2, padTangent2
+    
     vec2 uv0; vec2 pad6;      // 对应 C++: uv0, pad6
     vec2 uv1; vec2 pad7;      // 对应 C++: uv1, pad7
     vec2 uv2; vec2 pad8;      // 对应 C++: uv2, pad8
@@ -40,10 +45,8 @@ struct Triangle {
 };
 
 struct BVHNode {
-    vec3 min;    // 0
-    float pad0;  // 12 (GLSL std430 vec3 实际上占用16，但显式写出来更安全)
-    vec3 max;    // 16
-    float pad1;  // 28
+    vec4 min;    // 0
+    vec4 max;    // 16
     int leftChild; // 32
     int firstPrim; // 36
     int primCount; // 40
@@ -90,6 +93,33 @@ struct SurfaceMaterial {
     float ao;
     vec3 emissive;
 };
+
+// 修改 HitRecord，只存最少的数据用于比较
+struct HitInfo {
+    float t;
+    float u;
+    float v;
+    int triIndex;
+};
+
+// 纯几何相交检测，极快
+bool TriangleIntersectGeometry(Triangle tri, Ray ray, float tMax, out float t, out float u, out float v) {
+    vec3 edge1 = tri.v1 - tri.v0;
+    vec3 edge2 = tri.v2 - tri.v0;
+    vec3 h = cross(ray.direction, edge2);
+    float a = dot(edge1, h);
+    if (abs(a) < 1e-6) return false;
+    float f = 1.0 / a;
+    vec3 s = ray.origin - tri.v0;
+    u = f * dot(s, h);
+    if (u < 0.0 || u > 1.0) return false;
+    vec3 q = cross(s, edge1);
+    v = f * dot(ray.direction, q);
+    if (v < 0.0 || u + v > 1.0) return false;
+    t = f * dot(edge2, q);
+    return (t > 0.001 && t < tMax);
+}
+
 layout (std140, binding = 9) uniform LightData {
     int lightCount;
     Light lights[16];
@@ -166,7 +196,7 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
 vec3 FresnelSchlick(float cosTheta, vec3 F0) {
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
-bool BVHIntersect(Ray ray, float tMin, float tMax, inout HitRecord rec);
+
 // 防止除零错误的辅助函数
 vec3 SafeDivide(vec3 numerator,  float denominator) {
     return (denominator < 0.0001) ? vec3(0.0) : numerator / denominator;
@@ -229,8 +259,84 @@ SurfaceMaterial ResolveMaterial(GPUMaterial mat, vec2 uv) {
 
     return surf;
 }
+// 获取最终用于着色的法线
+vec3 GetShadingNormal(GPUMaterial mat, HitRecord rec) {
+    // 如果没有法线贴图 (假设索引0或无效索引)，直接返回几何法线
+    if (mat.normalTexture == 0 || mat.normalTexture >= 32) {
+        return rec.normal;
+    }
 
-vec3 CalculateDirectLight(HitRecord rec, vec3 viewDir, SurfaceMaterial surf, inout uint seed) {
+    // 1. 采样法线贴图
+    // 法线贴图通常不需要 sRGBToLinear，因为它是数据图
+    vec3 mapNormal = texture(textureMaps[mat.normalTexture], rec.texcoord).rgb;
+    
+    // 2. 将 [0, 1] 范围映射回 [-1, 1]
+    mapNormal = mapNormal * 2.0 - 1.0;
+    
+    // 3. 构建 TBN 矩阵 (Tangent, Bitangent, Normal)
+    vec3 N = rec.normal;
+    vec3 T = rec.tangent;
+    
+    // 计算副切线 (Bitangent)
+    // 根据左右手坐标系，这里可能是 cross(N, T) 或 cross(T, N)
+    // 通常 OpenGL 中使用 cross(N, T)
+    vec3 B = normalize(cross(N, T));
+    
+    mat3 TBN = mat3(T, B, N);
+    
+    // 4. 将切线空间法线转换到世界空间
+    vec3 resultNormal = normalize(TBN * mapNormal);
+    
+    return resultNormal;
+}
+
+// --- 核心函数：任意命中 BVH 遍历 (Any Hit) ---
+// 专门用于阴影射线
+bool BVHIntersectAnyHit(Ray ray, float tMax) {
+    vec3 invDir = 1.0 / ray.direction;
+    int stack[32];
+    int stackPtr = 0;
+    stack[stackPtr++] = 0;
+
+    while (stackPtr > 0) {
+        int nodeIndex = stack[--stackPtr];
+        // 安全检查
+        if (nodeIndex >= bvhNodes.length()) continue; 
+        
+        BVHNode node = bvhNodes[nodeIndex];
+
+        float t0x = (node.min.x - ray.origin.x) * invDir.x;
+        float t1x = (node.max.x - ray.origin.x) * invDir.x;
+        float t0y = (node.min.y - ray.origin.y) * invDir.y;
+        float t1y = (node.max.y - ray.origin.y) * invDir.y;
+        float t0z = (node.min.z - ray.origin.z) * invDir.z;
+        float t1z = (node.max.z - ray.origin.z) * invDir.z;
+
+        float tmin = max(max(min(t0x, t1x), min(t0y, t1y)), min(t0z, t1z));
+        float tmax = min(min(max(t0x, t1x), max(t0y, t1y)), max(t0z, t1z));
+
+        if (tmax < max(tmin, 0.0) || tmin > tMax) {
+            continue;
+        }
+
+        if (node.primCount > 0) {
+            for (int i = 0; i < node.primCount; i++) {
+                Triangle tri = triangles[node.firstPrim + i];
+                float tempT, tempU, tempV;
+                if (TriangleIntersectGeometry(tri, ray, tMax, tempT, tempU, tempV)) {
+                    return true;
+                }
+            }
+        } else {
+            if (stackPtr + 2 > 32) continue;
+            stack[stackPtr++] = node.leftChild;
+            stack[stackPtr++] = node.firstPrim; 
+        }
+    }
+    return false;
+}
+
+vec3 CalculateDirectLight(HitRecord rec,vec3 shadingNormal, vec3 viewDir, SurfaceMaterial surf, inout uint seed) {
     vec3 directLight = vec3(0.0);
     
     for(int i = 0; i < lightCount; i++) {
@@ -257,57 +363,53 @@ vec3 CalculateDirectLight(HitRecord rec, vec3 viewDir, SurfaceMaterial surf, ino
             }
         }
         
-        // === 修复 2: 几何检查 (核心) ===
-        // 如果光源在表面法线的背面，直接跳过，不要发射射线，也不要计算光照
-        float NdotL = dot(rec.normal, L);
+        // === 修改点 A: 几何检查 ===
+        // 应该基于着色法线检查是否朝向光源
+        float NdotL = dot(shadingNormal, L);
         if (NdotL <= 0.0) continue; 
 
-        // === 修复 3: 增强的阴影射线偏移 (Shadow Bias) ===
+        // === 修改点 B: 阴影射线 ===
+        // 关键：阴影偏移必须沿 几何法线(rec.normal) 偏移，防止自身遮挡
         Ray shadowRay;
-        // 使用更大的偏移量，或者根据 NdotL 动态调整偏移量
-        // 当光线与表面夹角越小，需要的偏移量越大
-        float bias = max(0.01 * (1.0 - NdotL), 0.005); 
+        // 计算几何法线与光线的夹角用于偏移
+        float geoNdotL = dot(rec.normal, L);
+        //float bias = max(0.01 * (1.0 - geoNdotL), 0.005); 
+        float bias = 0.01;
         
+        // 使用 rec.normal 进行偏移
         shadowRay.origin = rec.position + rec.normal * bias; 
         shadowRay.direction = L;
-        shadowRay.tMin = 0.001; // 这里的 tMin 也要有一点，双重保险
-        shadowRay.tMax = distanceToLight - 0.05; // 稍微多减一点，防止打到光源自己
+        shadowRay.tMin = 0.001;
+        shadowRay.tMax = distanceToLight - 0.05;
 
-        HitRecord shadowRec;
-        if (BVHIntersect(shadowRay, shadowRay.tMin, shadowRay.tMax, shadowRec)) {
-            // 在阴影中
+        if (BVHIntersectAnyHit(shadowRay, distanceToLight - 0.05)) {
             continue; 
         }
 
         // 3. 计算 PBR 贡献
-        vec3 N = rec.normal;
+        // === 修改点 C: PBR 计算使用 shadingNormal ===
+        vec3 N = shadingNormal; // <--- 使用传入的法线贴图法线
         vec3 V = viewDir;
         vec3 H = normalize(V + L);
         
         vec3 F0 = vec3(0.04); 
         F0 = mix(F0, surf.albedo, surf.metallic);
         
-        // Specular (使用钳制后的 roughness)
         float NDF = DistributionGGX(N, H, surf.roughness);
         float G = GeometrySmith(N, V, L, surf.roughness);
         vec3 F = FresnelSchlick(max(dot(H, V), 0.0), F0);
         
         vec3 numerator = NDF * G * F;
-        // === 修复 4: 防止分母为 0 ===
         float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
-        vec3 specular = SafeDivide(numerator, denominator); // 这里简化处理，避免复杂的 vec3除法
-        // 或者简单写: vec3 specular = numerator / max(denominator, 0.001);
+        vec3 specular = SafeDivide(numerator, denominator);
         specular = clamp(specular, vec3(0.0), vec3(10.0));
         
-        // Diffuse
         vec3 kS = F;
         vec3 kD = vec3(1.0) - kS;
         kD *= 1.0 - surf.metallic;
         
         vec3 radianceIn = light.color * light.intensity * attenuation;
         
-        // 最终累加
-        // 注意：NdotL 已经在上面计算过并且保证 > 0
         directLight += (kD * surf.albedo / PI + specular) * radianceIn * NdotL;
     }
     
@@ -380,6 +482,10 @@ bool TriangleIntersect(Triangle tri, Ray ray, float tMin, float tMax, inout HitR
         // 插值法线
         float w = 1.0 - u - v;
         rec.normal = normalize(tri.n0 * w + tri.n1 * u + tri.n2 * v);
+
+        // 插值切线
+        rec.tangent = normalize(tri.t0 * w + tri.t1 * u + tri.t2 * v);
+        rec.tangent = normalize(rec.tangent - dot(rec.tangent, rec.normal) * rec.normal);
         
         // 插值纹理坐标
         rec.texcoord = tri.uv0 * w + tri.uv1 * u + tri.uv2 * v;
@@ -397,63 +503,71 @@ bool TriangleIntersect(Triangle tri, Ray ray, float tMin, float tMax, inout HitR
 }
 
 // BVH遍历
-bool BVHIntersect(Ray ray, float tMin, float tMax, inout HitRecord rec) {
-
-    int stack[64];
+// 主射线遍历
+bool BVHIntersect(Ray ray, float tMin, float tMax, inout HitInfo info) {
+    vec3 invDir = 1.0 / ray.direction; // 预计算，提速
+    
+    int stack[32];
     int stackPtr = 0;
-    stack[stackPtr++] = 0; // 根节点
+    stack[stackPtr++] = 0;
     
     bool hit = false;
-    rec.t = tMax;
+    info.t = tMax;       // 初始搜索半径
+    info.triIndex = -1;
     
     while (stackPtr > 0) {
         int nodeIndex = stack[--stackPtr];
+        
+        // 【安全检查】防止越界导致花屏
+        if (nodeIndex >= bvhNodes.length()) continue;
+
         BVHNode node = bvhNodes[nodeIndex];
 
-        float tBoxMin = tMin;
-        float tBoxMax = rec.t;
-        // 检查AABB相交
-        bool aabbHit = true;
-        for (int i = 0; i < 3; i++) {
-            float invD = 1.0 / ray.direction[i];
-            float t0 = (node.min[i] - ray.origin[i]) * invD;
-            float t1 = (node.max[i] - ray.origin[i]) * invD;
-            
-            if (invD < 0.0) {
-                float temp = t0;
-                t0 = t1;
-                t1 = temp;
-            }
-            
-            tBoxMin = max(t0, tBoxMin);
-            tBoxMax = min(t1, tBoxMax);
-            
-            if (tBoxMax <= tBoxMin) {
-                aabbHit = false;
-                break;
-            }
+        // 使用 info.t 作为当前最大的搜索距离 (tBoxMax)
+        // 这非常关键！随着找到更近的三角形，我们会剔除掉远处的盒子
+        float currentMaxDist = info.t; 
+
+        // AABB 检测 (使用 vec4 的 xyz)
+        float t0x = (node.min.x - ray.origin.x) * invDir.x;
+        float t1x = (node.max.x - ray.origin.x) * invDir.x;
+        float t0y = (node.min.y - ray.origin.y) * invDir.y;
+        float t1y = (node.max.y - ray.origin.y) * invDir.y;
+        float t0z = (node.min.z - ray.origin.z) * invDir.z;
+        float t1z = (node.max.z - ray.origin.z) * invDir.z;
+
+        float tmin = max(max(min(t0x, t1x), min(t0y, t1y)), min(t0z, t1z));
+        float tmax = min(min(max(t0x, t1x), max(t0y, t1y)), max(t0z, t1z));
+
+        // 优化剔除：如果盒子的最小距离都比当前最近交点远，直接扔掉
+        if (tmax < max(tmin, tMin) || tmin > currentMaxDist) {
+            continue;
         }
         
-        if (!aabbHit) continue;
-        
         if (node.primCount > 0) {
-            // 叶节点：检查所有三角形
             for (int i = 0; i < node.primCount; i++) {
                 Triangle tri = triangles[node.firstPrim + i];
-                HitRecord tempRec;
-                
-                if (TriangleIntersect(tri, ray, tMin, rec.t, tempRec)) {
-                    rec = tempRec;
+                float t, u, v;
+                // 这里传入 info.t，只接受比当前更近的交点
+                if (TriangleIntersectGeometry(tri, ray, info.t, t, u, v)) {
+                    info.t = t;
+                    info.u = u;
+                    info.v = v;
+                    info.triIndex = node.firstPrim + i;
                     hit = true;
                 }
             }
         } else {
-            // 内部节点：将子节点压入堆栈
+            // 简单的压栈顺序优化：先访问可能更近的子节点
+            // 假设 invDir 符号能指示方向 (简单启发式)
+            // 也可以根据 split axis 优化，这里暂且简单处理
+            
+            // 安全检查栈溢出
+            if (stackPtr + 2 > 32) continue; 
+
             stack[stackPtr++] = node.leftChild;
-            stack[stackPtr++] = node.firstPrim;
+            stack[stackPtr++] = node.firstPrim; // 对应右子树索引
         }
     }
-    
     return hit;
 }
 
@@ -463,32 +577,66 @@ vec3 TracePath(Ray ray, inout uint seed) {
     vec3 totalRadiance = vec3(0.0);
     
     for (int bounce = 0; bounce < maxBounces; bounce++) {
-        HitRecord rec;
+        HitInfo info;
         
         // 1. 射线求交
-        if (!BVHIntersect(ray, ray.tMin, ray.tMax, rec)) {
+        if (!BVHIntersect(ray, ray.tMin, ray.tMax, info)) {
             // 击中天空
-            vec3 skyColor = vec3(0.1, 0.2, 0.3); // 简单的天空色
+            vec3 skyColor = vec3(0.1, 0.2, 0.3); 
             totalRadiance += throughput * skyColor;
             break;
         }
+
+        // --- 延迟读取三角形数据 ---
+        Triangle tri = triangles[info.triIndex];
+        
+        HitRecord rec;
+        rec.t = info.t;
+        rec.position = ray.origin + ray.direction * info.t;
+        
+        // 准备插值权重
+        float w = 1.0 - info.u - info.v;
+
+        // 插值 Normal
+        rec.normal = normalize(tri.n0 * w + tri.n1 * info.u + tri.n2 * info.v);
+        
+        // 【修复 1】：插值 Tangent (之前漏掉了，导致法线贴图计算错误)
+        rec.tangent = normalize(tri.t0 * w + tri.t1 * info.u + tri.t2 * info.v);
+        // Gram-Schmidt 正交化 (保持切线与法线垂直)
+        rec.tangent = normalize(rec.tangent - dot(rec.tangent, rec.normal) * rec.normal);
+
+        // 插值 UV
+        rec.texcoord = tri.uv0 * w + tri.uv1 * info.u + tri.uv2 * info.v;
+
+        // 【修复 2】：赋值材质索引 (之前漏掉了，导致材质读取错误)
+        rec.materialIndex = tri.materialIndex; 
+        
+        // 确保正反面判断 (可选，但为了健壮性建议加上)
+        rec.frontFace = dot(ray.direction, rec.normal) < 0.0;
+        if (!rec.frontFace) {
+            rec.normal = -rec.normal;
+        }
+
+        // --- 数据准备完毕 ---
+
         // 获取原始 GPU 材质数据
         GPUMaterial rawMat = materials[rec.materialIndex];
         
-        // === 关键修改：解析最终材质属性 ===
-        // 传入 rawMat 和击中点的 UV，得到最终用于计算的 surf
+        // 解析最终材质属性
         SurfaceMaterial surf = ResolveMaterial(rawMat, rec.texcoord);
+        
+        // 获取着色法线 (现在 rec.tangent 有值了，TBN 计算会正常)
+        vec3 shadingNormal = GetShadingNormal(rawMat, rec);
 
         // 自发光
         if (bounce == 0) {
             totalRadiance += throughput * surf.emissive;
         }
 
-        // 直接光照 (需要把 surf 传进去)
-        if (surf.roughness > 0.05) {
+        // 直接光照
+        if (surf.roughness > 0.05) { // 简单的优化：绝对光滑表面不采直接光（全靠反射）
             vec3 viewDir = -ray.direction;
-            // 注意：需要修改 CalculateDirectLight 接受 SurfaceMaterial
-            totalRadiance += throughput * CalculateDirectLight(rec, viewDir, surf, seed);
+            totalRadiance += throughput * CalculateDirectLight(rec, shadingNormal, viewDir, surf, seed);
         }
 
         // 俄罗斯轮盘赌
@@ -496,11 +644,12 @@ vec3 TracePath(Ray ray, inout uint seed) {
         if (RandomFloat(seed) > p) break;
         throughput /= p;
         
-        // 生成新光线方向 (使用 surf 属性)
+        // 生成新光线方向
         vec3 V = -ray.direction;
-        vec3 N = rec.normal;
+        vec3 N = shadingNormal;
+        
         vec3 F0 = vec3(0.04); 
-        F0 = mix(F0, surf.albedo, surf.metallic); // 使用 surf.albedo 和 surf.metallic
+        F0 = mix(F0, surf.albedo, surf.metallic);
         
         vec3 F = FresnelSchlick(max(dot(N, V), 0.0), F0);
         float specProb = (F.r + F.g + F.b) / 3.0;
@@ -510,58 +659,24 @@ vec3 TracePath(Ray ray, inout uint seed) {
         if (RandomFloat(seed) < specProb) {
             // 镜面反射
             vec3 reflectDir = reflect(-V, N);
-            nextDir = normalize(reflectDir + RandomInUnitSphere(seed) * surf.roughness); // 使用 surf.roughness
-            if(dot(nextDir, N) < 0.0) nextDir = -nextDir;
+            nextDir = normalize(reflectDir + RandomInUnitSphere(seed) * surf.roughness);
+            if(dot(nextDir, N) < 0.0) nextDir = -nextDir; // 避免采样到表面以下
             throughput *= F; 
         } else {
             // 漫反射
             nextDir = normalize(N + RandomInUnitSphere(seed));
             if (dot(nextDir, N) < 0.0) nextDir = -nextDir; 
-            throughput *= surf.albedo; // 使用 surf.albedo
+            throughput *= surf.albedo;
         }
 
-        ray.origin = rec.position + N * 0.001;
+        // 偏移光线起点防止自遮挡
+        float directionSign = dot(nextDir, rec.normal) > 0.0 ? 1.0 : -1.0;
+        ray.origin = rec.position + rec.normal * 0.001 * directionSign;
+        
         ray.direction = nextDir;
     }
     
     return totalRadiance;
-}
-
-vec3 testBVH(Ray ray, float tMin, float tMax, inout HitRecord rec){
-    BVHNode rootNode = bvhNodes[0]; // 获取根节点
-
-    // 你的 AABB 检测逻辑
-    float tBoxMin = tMin;
-    float tBoxMax = tMax;
-    vec3 invDir = 1.0 / ray.direction;
-
-    bool hitRoot = true;
-    for (int i = 0; i < 3; i++) {
-        float t0 = (rootNode.min[i] - ray.origin[i]) * invDir[i];
-        float t1 = (rootNode.max[i] - ray.origin[i]) * invDir[i];
-        if (invDir[i] < 0.0) { float temp = t0; t0 = t1; t1 = temp; }
-        tBoxMin = max(t0, tBoxMin);
-        tBoxMax = min(t1, tBoxMax);
-        if (tBoxMax <= tBoxMin) {
-            hitRoot = false;
-            break;
-        }
-    }
-
-    // === DEBUG 输出 ===
-    // 如果击中根节点包围盒，显示绿色；否则显示红色
-    if (hitRoot) return vec3(0.0, 1.0, 0.0); 
-    else return vec3(1.0, 0.0, 0.0);
-}
-
-vec3 TracePathsTest(Ray ray, inout uint seed){
-    vec3 result= vec3(0.0);
-    for (int bounce = 0; bounce < maxBounces; bounce++) {
-        HitRecord rec;
-        
-        result=testBVH(ray, ray.tMin, ray.tMax, rec);
-    }
-    return result;
 }
 
 void main() {

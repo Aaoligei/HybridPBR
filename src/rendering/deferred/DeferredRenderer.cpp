@@ -23,9 +23,9 @@ namespace HybridPBR {
         lightingPass->Initialize();
         lightingPass->SetGBuffer(gBufferPass->GetGBuffer());
         
-        // 创建UBO
-        cameraUBO = std::make_unique<UniformBuffer>(sizeof(CameraData), 0);
-        lightUBO = std::make_unique<UniformBuffer>(sizeof(LightData), 1);
+        // 创建UBO（记得延迟渲染是2和3）
+        cameraUBO = std::make_unique<UniformBuffer>(sizeof(CameraData), 2);
+        lightUBO = std::make_unique<UniformBuffer>(sizeof(LightData), 3);
 
         // 初始化SSAO
         if (ssaoEnabled) {
@@ -40,6 +40,7 @@ namespace HybridPBR {
         
         initialized = true;
         LOG_INFO("DeferredRenderer initialized successfully");
+        
         return true;
     }
 
@@ -118,8 +119,7 @@ namespace HybridPBR {
             glDeleteFramebuffers(1, &outputFBO);
         }
         
-        glGenFramebuffers(1, &outputFBO);
-        glBindFramebuffer(GL_FRAMEBUFFER, outputFBO);
+        glCreateFramebuffers(1, &outputFBO);
         
         // 创建输出纹理
         outputTexture = std::make_shared<Texture>();
@@ -131,22 +131,19 @@ namespace HybridPBR {
         outputTexture->SetWrapMode(TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE);
         outputTexture->SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
         
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, outputTexture->GetID(), 0);
+        glNamedFramebufferTexture(outputFBO, GL_COLOR_ATTACHMENT0, outputTexture->GetID(), 0);
         
         // 创建深度渲染缓冲区
         uint32_t depthRBO;
-        glGenRenderbuffers(1, &depthRBO);
-        glBindRenderbuffer(GL_RENDERBUFFER, depthRBO);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRBO);
+        glCreateRenderbuffers(1, &depthRBO);
+        glNamedRenderbufferStorage(depthRBO, GL_DEPTH_COMPONENT, width, height);
+        glNamedFramebufferRenderbuffer(outputFBO, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRBO);
         
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        if (glCheckNamedFramebufferStatus(outputFBO, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
             LOG_ERROR("Deferred output framebuffer is not complete!");
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
             return false;
         }
         
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
         return true;
     }
 

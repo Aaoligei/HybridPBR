@@ -1,6 +1,6 @@
 #include "BVH.h"
 #include "utils/Logger.h"
-
+#include <chrono>
 namespace HybridPBR {
 
     BVH::BVH() {
@@ -16,7 +16,8 @@ namespace HybridPBR {
                    const std::vector<std::shared_ptr<Material>>& materials,
                     const std::vector<glm::mat4>& transforms) {
         //LOG_INFO("Building BVH acceleration structure...");
-        
+        auto start = std::chrono::high_resolution_clock::now();
+
         nodes.clear();
         triangles.clear();
         gpuMaterials.clear();
@@ -71,9 +72,13 @@ namespace HybridPBR {
             // LOG_INFO("BVH built: " + std::to_string(nodes.size()) + " nodes, " + 
             //         std::to_string(triangles.size()) + " triangles, max depth: " + 
             //         std::to_string(maxDepth));
-            
-            return true;
-        }
+        
+        auto end = std::chrono::high_resolution_clock::now();
+        float ms=std::chrono::duration<float, std::milli>(end - start).count();
+        LOG_INFO("BVH built time: "+std::to_string(ms)+"ms");
+
+        return true;
+    }
 
     bool BVH::Intersect(const Ray& ray, float tMin, float tMax, HitRecord& rec) const {
         if (nodes.empty()) return false;

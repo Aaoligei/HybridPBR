@@ -42,16 +42,19 @@ bool SSAO::Initialize() {
     }
 
     // 创建全屏四边形
-    glGenVertexArrays(1, &quadVAO);
-    glGenBuffers(1, &quadVBO);
-    glBindVertexArray(quadVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(QUAD_VERTICES), QUAD_VERTICES, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-    glBindVertexArray(0);
+    glCreateVertexArrays(1, &quadVAO);
+    glCreateBuffers(1, &quadVBO);
+    glNamedBufferStorage(quadVBO, sizeof(QUAD_VERTICES), QUAD_VERTICES, 0);
+    
+    glEnableVertexArrayAttrib(quadVAO, 0);
+    glVertexArrayAttribFormat(quadVAO, 0, 2, GL_FLOAT, GL_FALSE, 0);
+    glVertexArrayAttribBinding(quadVAO, 0, 0);
+    
+    glEnableVertexArrayAttrib(quadVAO, 1);
+    glVertexArrayAttribFormat(quadVAO, 1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float));
+    glVertexArrayAttribBinding(quadVAO, 1, 0);
+    
+    glVertexArrayVertexBuffer(quadVAO, 0, quadVBO, 0, 4 * sizeof(float));
 
     return true;
 }
@@ -132,16 +135,14 @@ bool SSAO::CreateSSAOFramebuffer(int width, int height) {
     if (!ssaoTexture->Create2D(width, height, GL_R8, GL_RED, GL_UNSIGNED_BYTE)) return false;
 
     // 创建FBO
-    glGenFramebuffers(1, &ssaoFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssaoTexture->GetID(), 0);
+    glCreateFramebuffers(1, &ssaoFBO);
+    glNamedFramebufferTexture(ssaoFBO, GL_COLOR_ATTACHMENT0, ssaoTexture->GetID(), 0);
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+    if (glCheckNamedFramebufferStatus(ssaoFBO, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         HybridPBR::LOG_ERROR("SSAO Framebuffer is not complete");
         return false;
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     return true;
 }
 
@@ -151,16 +152,14 @@ bool SSAO::CreateBlurFramebuffer(int width, int height) {
     if (!blurTexture->Create2D(width, height, GL_R8, GL_RED, GL_UNSIGNED_BYTE)) return false;
 
     // 创建FBO
-    glGenFramebuffers(1, &blurFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, blurFBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, blurTexture->GetID(), 0);
+    glCreateFramebuffers(1, &blurFBO);
+    glNamedFramebufferTexture(blurFBO, GL_COLOR_ATTACHMENT0, blurTexture->GetID(), 0);
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+    if (glCheckNamedFramebufferStatus(blurFBO, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         HybridPBR::LOG_ERROR("Blur Framebuffer is not complete");
         return false;
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     return true;
 }
 

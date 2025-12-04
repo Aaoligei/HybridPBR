@@ -169,6 +169,7 @@ namespace HybridPBR {
 
     class GBufferPass : public RenderPass {
     public:
+        GBufferPass() = default;
         void Initialize() override;
         void Execute(const Scene& scene) override;
         void Cleanup() override;

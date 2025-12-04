@@ -27,19 +27,11 @@ namespace HybridPBR {
         }
         
         // 创建立方体贴图FBO
-        // 2. 创建并设置 FBO 和 RBO (DSA 方式)
-        // 使用 glCreate* 代替 glGen*，直接创建对象而非仅生成ID
         glCreateFramebuffers(1, &captureFBO);
         glCreateRenderbuffers(1, &captureRBO);
-
-        // 设置 Renderbuffer 存储 (无需绑定)
-        // 替换 glBindRenderbuffer + glRenderbufferStorage
-        glNamedRenderbufferStorage(captureRBO, GL_DEPTH_COMPONENT24, cubemapSize, cubemapSize);
-
-        // 将 RBO 附加到 FBO (无需绑定 FBO)
-        // 替换 glBindFramebuffer + glFramebufferRenderbuffer
+        
+        glNamedRenderbufferStorage(captureFBO, GL_DEPTH_COMPONENT24, cubemapSize, cubemapSize);
         glNamedFramebufferRenderbuffer(captureFBO, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
-
         
         // 创建立方体贴图
         environmentMap = std::make_shared<Texture>();
@@ -60,7 +52,8 @@ namespace HybridPBR {
         
         for (unsigned int i = 0; i < 6; ++i) {
             equirectangularToCubemapShader->SetMat4("view", captureViews[i]);
-            glNamedFramebufferTextureLayer(captureFBO, GL_COLOR_ATTACHMENT0, environmentMap->GetID(), 0, i);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+                                  GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, environmentMap->GetID(), 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             RenderCube();
         }
@@ -93,7 +86,8 @@ namespace HybridPBR {
         
         for (unsigned int i = 0; i < 6; ++i) {
             irradianceShader->SetMat4("view", captureViews[i]);
-            glNamedFramebufferTextureLayer(captureFBO, GL_COLOR_ATTACHMENT0, irradianceMap->GetID(), 0, i);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+                                  GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, irradianceMap->GetID(), 0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             RenderCube();
         }
@@ -134,7 +128,8 @@ namespace HybridPBR {
             
             for (unsigned int i = 0; i < 6; ++i) {
                 prefilterShader->SetMat4("view", captureViews[i]);
-                glNamedFramebufferTextureLayer(captureFBO, GL_COLOR_ATTACHMENT0, prefilterMap->GetID(), 0, i);
+                glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+                                      GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, prefilterMap->GetID(), 0);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 RenderCube();
             }
@@ -250,20 +245,20 @@ namespace HybridPBR {
     }
 
     bool IBL::InitializeCaptureResources() {
-
-        
-        // 设置捕获投影矩阵
+        // 初始化捕获投影矩阵和视图矩阵
         captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+        captureViews = {
+            glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+            glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+            glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+            glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+            glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+            glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+        };
         
-        // 设置捕获视图矩阵（6个面）
-        captureViews.resize(6);
-        captureViews[0] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
-        captureViews[1] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f));
-        captureViews[2] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f));
-        captureViews[3] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f));
-        captureViews[4] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
-        captureViews[5] = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f));
-        
+        // 创建捕获用的FBO和RBO
+        glCreateFramebuffers(1, &captureFBO);
+        glCreateRenderbuffers(1, &captureRBO);
         return true;
     }
 

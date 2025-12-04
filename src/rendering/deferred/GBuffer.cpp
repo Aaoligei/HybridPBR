@@ -169,7 +169,7 @@ namespace HybridPBR {
         GLCall(glNamedFramebufferRenderbuffer(fbo, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRBO));
         
         // 检查完整性
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        if (glCheckNamedFramebufferStatus(fbo, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
             LOG_ERROR("Framebuffer is not complete!");
             return false;
         }

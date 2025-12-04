@@ -195,7 +195,7 @@ namespace HybridPBR {
         denoisedTexture->SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
 
         if (blitFBO == 0) {
-            glGenFramebuffers(1, &blitFBO);
+            glCreateFramebuffers(1, &blitFBO);
         }
         
         return true;
@@ -439,9 +439,8 @@ namespace HybridPBR {
         // 2. 准备读取源 (Read Framebuffer)
         glBindFramebuffer(GL_READ_FRAMEBUFFER, blitFBO);
         // 将纹理附加到 FBO 的颜色附件0
-        // 注意：glFramebufferTexture2D 开销很小，每帧调用没问题
-        glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
-                            GL_TEXTURE_2D, textureToShow->GetID(), 0);
+        // 使用 DSA 版本的函数替代 glFramebufferTexture2D
+        glNamedFramebufferTexture(blitFBO, GL_COLOR_ATTACHMENT0, textureToShow->GetID(), 0);
 
         // 3. 准备绘制目标 (Draw Framebuffer) -> 屏幕 (ID 0)
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);

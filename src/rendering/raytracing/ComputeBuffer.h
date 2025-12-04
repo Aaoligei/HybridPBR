@@ -51,12 +51,10 @@ namespace HybridPBR {
         size = data.size() * sizeof(T);
         
         if (bufferID == 0) {
-            glGenBuffers(1, &bufferID);
+            glCreateBuffers(1, &bufferID);
         }
         
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, bufferID);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, size, data.data(), static_cast<GLenum>(usage));
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+        glNamedBufferData(bufferID, size, data.data(), static_cast<GLenum>(usage));
         
         return true;
     }
@@ -69,12 +67,10 @@ namespace HybridPBR {
         size = elementCount * sizeof(T);
         
         if (bufferID == 0) {
-            glGenBuffers(1, &bufferID);
+            glCreateBuffers(1, &bufferID);
         }
         
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, bufferID);
-        glBufferData(GL_SHADER_STORAGE_BUFFER, size, nullptr, static_cast<GLenum>(usage));
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+        glNamedBufferData(bufferID, size, nullptr, static_cast<GLenum>(usage));
         
         return true;
     }
@@ -86,9 +82,7 @@ namespace HybridPBR {
         size_t updateSize = data.size() * sizeof(T);
         if (offset + updateSize > size) return false;
         
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, bufferID);
-        glBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, updateSize, data.data());
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+        glNamedBufferSubData(bufferID, offset, updateSize, data.data());
         
         return true;
     }

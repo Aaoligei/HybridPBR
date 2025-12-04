@@ -359,40 +359,46 @@ namespace HybridPBR {
             glDeleteBuffers(1, &EBO);
         }
 
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
+        glCreateVertexArrays(1, &VAO);
+        glCreateBuffers(1, &VBO);
         
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
-
+        // 上传顶点数据
+        glNamedBufferStorage(VBO, vertices.size() * sizeof(Vertex), vertices.data(), 0);
+        
         // 位置属性
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
-        glEnableVertexAttribArray(0);
+        glEnableVertexArrayAttrib(VAO, 0);
+        glVertexArrayAttribFormat(VAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
+        glVertexArrayAttribBinding(VAO, 0, 0);
         
         // 法线属性
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
-        glEnableVertexAttribArray(1);
+        glEnableVertexArrayAttrib(VAO, 1);
+        glVertexArrayAttribFormat(VAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
+        glVertexArrayAttribBinding(VAO, 1, 0);
         
         // 纹理坐标属性
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texcoord));
-        glEnableVertexAttribArray(2);
+        glEnableVertexArrayAttrib(VAO, 2);
+        glVertexArrayAttribFormat(VAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texcoord));
+        glVertexArrayAttribBinding(VAO, 2, 0);
         
         // 切线属性
-        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
-        glEnableVertexAttribArray(3);
+        glEnableVertexArrayAttrib(VAO, 3);
+        glVertexArrayAttribFormat(VAO, 3, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, tangent));
+        glVertexArrayAttribBinding(VAO, 3, 0);
         
         // 副切线属性
-        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
-        glEnableVertexAttribArray(4);
+        glEnableVertexArrayAttrib(VAO, 4);
+        glVertexArrayAttribFormat(VAO, 4, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, bitangent));
+        glVertexArrayAttribBinding(VAO, 4, 0);
+        
+        // 将VBO绑定到VAO的0号绑定点
+        glVertexArrayVertexBuffer(VAO, 0, VBO, 0, sizeof(Vertex));
 
         if (!indices.empty()) {
-            glGenBuffers(1, &EBO);
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
+            glCreateBuffers(1, &EBO);
+            glNamedBufferStorage(EBO, indices.size() * sizeof(uint32_t), indices.data(), 0);
+            glVertexArrayElementBuffer(VAO, EBO);
         }
 
-        glBindVertexArray(0);
         buffersInitialized = true;
     }
 

@@ -146,21 +146,25 @@ namespace HybridPBR {
         skyboxTexture->Bind(0);
         
         if (cubeVAO == 0){
-            glGenVertexArrays(1, &cubeVAO);
-            glGenBuffers(1, &cubeVBO);
+            glCreateVertexArrays(1, &cubeVAO);
+            glCreateBuffers(1, &cubeVBO);
             // fill buffer
-            glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
-            // link vertex attributes
-            glBindVertexArray(cubeVAO);
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-            glEnableVertexAttribArray(2);
-            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
+            glNamedBufferStorage(cubeVBO, sizeof(skyboxVertices), skyboxVertices, 0);
+            
+            // link vertex attributes using DSA
+            glVertexArrayVertexBuffer(cubeVAO, 0, cubeVBO, 0, 8 * sizeof(float));
+            
+            glEnableVertexArrayAttrib(cubeVAO, 0);
+            glVertexArrayAttribFormat(cubeVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+            glVertexArrayAttribBinding(cubeVAO, 0, 0);
+            
+            glEnableVertexArrayAttrib(cubeVAO, 1);
+            glVertexArrayAttribFormat(cubeVAO, 1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float));
+            glVertexArrayAttribBinding(cubeVAO, 1, 0);
+            
+            glEnableVertexArrayAttrib(cubeVAO, 2);
+            glVertexArrayAttribFormat(cubeVAO, 2, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float));
+            glVertexArrayAttribBinding(cubeVAO, 2, 0);
         }
         // render Cube
         glBindVertexArray(cubeVAO);
@@ -358,17 +362,20 @@ namespace HybridPBR {
              1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
         };
         
-        glGenVertexArrays(1, &quadVAO);
-        glGenBuffers(1, &quadVBO);
+        glCreateVertexArrays(1, &quadVAO);
+        glCreateBuffers(1, &quadVBO);
         
-        glBindVertexArray(quadVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+        glNamedBufferStorage(quadVBO, sizeof(quadVertices), &quadVertices, 0);
         
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexArrayAttrib(quadVAO, 0);
+        glVertexArrayAttribFormat(quadVAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+        glVertexArrayAttribBinding(quadVAO, 0, 0);
+        
+        glEnableVertexArrayAttrib(quadVAO, 1);
+        glVertexArrayAttribFormat(quadVAO, 1, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(float));
+        glVertexArrayAttribBinding(quadVAO, 1, 0);
+        
+        glVertexArrayVertexBuffer(quadVAO, 0, quadVBO, 0, 5 * sizeof(float));
     }
 
     void LightingPass::Initialize() {
@@ -412,6 +419,9 @@ namespace HybridPBR {
         } else {
             lightingShader->SetBool("useRTShadows", false);
         }
+        
+        // 绑定G-Buffer进行读取
+        gbuffer->BindForLightingPass();
 
         if (rtReflectionMap) {
             lightingShader->SetBool("useRTReflections", true);
@@ -439,6 +449,9 @@ namespace HybridPBR {
         // 恢复状态
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
+        
+        // 确保解除帧缓冲绑定
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     void LightingPass::Cleanup() {

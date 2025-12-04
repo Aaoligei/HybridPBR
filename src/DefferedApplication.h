@@ -193,15 +193,16 @@ public:
         if (!rasterizer->Initialize()) {
             return false;
         }
+        HybridPBR::ShaderManager::GetInstance().LoadShader("sphere_pbr",HybridPBR::FileIO::GetAssetsPath() +"shaders/basic.vert", HybridPBR::FileIO::GetAssetsPath() +"shaders/basic.frag");
+        iblSystem->BindIBLTextures(HybridPBR::ShaderManager::GetInstance().GetShader("sphere_pbr"));
 
         //创建延迟渲染器
-        // deferredRenderer = std::make_unique<HybridPBR::DeferredRenderer>();
-        // if (!deferredRenderer->Initialize(window->GetWidth(), window->GetHeight())){
-        //      return false;
-        //  }
-        // deferredRenderer->SetIBLSystem(iblSystem);
-        // deferredRenderer->SetSSAOEnabled(false);
-        // useDeferredRendering = false;
+        deferredRenderer = std::make_unique<HybridPBR::DeferredRenderer>();
+        if (!deferredRenderer->Initialize(window->GetWidth(), window->GetHeight())){
+             return false;
+        }
+        //deferredRenderer->SetIBLSystem(iblSystem);
+        deferredRenderer->SetSSAOEnabled(false);
 
         //创建光线追踪渲染器
         HybridPBR::RayTracerConfig rtConfig;

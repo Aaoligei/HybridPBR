@@ -7,6 +7,7 @@
 #include <memory>
 #include "rendering/common/UniformBuffer.h"
 #include "rendering/interfaces/IRenderer.h"
+#include "rendering/deferred/GBuffer.h"
 
 namespace HybridPBR {
 
@@ -29,6 +30,13 @@ namespace HybridPBR {
         void Shutdown();
         void Render(const Scene& scene);
         void Resize(uint32_t width, uint32_t height);
+
+        // 混合渲染专用方法
+        bool InitializeHybrid();
+        void RenderShadows(std::shared_ptr<GBuffer> gbuffer, const Scene& scene);
+        void RenderReflections(std::shared_ptr<GBuffer> gbuffer, const Scene& scene);
+        std::shared_ptr<Texture> GetShadowTexture() const { return rtShadowTexture; }
+        std::shared_ptr<Texture> GetReflectionTexture() const { return rtReflectionTexture; }
         
         // 帧累积控制
         void ResetAccumulation() { accumulatedFrames = 0; }
@@ -62,6 +70,11 @@ namespace HybridPBR {
         std::shared_ptr<ComputeShader> rayGenerationShader;
         std::shared_ptr<ComputeShader> pathTracingShader;
         std::shared_ptr<ComputeShader> denoiserShader;
+        //混合渲染
+        std::shared_ptr<ComputeShader> rtShadowShader;
+        std::shared_ptr<ComputeShader> rtReflectionShader;
+        std::shared_ptr<Texture> rtShadowTexture;
+        std::shared_ptr<Texture> rtReflectionTexture;
         // UBO
         std::unique_ptr<UniformBuffer> cameraUBO;
         std::unique_ptr<UniformBuffer> lightUBO;

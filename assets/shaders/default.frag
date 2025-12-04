@@ -1,192 +1,173 @@
 #version 460 core
-
-// 从顶点着色器接收的数据
-in vec3 FragPos;
-in vec3 Normal;
-in vec2 TexCoord;
-
-// 输出颜色
 out vec4 FragColor;
+in VS_OUT {
+    vec3 FragPos;
+    vec3 Normal;
+    vec2 TexCoord;
+    vec3 ViewPos;
+    vec3 WorldPos;
+} fs_in;
 
-// 材质属性
-struct Material {
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-    float shininess;
-    
-    bool useDiffuseMap;
-    bool useSpecularMap;
-};
+uniform vec3 albedo;
+uniform float metallic;
+uniform float roughness;
+uniform float ao;
 
-// 定向光源
-struct DirLight {
-    vec3 direction;
-    
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-};
+// IBL
+uniform samplerCube irradianceMap;
+uniform samplerCube prefilterMap;
+uniform sampler2D brdfLUT;
 
-// 点光源
-struct PointLight {
-    vec3 position;
-    
+// 光源
+// 对应 C++ 的 GPULight
+struct Light {
+    vec3 position;  
+    // padding ...
+    vec3 direction; 
+    // padding ...
+    vec3 color;     
+    float intensity;
+
+    float range;
     float constant;
     float linear;
     float quadratic;
-    
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+
+    float innerCutoff;
+    float outerCutoff;
+    int type;
+    // padding ...
 };
 
-// 聚光灯
-struct SpotLight {
-    vec3 position;
-    vec3 direction;
-    float cutOff;
-    float outerCutOff;
-    
-    float constant;
-    float linear;
-    float quadratic;
-    
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+// 对应 binding point 1
+layout (std140, binding = 1) uniform LightData {
+    int lightCount;
+    Light lights[16];
 };
 
-// Uniforms
-uniform vec3 viewPos;
-uniform Material material;
-uniform DirLight dirLight;
-uniform PointLight pointLights[4];
-uniform SpotLight spotLight;
-uniform int pointLightCount;
+const float PI = 3.14159265359;
+// ----------------------------------------------------------------------------
+// Easy trick to get tangent-normals to world-space to keep PBR code simplified.
+// Don't worry if you don't get what's going on; you generally want to do normal 
+// mapping the usual way for performance anyways; I do plan make a note of this 
+// technique somewhere later in the normal mapping tutorial.
+float DistributionGGX(vec3 N, vec3 H, float roughness)
+{
+    float a = roughness*roughness;
+    float a2 = a*a;
+    float NdotH = max(dot(N, H), 0.0);
+    float NdotH2 = NdotH*NdotH;
 
-// 纹理
-uniform sampler2D diffuseMap;
-uniform sampler2D specularMap;
+    float nom   = a2;
+    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+    denom = PI * denom * denom;
 
-// 函数声明
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
-
-void main() {
-    // 属性
-    vec3 norm = normalize(Normal);
-    vec3 viewDir = normalize(viewPos - FragPos);
-    
-    // 获取材质颜色
-    vec3 diffuseTexel = vec3(1.0);
-    vec3 specularTexel = vec3(1.0);
-    
-    if (material.useDiffuseMap) {
-        diffuseTexel = vec3(texture(diffuseMap, TexCoord));
-    }
-    
-    if (material.useSpecularMap) {
-        specularTexel = vec3(texture(specularMap, TexCoord));
-    }
-    
-    // 定向光
-    vec3 result = CalcDirLight(dirLight, norm, viewDir);
-    
-    // 点光源
-    for(int i = 0; i < pointLightCount && i < 4; i++) {
-        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);
-    }
-    
-    // 聚光
-    result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
-    
-    // 应用材质颜色
-    vec3 ambient = material.ambient * diffuseTexel;
-    vec3 diffuse = result * material.diffuse * diffuseTexel;
-    vec3 specular = result * material.specular * specularTexel;
-    
-    vec3 finalColor = ambient + diffuse + specular;
-    FragColor = vec4(finalColor, 1.0);
+    return nom / denom;
 }
+// ----------------------------------------------------------------------------
+float GeometrySchlickGGX(float NdotV, float roughness)
+{
+    float r = (roughness + 1.0);
+    float k = (r*r) / 8.0;
 
-// 计算定向光
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
-    vec3 lightDir = normalize(-light.direction);
-    
-    // 漫反射着色
-    float diff = max(dot(normal, lightDir), 0.0);
-    
-    // 镜面着色
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    
-    // 合并结果
-    vec3 ambient = light.ambient;
-    vec3 diffuse = light.diffuse * diff;
-    vec3 specular = light.specular * spec;
-    
-    return (ambient + diffuse + specular);
+    float nom   = NdotV;
+    float denom = NdotV * (1.0 - k) + k;
+
+    return nom / denom;
 }
+// ----------------------------------------------------------------------------
+float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
+{
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+    float ggx2 = GeometrySchlickGGX(NdotV, roughness);
+    float ggx1 = GeometrySchlickGGX(NdotL, roughness);
 
-// 计算点光源
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
-    vec3 lightDir = normalize(light.position - fragPos);
-    
-    // 漫反射着色
-    float diff = max(dot(normal, lightDir), 0.0);
-    
-    // 镜面着色
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    
-    // 衰减
-    float distance = length(light.position - fragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance +
-                               light.quadratic * (distance * distance));
-    
-    // 合并结果
-    vec3 ambient = light.ambient;
-    vec3 diffuse = light.diffuse * diff;
-    vec3 specular = light.specular * spec;
-    
-    ambient *= attenuation;
-    diffuse *= attenuation;
-    specular *= attenuation;
-    
-    return (ambient + diffuse + specular);
+    return ggx1 * ggx2;
 }
+// ----------------------------------------------------------------------------
+vec3 fresnelSchlick(float cosTheta, vec3 F0)
+{
+    return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}   
+// ----------------------------------------------------------------------------
+void main()
+{		
+    vec3 WorldPos = fs_in.WorldPos;
+    vec3 N =fs_in.Normal;
+    vec3 V = normalize(fs_in.ViewPos - WorldPos);
+    vec3 R = reflect(-V, N); 
 
-// 计算聚光
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
-    vec3 lightDir = normalize(light.position - fragPos);
+    // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
+    // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
+    vec3 F0 = vec3(0.04); 
+    F0 = mix(F0, albedo, metallic);
+
+    // reflectance equation
+    vec3 Lo = vec3(0.0);
+    for(int i = 0; i < lightCount; ++i) 
+    {
+        // calculate per-light radiance
+        vec3 L = normalize(lights[i].position - WorldPos);
+        vec3 H = normalize(V + L);
+        float distance = length(lights[i].position - WorldPos);
+        float attenuation = 1.0 / (distance * distance);
+        vec3 radiance = lights[i].color * lights[i].intensity * attenuation;
+
+        // Cook-Torrance BRDF
+        float NDF = DistributionGGX(N, H, roughness);   
+        float G   = GeometrySmith(N, V, L, roughness);      
+        vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
+           
+        vec3 numerator    = NDF * G * F; 
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
+        vec3 specular = numerator / denominator;
+        
+        // kS is equal to Fresnel
+        vec3 kS = F;
+        // for energy conservation, the diffuse and specular light can't
+        // be above 1.0 (unless the surface emits light); to preserve this
+        // relationship the diffuse component (kD) should equal 1.0 - kS.
+        vec3 kD = vec3(1.0) - kS;
+        // multiply kD by the inverse metalness such that only non-metals 
+        // have diffuse lighting, or a linear blend if partly metal (pure metals
+        // have no diffuse light).
+        kD *= 1.0 - metallic;	  
+
+        // scale light by NdotL
+        float NdotL = max(dot(N, L), 0.0);        
+
+        // add to outgoing radiance Lo
+        Lo += (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+    }   
+    // ambient lighting (we now use IBL as the ambient term)
+    vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
     
-    // 漫反射着色
-    float diff = max(dot(normal, lightDir), 0.0);
+    vec3 kS = F;
+    vec3 kD = 1.0 - kS;
+    kD *= 1.0 - metallic;	  
     
-    // 镜面着色
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 irradiance = texture(irradianceMap, N).rgb;
+    vec3 diffuse      = irradiance * albedo;
     
-    // 衰减
-    float distance = length(light.position - fragPos);
-    float attenuation = 1.0 / (light.constant + light.linear * distance +
-                               light.quadratic * (distance * distance));
+    // sample both the pre-filter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part.
+    const float MAX_REFLECTION_LOD = 4.0;
+    vec3 prefilteredColor = textureLod(prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;    
+    vec2 brdf  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
+    vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
+
+    vec3 ambient = (kD * diffuse + specular) * ao;
     
-    // 聚光强度
-    float theta = dot(lightDir, normalize(-light.direction));
-    float epsilon = light.cutOff - light.outerCutOff;
-    float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
-    
-    // 合并结果
-    vec3 ambient = light.ambient;
-    vec3 diffuse = light.diffuse * diff;
-    vec3 specular = light.specular * spec;
-    
-    ambient *= attenuation;
-    diffuse *= attenuation * intensity;
-    specular *= attenuation * intensity;
-    
-    return (ambient + diffuse + specular);
+    vec3 color = ambient + Lo;
+
+    // HDR tonemapping
+    color = color / (color + vec3(1.0));
+    // gamma correct
+    color = pow(color, vec3(1.0/2.2)); 
+
+    FragColor = vec4(color , 1.0);
 }

@@ -1,6 +1,6 @@
 #version 460 core
 
-layout(local_size_x = 8, local_size_y = 8) in;
+layout(local_size_x = 32, local_size_y = 32) in;
 
 // ... (Ray, HitRecord, Triangle 等结构体保持不变，请确保 BVHNode 还是 vec4 版本) ...
 struct Ray {

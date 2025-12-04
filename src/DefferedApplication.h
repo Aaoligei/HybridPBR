@@ -115,6 +115,28 @@ public:
             modelNode->GetTransform().SetPosition(glm::vec3(0.0f, -1.0f, 2.0f));
         } 
     }
+    void LoadCornellBox() {
+         // 尝试加载模型
+        auto modelResult = HybridPBR::ModelLoader::LoadFromFile(HybridPBR::FileIO::GetAssetsPath()
+         + "models/CornellBox-Original/CornellBox-Original.obj");
+        if (modelResult.success && !modelResult.meshes.empty()) {
+            // 使用加载的所有网格和材质
+            for (size_t i = 0; i < modelResult.meshes.size(); ++i) {
+                auto mesh = modelResult.meshes[i];
+                auto material = modelResult.materials.size() > i ? 
+                    modelResult.materials[i] : 
+                    HybridPBR::ResourceManager::GetInstance().CreateMaterial("Default", HybridPBR::MaterialProperties{});
+                    
+                material->SetCustomShader("sphere_pbr");
+                
+                // 创建场景节点
+                auto modelNode = scene->CreateNode("cornellBox_" + std::to_string(i));
+                modelNode->SetMesh(mesh);
+                modelNode->SetMaterial(material);
+                modelNode->GetTransform().SetPosition(glm::vec3(0.0f, 5.0f, 0.0f));
+            }
+        } 
+    }
 
     void LoadModels2() { 
          // 尝试加载模型
@@ -173,12 +195,13 @@ public:
         }
 
         //创建延迟渲染器
-        deferredRenderer = std::make_unique<HybridPBR::DeferredRenderer>();
+        // deferredRenderer = std::make_unique<HybridPBR::DeferredRenderer>();
         // if (!deferredRenderer->Initialize(window->GetWidth(), window->GetHeight())){
-        //     return false;
-        // }
+        //      return false;
+        //  }
         // deferredRenderer->SetIBLSystem(iblSystem);
         // deferredRenderer->SetSSAOEnabled(false);
+        // useDeferredRendering = false;
 
         //创建光线追踪渲染器
         HybridPBR::RayTracerConfig rtConfig;
@@ -191,7 +214,7 @@ public:
         if (!rayTracer->Initialize(rtConfig)){
             return false;
         }
-        useRayTracing = true;
+        useRayTracing = false;
 
         auto& shaderManager = HybridPBR::ShaderManager::GetInstance();
         iblSystem->BindIBLTextures(shaderManager.GetShader(HybridPBR::ShaderType::PBR));
@@ -222,6 +245,7 @@ public:
         // 加载3D模型
         LoadModels();
         //LoadModels2();
+        LoadCornellBox();
         // 创建光源
         CreateLights();
         
@@ -348,9 +372,9 @@ public:
         auto componentManager = imguiManager->GetComponentManager();
 
         // 处理gizmo交互
-        componentManager->HandleGizmoInteraction(*camera, *scene, timer.GetDeltaTime());
-        // 渲染gizmo
-        componentManager->RenderGizmo(*camera, *scene);
+        // componentManager->HandleGizmoInteraction(*camera, *scene, timer.GetDeltaTime());
+        // // 渲染gizmo
+        // componentManager->RenderGizmo(*camera, *scene);
         
         componentManager->ShowSceneStats(scene);
         componentManager->ShowSceneHierarchy(scene);

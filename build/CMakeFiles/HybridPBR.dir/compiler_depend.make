@@ -10669,6 +10669,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/raytracing/RayTracer.cpp.obj: C:/Users/25
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Material.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Texture.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/UniformBuffer.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/deferred/GBuffer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/interfaces/IRenderer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Camera.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Mesh.h \

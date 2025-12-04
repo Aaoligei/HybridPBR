@@ -56,6 +56,10 @@ namespace HybridPBR {
         // 设置G-Buffer输入
         void SetGBuffer(std::shared_ptr<GBuffer> gbuffer) { this->gbuffer = gbuffer; }
         void SetIBLSystem(std::shared_ptr<IBL> ibl) { iblSystem = ibl; }
+        void SetHybridMaps(std::shared_ptr<Texture> shadowMap, std::shared_ptr<Texture> reflectionMap) {
+        rtShadowMap = shadowMap;
+        rtReflectionMap = reflectionMap;
+    }
         
         // 光源管理
         void SetMaxPointLights(int count) { maxPointLights = count; }
@@ -65,6 +69,9 @@ namespace HybridPBR {
         std::shared_ptr<GBuffer> gbuffer;
         std::shared_ptr<IBL> iblSystem;
         std::shared_ptr<Shader> lightingShader;
+
+        std::shared_ptr<Texture> rtShadowMap;
+        std::shared_ptr<Texture> rtReflectionMap;
         
         int maxPointLights = 32;
         int maxSpotLights = 8;

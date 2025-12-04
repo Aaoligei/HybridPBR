@@ -52,6 +52,11 @@ namespace HybridPBR {
         cameraUBO = std::make_unique<UniformBuffer>(sizeof(CameraData), 8);
         lightUBO = std::make_unique<UniformBuffer>(sizeof(LightData), 9);
         
+        // if(!InitializeHybrid()){
+        //     LOG_ERROR("Failed to initialize hybrid renderer");
+        //     return false;
+        // }
+        
         initialized = true;
         accumulatedFrames = 0;
         
@@ -377,8 +382,8 @@ namespace HybridPBR {
         }
         
         // 分派计算着色器
-        uint32_t groupsX = (config.width + 7) / 8;
-        uint32_t groupsY = (config.height + 7) / 8;
+        uint32_t groupsX = (config.width + 32) / 31;
+        uint32_t groupsY = (config.height + 32) / 31;
         pathTracingShader->Dispatch(groupsX, groupsY, 1);
         
         ComputeShader::MemoryBarrier();
@@ -491,4 +496,118 @@ namespace HybridPBR {
         lightUBO->SetData(&lightData, sizeof(LightData));
     }
 
+
+    // 在 Initialize 或 InitializeHybrid 中加载 Shader 和创建 Texture
+    bool RayTracer::InitializeHybrid() {
+        // 1. 加载 Shader
+        rtShadowShader = std::make_shared<ComputeShader>();
+        if (!rtShadowShader->LoadFromFile(FileIO::GetAssetsPath() + "shaders/compute/rt_shadows.comp")) {
+            LOG_ERROR("Failed to load RT Shadow shader");
+            return false;
+        }
+
+        rtReflectionShader = std::make_shared<ComputeShader>();
+        if (!rtReflectionShader->LoadFromFile(FileIO::GetAssetsPath() + "shaders/compute/rt_reflections.comp")) {
+            LOG_ERROR("Failed to load RT Reflection shader");
+            return false;
+        }
+
+        // 2. 创建结果纹理
+        rtShadowTexture = std::make_shared<Texture>();
+        rtShadowTexture->Create2D(config.width, config.height, GL_R8, GL_RED, GL_UNSIGNED_BYTE); // 单通道可见性
+        rtShadowTexture->SetWrapMode(TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE);
+        rtShadowTexture->SetFilter(TextureFilter::NEAREST, TextureFilter::NEAREST);
+
+        rtReflectionTexture = std::make_shared<Texture>();
+        rtReflectionTexture->Create2D(config.width, config.height, GL_RGBA16F, GL_RGBA, GL_FLOAT);
+        rtReflectionTexture->SetWrapMode(TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE);
+        rtReflectionTexture->SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
+        
+        return true;
+    }
+
+    void RayTracer::RenderShadows(std::shared_ptr<GBuffer> gbuffer, const Scene& scene) {
+        if (!rtShadowShader || !gbuffer) return;
+
+        rtShadowShader->Use();
+        
+        // 绑定 G-Buffer
+        gbuffer->GetTexture(GBufferTextureType::Position)->Bind(0);
+        rtShadowShader->SetInt("gPosition", 0);
+        gbuffer->GetTexture(GBufferTextureType::Normal)->Bind(1);
+        rtShadowShader->SetInt("gNormal", 1);
+        
+        // 绑定输出图像
+        rtShadowTexture->BindImage(0, 0, GL_WRITE_ONLY);
+        
+        // 设置 Uniforms
+        rtShadowShader->SetInt("width", config.width);
+        rtShadowShader->SetInt("height", config.height);
+        
+        // 获取主光源位置 (假设第一个光源)
+        const auto& lights = scene.GetLights();
+        if (!lights.empty()) {
+            rtShadowShader->SetVec3("lightPos", lights[0]->GetPosition());
+        } else {
+            rtShadowShader->SetVec3("lightPos", glm::vec3(0, 10, 0));
+        }
+
+        // 绑定 BVH 数据
+        bvhNodesBuffer.Bind(4);
+        trianglesBuffer.Bind(5);
+        
+        // Dispatch
+        uint32_t groupsX = (config.width + 7) / 8;
+        uint32_t groupsY = (config.height + 7) / 8;
+        rtShadowShader->Dispatch(groupsX, groupsY, 1);
+        
+        ComputeShader::MemoryBarrier();
+    }
+
+    void RayTracer::RenderReflections(std::shared_ptr<GBuffer> gbuffer, const Scene& scene) {
+        if (!rtReflectionShader || !gbuffer) return;
+
+        rtReflectionShader->Use();
+
+        // 绑定 G-Buffer
+        gbuffer->GetTexture(GBufferTextureType::Position)->Bind(0);
+        rtReflectionShader->SetInt("gPosition", 0);
+        gbuffer->GetTexture(GBufferTextureType::Normal)->Bind(1);
+        rtReflectionShader->SetInt("gNormal", 1);
+        gbuffer->GetTexture(GBufferTextureType::MetallicRoughnessAO)->Bind(2);
+        rtReflectionShader->SetInt("gMRA", 2);
+
+        // 绑定输出图像
+        rtReflectionTexture->BindImage(0, 0, GL_WRITE_ONLY);
+
+        // 设置 Uniforms
+        rtReflectionShader->SetInt("width", config.width);
+        rtReflectionShader->SetInt("height", config.height);
+        if (scene.GetMainCamera()) {
+            rtReflectionShader->SetVec3("viewPos", scene.GetMainCamera()->GetPosition());
+        }
+
+        // 绑定 BVH 和 材质 数据
+        bvhNodesBuffer.Bind(4);
+        trianglesBuffer.Bind(5);
+        materialsBuffer.Bind(6);
+        
+        // 绑定纹理
+        // (逻辑同 TracePaths)
+        for (int i = 0; i < sceneTextures.size(); ++i) {
+            if (sceneTextures[i]) {
+                glActiveTexture(GL_TEXTURE0 + 10 + i); // Offset to avoid conflict
+                glBindTexture(GL_TEXTURE_2D, sceneTextures[i]->GetID());
+                std::string name = "textureMaps[" + std::to_string(i) + "]";
+                rtReflectionShader->SetInt(name, 10 + i);
+            }
+        }
+
+        // Dispatch
+        uint32_t groupsX = (config.width + 7) / 8;
+        uint32_t groupsY = (config.height + 7) / 8;
+        rtReflectionShader->Dispatch(groupsX, groupsY, 1);
+
+        ComputeShader::MemoryBarrier();
+    }
 } // namespace HybridPBR

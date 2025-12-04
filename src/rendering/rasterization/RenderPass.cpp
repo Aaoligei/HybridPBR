@@ -404,6 +404,23 @@ namespace HybridPBR {
         auto& shaderManager = ShaderManager::GetInstance();
         shaderManager.SetCurrentShader(lightingShader);
         
+        // 绑定 Hybrid RT Maps
+        if (rtShadowMap) {
+            lightingShader->SetBool("useRTShadows", true);
+            lightingShader->SetInt("rtShadowMap", 5); // Slot 5
+            rtShadowMap->Bind(5);
+        } else {
+            lightingShader->SetBool("useRTShadows", false);
+        }
+
+        if (rtReflectionMap) {
+            lightingShader->SetBool("useRTReflections", true);
+            lightingShader->SetInt("rtReflectionMap", 6); // Slot 6
+            rtReflectionMap->Bind(6);
+        } else {
+            lightingShader->SetBool("useRTReflections", false);
+        }
+        
         // 设置G-Buffer纹理
         SetupGBufferUniforms();
         

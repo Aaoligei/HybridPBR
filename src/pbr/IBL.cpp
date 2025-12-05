@@ -191,6 +191,31 @@ namespace HybridPBR {
             shader->SetInt("brdfLUT", 12);
         }
     }
+    void IBL::BindIBLTexturesRT(std::shared_ptr<ComputeShader> computeShader) const { 
+        if (!computeShader) return;
+        
+        computeShader->Use();
+        
+        if(environmentMap) {
+            environmentMap->Bind(28);
+            computeShader->SetInt("environmentMap", 28);
+        }
+
+        if (irradianceMap) {
+            irradianceMap->Bind(29);
+            computeShader->SetInt("irradianceMap", 29);
+        }
+        
+        if (prefilterMap) {
+            prefilterMap->Bind(30);
+            computeShader->SetInt("prefilterMap", 30);
+        }
+        
+        if (brdfLUT) {
+            brdfLUT->Bind(31);
+            computeShader->SetInt("brdfLUT", 31);
+        }
+    }
 
     bool IBL::InitializeShaders() {
          auto& shaderManager = ShaderManager::GetInstance();

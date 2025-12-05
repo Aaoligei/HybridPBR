@@ -51,6 +51,7 @@ namespace HybridPBR {
 
         cameraUBO = std::make_unique<UniformBuffer>(sizeof(CameraData), 8);
         lightUBO = std::make_unique<UniformBuffer>(sizeof(LightData), 9);
+
         
         // if(!InitializeHybrid()){
         //     LOG_ERROR("Failed to initialize hybrid renderer");

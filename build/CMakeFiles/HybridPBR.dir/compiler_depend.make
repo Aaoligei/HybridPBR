@@ -2787,6 +2787,7 @@ CMakeFiles/HybridPBR.dir/src/main.cpp.obj: C:/Users/25342/OneDrive/Desktop/proje
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Camera.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/CameraController.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Mesh.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/ComputeShader.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Scene.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/SceneNode.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Transform.h \
@@ -3035,7 +3036,6 @@ CMakeFiles/HybridPBR.dir/src/main.cpp.obj: C:/Users/25342/OneDrive/Desktop/proje
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/RenderPass.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/BVH.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/ComputeBuffer.h \
-  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/ComputeShader.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/Ray.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/RayTracer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/resources/ModelLoader.h \
@@ -3467,6 +3467,7 @@ CMakeFiles/HybridPBR.dir/src/pbr/IBL.cpp.obj: C:/Users/25342/OneDrive/Desktop/pr
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ShaderManager.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Texture.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/ComputeShader.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/FileIO.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/Logger.h \
   C:/mingw64/lib/gcc/x86_64-w64-mingw32/14.2.0/include/c++/backward/auto_ptr.h \
@@ -6758,6 +6759,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/deferred/DeferredRenderer.cpp.obj: C:/Use
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Camera.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Mesh.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/RenderPass.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/ComputeShader.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Scene.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/SceneNode.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Transform.h \
@@ -8702,6 +8704,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Rasterizer.cpp.obj: C:/User
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/interfaces/IRenderer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Camera.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Mesh.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/ComputeShader.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Scene.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/SceneNode.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Transform.h \
@@ -9114,6 +9117,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.obj: C:/User
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/interfaces/IRenderer.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Camera.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Mesh.h \
+  C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/ComputeShader.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Scene.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/SceneNode.h \
   C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Transform.h \

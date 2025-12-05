@@ -1,6 +1,6 @@
 #pragma once
 #include "../rendering/common/Texture.h"
-#include "../rendering/Shader.h"
+#include "../rendering//raytracing/ComputeShader.h"
 #include <memory>
 #include <vector>
 #include <glm/glm.hpp>
@@ -30,6 +30,7 @@ namespace HybridPBR {
         
         // 应用到着色器
         void BindIBLTextures(std::shared_ptr<Shader> shader) const;
+        void BindIBLTexturesRT(std::shared_ptr<ComputeShader> computeShader) const;
         
         // 状态查询
         bool IsReady() const { return ready; }

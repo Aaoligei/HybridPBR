@@ -216,10 +216,12 @@ public:
         if (!rayTracer->Initialize(rtConfig)){
             return false;
         }
+        rayTracer->SetIBLSystem(iblSystem);
         useRayTracing = false;
 
         auto& shaderManager = HybridPBR::ShaderManager::GetInstance();
         iblSystem->BindIBLTextures(shaderManager.GetShader(HybridPBR::ShaderType::PBR));
+        iblSystem->BindIBLTexturesRT(rayTracer->GetPathTracingShader());
 
         //添加天空盒通道
         auto skyboxPass = std::make_shared<HybridPBR::SkyboxPass>();

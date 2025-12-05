@@ -8,6 +8,7 @@
 #include "rendering/common/UniformBuffer.h"
 #include "rendering/interfaces/IRenderer.h"
 #include "rendering/deferred/GBuffer.h"
+#include "pbr/IBL.h"
 
 namespace HybridPBR {
 
@@ -55,6 +56,9 @@ namespace HybridPBR {
         float GetLastRenderTime() const { return lastRenderTime; }
 
         void SetDirty() { sceneDirty = true; }
+        void SetIBLSystem(std::shared_ptr<IBL> ibl) { iblSystem = ibl; }
+
+        const std::shared_ptr<ComputeShader>& GetPathTracingShader() const { return pathTracingShader; }
 
     private:
         RayTracerConfig config;
@@ -75,6 +79,7 @@ namespace HybridPBR {
         std::shared_ptr<ComputeShader> rtReflectionShader;
         std::shared_ptr<Texture> rtShadowTexture;
         std::shared_ptr<Texture> rtReflectionTexture;
+        std::shared_ptr<IBL> iblSystem;
         // UBO
         std::unique_ptr<UniformBuffer> cameraUBO;
         std::unique_ptr<UniformBuffer> lightUBO;

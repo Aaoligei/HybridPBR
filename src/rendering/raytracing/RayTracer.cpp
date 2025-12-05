@@ -82,7 +82,7 @@ namespace HybridPBR {
         UpdateGlobalUniforms(scene);
 
         // 检查Scene是否为脏或我们自己的脏标记是否设置
-        if(sceneDirty || scene.IsDirty()){
+        if(sceneDirty){
             LOG_INFO("Scene dirty, updating scene data");
             // 更新场景数据（如果发生变化）
             if (!UpdateSceneData(scene)) {
@@ -206,7 +206,7 @@ namespace HybridPBR {
         if (!BuildBVH(scene)) {
             return false;
         }
-            sceneTextures.clear();
+        sceneTextures.clear();
     
         // [重要] 索引 0 留空，作为“无纹理”的默认值 (或者是纯白纹理)
         // 你可以创建一个 1x1 的纯白纹理放在 slot 0，防止 shader 访问空纹理报错

@@ -260,6 +260,7 @@ namespace HybridPBR {
                                 FileIO::GetAssetsPath()+"shaders/deferred/gbuffer.frag");
         // 这个 Shader 输出必须对应 GBuffer 的 layout (pos, normal, albedo...)
         gBufferShader = ShaderManager::GetInstance().GetShader("GBuffer"); 
+        gBuffer = std::make_shared<GBuffer>();
     }
 
     void GBufferPass::Execute(const Scene& scene) {

@@ -201,8 +201,9 @@ public:
         if (!deferredRenderer->Initialize(window->GetWidth(), window->GetHeight())){
              return false;
         }
-        //deferredRenderer->SetIBLSystem(iblSystem);
+        deferredRenderer->SetIBLSystem(iblSystem);
         deferredRenderer->SetSSAOEnabled(false);
+        useDeferredRendering = false;
 
         //创建光线追踪渲染器
         HybridPBR::RayTracerConfig rtConfig;

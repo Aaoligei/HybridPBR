@@ -69,10 +69,6 @@ namespace HybridPBR {
         // 3. 用排序后的三角形替换原始三角形
         triangles = std::move(sortedTriangles);
             
-            // LOG_INFO("BVH built: " + std::to_string(nodes.size()) + " nodes, " + 
-            //         std::to_string(triangles.size()) + " triangles, max depth: " + 
-            //         std::to_string(maxDepth));
-        
         auto end = std::chrono::high_resolution_clock::now();
         float ms=std::chrono::duration<float, std::milli>(end - start).count();
         LOG_INFO("BVH built time: "+std::to_string(ms)+"ms");
@@ -116,9 +112,9 @@ namespace HybridPBR {
         // --- 内部节点逻辑 ---
         
         // 分割图元 (注意：SplitNode 可能会改变 prims 的顺序)
-        int splitAxis = SplitNode(prims, start, end);
+        int mid = SplitNode(prims, start, end);
         
-        if (splitAxis == -1) {
+        if (mid == -1) {
             // 分割失败，强制转为叶子节点
             nodes[nodeIndex].leftChild = -1;
             nodes[nodeIndex].firstPrim = start;
@@ -131,9 +127,7 @@ namespace HybridPBR {
             }
             return nodeIndex;
         }
-        
-        int mid = start + (end - start) / 2;
-        
+
         // --- 递归构建子节点 ---
         // 关键：递归会向 nodes 添加元素，可能导致 vector 重新分配内存
         // 所以 nodeIndex 依然有效，但如果之前有 BVHNode& ref = nodes[nodeIndex] 则会失效
@@ -175,42 +169,104 @@ namespace HybridPBR {
         }
     }
 
+  // 在 BVH.cpp 中替换 SplitNode
     int BVH::SplitNode(std::vector<BuildPrimitive>& prims, int start, int end) {
-        // 计算整体边界
-        AABB centroidBounds;
+        int count = end - start;
+        
+        // 1. 计算当前节点的包围盒
+        AABB bounds;
         for (int i = start; i < end; ++i) {
-            centroidBounds.min = glm::min(centroidBounds.min, prims[i].center);
-            centroidBounds.max = glm::max(centroidBounds.max, prims[i].center);
+            bounds.min = glm::min(bounds.min, prims[i].bounds.min);
+            bounds.max = glm::max(bounds.max, prims[i].bounds.max);
         }
         
-        // 选择最长的轴进行分割
-        glm::vec3 extent = centroidBounds.max - centroidBounds.min;
-        int axis = 0;
-        if (extent.y > extent.x) axis = 1;
-        if (extent.z > extent[axis]) axis = 2;
+        // 如果包围盒面积太小，或者图元太少，不分割
+        glm::vec3 extent = bounds.max - bounds.min;
+        if (glm::dot(extent, extent) < 0.0001f) return -1;
+
+        // 2. Binning SAH (桶装 SAH，比全 SAH 快且效果接近)
+        constexpr int BIN_COUNT = 12; // 通常 8-16 之间
+        struct Bin {
+            AABB bounds;
+            int count = 0;
+        };
         
-        // 如果边界太小，不分割
-        if (centroidBounds.max[axis] - centroidBounds.min[axis] < 0.001f) {
-            return -1;
+        float bestCost = FLT_MAX;
+        int bestAxis = -1;
+        float bestSplitPos = 0.0f;
+        
+        // 对三个轴分别测试
+        for (int axis = 0; axis < 3; ++axis) {
+            if (extent[axis] < 0.00001f) continue;
+
+            Bin bins[BIN_COUNT];
+            float scale = BIN_COUNT / extent[axis];
+            float minVal = bounds.min[axis];
+
+            // 将图元放入桶中
+            for (int i = start; i < end; ++i) {
+                int binIdx = std::min(BIN_COUNT - 1, 
+                    static_cast<int>((prims[i].center[axis] - minVal) * scale));
+                bins[binIdx].count++;
+                bins[binIdx].bounds.min = glm::min(bins[binIdx].bounds.min, prims[i].bounds.min);
+                bins[binIdx].bounds.max = glm::max(bins[binIdx].bounds.max, prims[i].bounds.max);
+            }
+
+            // 扫描桶，计算代价
+            // 左侧累积
+            float leftArea[BIN_COUNT - 1];
+            int leftCount[BIN_COUNT - 1];
+            AABB leftBox;
+            int leftSum = 0;
+            
+            for (int i = 0; i < BIN_COUNT - 1; ++i) {
+                leftSum += bins[i].count;
+                leftCount[i] = leftSum;
+                leftBox.min = glm::min(leftBox.min, bins[i].bounds.min);
+                leftBox.max = glm::max(leftBox.max, bins[i].bounds.max);
+                leftArea[i] = leftBox.SurfaceArea();
+            }
+
+            // 右侧累积并计算 Cost
+            AABB rightBox;
+            int rightSum = 0;
+            
+            for (int i = BIN_COUNT - 1; i > 0; --i) {
+                rightSum += bins[i].count;
+                rightBox.min = glm::min(rightBox.min, bins[i].bounds.min);
+                rightBox.max = glm::max(rightBox.max, bins[i].bounds.max);
+                float rightArea = rightBox.SurfaceArea();
+                
+                // SAH Cost = Area_Left * Count_Left + Area_Right * Count_Right
+                float cost = leftArea[i-1] * leftCount[i-1] + rightArea * rightSum;
+                
+                if (cost < bestCost) {
+                    bestCost = cost;
+                    bestAxis = axis;
+                    bestSplitPos = minVal + (i * extent[axis] / BIN_COUNT);
+                }
+            }
         }
-        
-        // 在中间点分割
-        float splitPos = centroidBounds.min[axis] + extent[axis] * 0.5f;
-        
-        // 分割图元
+
+        // 检查分割是否真的比不分割更好 (不分割的代价是当前面积 * 图元数)
+        // 这里的系数 1.0f 是遍历节点的代价，根据 GPU 性能调整
+        float leafCost = bounds.SurfaceArea() * count;
+        if (bestCost > leafCost) return -1; // 保持为叶子节点
+
+        // 3. 执行分割
         auto midIter = std::partition(prims.begin() + start, prims.begin() + end,
-            [axis, splitPos](const BuildPrimitive& prim) {
-                return prim.center[axis] < splitPos;
+            [bestAxis, bestSplitPos](const BuildPrimitive& prim) {
+                return prim.center[bestAxis] < bestSplitPos;
             });
-        
+
         int mid = static_cast<int>(midIter - prims.begin());
         
-        // 如果分割不均衡，调整
+        // 防止极其不平衡的分割（容错）
         if (mid == start || mid == end) {
             mid = start + (end - start) / 2;
         }
         
-        return axis;
+        return mid;
     }
 
     bool BVH::IntersectRecursive(int nodeIndex, const Ray& ray, float tMin, float tMax, HitRecord& rec) const {

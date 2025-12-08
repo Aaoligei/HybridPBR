@@ -159,7 +159,7 @@ namespace HybridPBR {
 
         // 收集光源数据
         LightData lightData;
-        const auto& lights = scene.GetLights();
+        const auto& lights = scene.GetAllLights();
         lightData.lightCount = std::min((int)lights.size(), 16);
         
         for(int i=0; i < lightData.lightCount; ++i) {

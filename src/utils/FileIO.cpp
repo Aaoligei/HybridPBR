@@ -7,7 +7,7 @@ namespace HybridPBR {
     std::string FileIO::ReadTextFile(const std::string& filepath) {
         std::ifstream file(filepath);
         if (!file.is_open()) {
-            LOG_ERROR("Failed to open file: " + filepath);
+            LOG_ERROR("FileIO", "Failed to open file: " + filepath);
             return "";
         }
         

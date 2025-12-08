@@ -2,6 +2,7 @@
 #include "utils/MathUtils.h"
 #include "rendering/Shader.h"
 #include "utils/GLCheck.h"
+#include "utils/FileIO.h"
 
 namespace HybridPBR {
 
@@ -27,7 +28,7 @@ SSAO::~SSAO() {
 bool SSAO::Initialize() {
     // 创建帧缓冲
     if (!CreateSSAOFramebuffer(1280, 720) || !CreateBlurFramebuffer(1280, 720)) {
-        HybridPBR::LOG_ERROR("Failed to create SSAO framebuffers");
+        LOG_ERROR("Failed to create SSAO framebuffers");
         return false;
     }
 
@@ -35,9 +36,9 @@ bool SSAO::Initialize() {
     ssaoShader = std::make_shared<Shader>();
     blurShader = std::make_shared<Shader>();
     
-    if (!ssaoShader->LoadFromFile("assets/shaders/ssao.vert", "assets/shaders/ssao.frag") || 
-        !blurShader->LoadFromFile("assets/shaders/blur.vert", "assets/shaders/blur.frag")) {
-        HybridPBR::LOG_ERROR("Failed to compile SSAO shaders");
+    if (!ssaoShader->LoadFromFile(FileIO::GetAssetsPath() + "shaders/ssao.vert", FileIO::GetAssetsPath() + "shaders/ssao.frag") || 
+        !blurShader->LoadFromFile(FileIO::GetAssetsPath() + "shaders/blur.vert", FileIO::GetAssetsPath() + "shaders/blur.frag")) {
+        LOG_ERROR("Failed to compile SSAO shaders");
         return false;
     }
 
@@ -139,7 +140,7 @@ bool SSAO::CreateSSAOFramebuffer(int width, int height) {
     glNamedFramebufferTexture(ssaoFBO, GL_COLOR_ATTACHMENT0, ssaoTexture->GetID(), 0);
 
     if (glCheckNamedFramebufferStatus(ssaoFBO, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        HybridPBR::LOG_ERROR("SSAO Framebuffer is not complete");
+        LOG_ERROR("SSAO Framebuffer is not complete");
         return false;
     }
 
@@ -156,7 +157,7 @@ bool SSAO::CreateBlurFramebuffer(int width, int height) {
     glNamedFramebufferTexture(blurFBO, GL_COLOR_ATTACHMENT0, blurTexture->GetID(), 0);
 
     if (glCheckNamedFramebufferStatus(blurFBO, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        HybridPBR::LOG_ERROR("Blur Framebuffer is not complete");
+        LOG_ERROR("Blur Framebuffer is not complete");
         return false;
     }
 
@@ -202,7 +203,7 @@ void SSAO::GenerateNoiseTexture() {
     // 创建噪声纹理对象
     noiseTexture = std::make_shared<Texture>();
     if (!noiseTexture->Create2D(noiseSize, noiseSize, GL_RGB16F, GL_RGB, GL_FLOAT, noiseData.data())) {
-        HybridPBR::LOG_ERROR("Failed to create noise texture for SSAO");
+        LOG_ERROR("Failed to create noise texture for SSAO");
         return;
     }
     

@@ -5,13 +5,13 @@ namespace HybridPBR {
 
     // 静态成员初始化
     const Scene* Rasterizer::currentScene = nullptr;
-    RenderStats Rasterizer::stats;
+    Rasterizer* Rasterizer::currentInstance = nullptr;
 
     Rasterizer::~Rasterizer() {
         Shutdown();
     }
 
-    bool Rasterizer::Initialize() {
+    Result<void> Rasterizer::Initialize(std::shared_ptr<IRenderDevice> device) {
         LOG_INFO("Initializing Rasterizer with multi-pass architecture");
         
         // 初始化着色器管理器
@@ -37,32 +37,36 @@ namespace HybridPBR {
         lightUBO = std::make_unique<UniformBuffer>(sizeof(LightData), 1);
         
         LOG_INFO("Rasterizer initialized successfully");
-        return true;
+        initialized_ = true;
+        currentInstance = this;
+        return Result<void>::Success();
     }
 
     void Rasterizer::Shutdown() {
+        initialized_ = false;
+        currentInstance = nullptr;
         ClearRenderPasses();
         ShaderManager::GetInstance().ClearShaders();
         LOG_INFO("Rasterizer shutdown");
     }
 
-    void Rasterizer::Render(const Scene& scene) {
-        BeginFrame();
+    Result<void> Rasterizer::Render(const Scene& scene) {
+        RETURN_IF_ERROR(BeginFrame());
         
         // 设置当前场景
         SetCurrentScene(scene);
         
         for (auto& pass : renderPass) {
             if (pass) {
-                LOG_DEBUG("Executing forward render pass: " + pass->GetName());
                 pass->Execute(scene);
             }
         }
         
-        EndFrame();
+        RETURN_IF_ERROR(EndFrame());
+        return Result<void>::Success();
     }
 
-    void Rasterizer::BeginFrame() {
+    Result<void> Rasterizer::BeginFrame() {
         stats.Reset();
         
         // 清除缓冲区
@@ -73,17 +77,22 @@ namespace HybridPBR {
         if (currentScene) {
             UpdateGlobalUniforms(*currentScene);
         }
+        
+        return Result<void>::Success();
     }
 
-    void Rasterizer::EndFrame() {
+    Result<void> Rasterizer::EndFrame() {
         // 可以在这里添加帧结束处理
-
+        return Result<void>::Success();
     }
-    void Rasterizer::SetViewport(int width, int height) {
+    Result<void> Rasterizer::SetViewport(int width, int height) {
         glViewport(0, 0, width, height);
+        return Result<void>::Success();
     }
-    void Rasterizer::SetClearColor(const glm::vec4& color) {
+    
+    Result<void> Rasterizer::SetClearColor(const glm::vec4& color) {
         clearColor = color;
+        return Result<void>::Success();
     }
     void Rasterizer::SetDepthTest(bool enabled) {
         depthTest = enabled;
@@ -177,7 +186,7 @@ namespace HybridPBR {
 
         // 收集光源数据
         LightData lightData;
-        const auto& lights = scene.GetLights();
+        const auto& lights = scene.GetAllLights();
         lightData.lightCount = std::min((int)lights.size(), 16);
         
         for(int i=0; i < lightData.lightCount; ++i) {
@@ -200,5 +209,38 @@ namespace HybridPBR {
         }
         
         lightUBO->SetData(&lightData, sizeof(LightData));
+    }
+    
+    Result<void> Rasterizer::Resize(uint32_t width, uint32_t height) {
+        return SetViewport(static_cast<int>(width), static_cast<int>(height));
+    }
+    
+    std::shared_ptr<IRenderPipelineManager> Rasterizer::GetPipelineManager() {
+        // Rasterizer doesn't use pipeline manager in the traditional sense
+        // Return nullptr as it uses render passes instead
+        return nullptr;
+    }
+    
+    Result<void> Rasterizer::AddPipeline(std::shared_ptr<IRenderPipeline> pipeline) {
+        // Rasterizer uses render passes, not pipelines
+        return Result<void>::Failure(Error(ErrorType::InvalidParameter, "Rasterizer uses render passes, not pipelines"));
+    }
+    
+    std::shared_ptr<Texture> Rasterizer::GetOutputTexture() const {
+        // Rasterizer renders directly to the default framebuffer
+        return nullptr;
+    }
+    
+    std::shared_ptr<IRenderDevice> Rasterizer::GetDevice() const {
+        // Rasterizer doesn't store a reference to the device
+        return nullptr;
+    }
+    
+    void Rasterizer::SetDebugMode(bool enabled) {
+        debugMode_ = enabled;
+    }
+    
+    bool Rasterizer::IsDebugMode() const {
+        return debugMode_;
     }
 } // namespace HybridPBR

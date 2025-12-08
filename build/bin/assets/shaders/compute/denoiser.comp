@@ -1,0 +1,39 @@
+#version 460 core
+
+layout (binding = 0, rgba16f) uniform readonly image2D inputTexture;
+layout (binding = 1, rgba16f) uniform writeonly image2D outputTexture;
+
+layout (local_size_x = 16, local_size_y = 16) in;
+
+void main() {
+    ivec2 texel = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 size = imageSize(inputTexture);
+    
+    if (texel.x >= size.x || texel.y >= size.y) {
+        return;
+    }
+    
+    vec4 color = imageLoad(inputTexture, texel);
+    
+    // Simple denoising - can be replaced with more sophisticated algorithms
+    vec4 accumulated = vec4(0.0);
+    float totalWeight = 0.0;
+    
+    for (int x = -1; x <= 1; ++x) {
+        for (int y = -1; y <= 1; ++y) {
+            ivec2 offset = texel + ivec2(x, y);
+            if (offset.x >= 0 && offset.x < size.x && offset.y >= 0 && offset.y < size.y) {
+                vec4 sampleColor = imageLoad(inputTexture, offset);
+                float w = 1.0 / (1.0 + length(vec2(x, y)));
+                accumulated += sampleColor * w;
+                totalWeight += w;
+            }
+        }
+    }
+    
+    if (totalWeight > 0.0) {
+        color = accumulated / totalWeight;
+    }
+    
+    imageStore(outputTexture, texel, color);
+}

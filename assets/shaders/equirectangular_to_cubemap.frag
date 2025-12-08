@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 out vec4 FragColor;
 in vec3 localPos;
 
@@ -17,6 +17,9 @@ void main()
 {       
     vec2 uv = SampleSphericalMap(normalize(localPos)); // make sure to normalize localPos
     vec3 color = texture(equirectangularMap, uv).rgb;
+    
+    // 确保HDR值不被裁剪
+    color = clamp(color, 0.0, 10000.0);
 
     FragColor = vec4(color, 1.0);
 }

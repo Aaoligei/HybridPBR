@@ -3,9 +3,13 @@
 #include <GLFW/glfw3.h>
 #include <imgui.h> 
 #include "core/Application.h"
+#include "core/Result.h"
 #include "rendering/Shader.h"
+#include "rendering/ShaderManager.h"
 #include "utils/FileIO.h"
 #include "rendering/rasterization/Rasterizer.h"
+#include "rendering/rasterization/RenderPass.h"
+#include "rendering/HybridRenderer.h"
 #include "scene/Scene.h"
 #include "resources/ResourceManager.h"
 #include "utils/Logger.h"
@@ -20,11 +24,13 @@
 class ThreeDApp : public HybridPBR::Application {
 public:
     void OnWindowConfigChanged() override {
-        windowConfig.width = 1920;
-        windowConfig.height = 1080;
-        windowConfig.title = "HybridPBR 3D Application";
-        windowConfig.vsync = false;
-        windowConfig.fullscreen = false;
+        auto config = GetConfig();
+        config.window.width = 1920;
+        config.window.height = 1080;
+        config.window.title = "HybridPBR 3D Application";
+        config.window.vsync = false;
+        config.window.fullscreen = false;
+        SetConfig(config);
     }
     
     void CreatePBRTestSpheres() {
@@ -50,17 +56,22 @@ public:
         int gridSize = 3;
         float spacing = 2.5f;
             
-        // HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_basecolor.png",HybridPBR::TextureType::DIFFUSE);
-        // HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_normal.png",HybridPBR::TextureType::NORMAL);
-        // HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_metallic.png",HybridPBR::TextureType::METALLIC);
-        // HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_roughness.png",HybridPBR::TextureType::ROUGHNESS);
-        // HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_ambientocclusion.png",HybridPBR::TextureType::AMBIENT_OCCLUSION);
+        // HybridPBR::ServiceLocator::Resolve<HybridPBR::IResourceManager>()->LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_basecolor.png",HybridPBR::TextureType::DIFFUSE);
+        // HybridPBR::ServiceLocator::Resolve<HybridPBR::IResourceManager>()->LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_normal.png",HybridPBR::TextureType::NORMAL);
+        // HybridPBR::ServiceLocator::Resolve<HybridPBR::IResourceManager>()->LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_metallic.png",HybridPBR::TextureType::METALLIC);
+        // HybridPBR::ServiceLocator::Resolve<HybridPBR::IResourceManager>()->LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_roughness.png",HybridPBR::TextureType::ROUGHNESS);
+        // HybridPBR::ServiceLocator::Resolve<HybridPBR::IResourceManager>()->LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_ambientocclusion.png",HybridPBR::TextureType::AMBIENT_OCCLUSION);
 
         HybridPBR::ShaderManager::GetInstance().LoadShader("sphere_pbr",HybridPBR::FileIO::GetAssetsPath() +"shaders/basic.vert", HybridPBR::FileIO::GetAssetsPath() +"shaders/basic.frag");
         iblSystem->BindIBLTextures(HybridPBR::ShaderManager::GetInstance().GetShader("sphere_pbr"));
-        HybridPBR::ResourceManager::GetInstance().LoadTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/HDR/brdf_lut.hdr",HybridPBR::TextureType::HDR);
+        
+        // Load BRDF LUT texture using ServiceLocator
+        auto resourceManager = GetService<HybridPBR::IResourceManager>();
+        if (resourceManager) {
+            resourceManager->Load(HybridPBR::FileIO::GetAssetsPath() +"textures/HDR/brdf_lut.hdr");
+        }
 
-        // auto brdfLUT = HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/HDR/brdf_lut.hdr");
+        // auto brdfLUT = HybridPBR::ServiceLocator::Resolve<HybridPBR::IResourceManager>()->GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/HDR/brdf_lut.hdr");
         // HybridPBR::ShaderManager::GetInstance().GetShader("sphere_pbr")->Use();
         // HybridPBR::ShaderManager::GetInstance().GetShader("sphere_pbr")->SetInt("brdfLUT",brdfLUT->GetID());
 
@@ -89,10 +100,13 @@ public:
             float x = (col - gridSize / 2.0f + 0.5f) * spacing;
             float y = (row - gridSize / 2.0f + 0.5f) * spacing;
             
-            auto sphereNode = scene->CreateNode("Sphere_" + std::to_string(i));
-            sphereNode->SetMesh(sphereMesh);
-            sphereNode->SetMaterial(pbrMaterial);
-            sphereNode->GetTransform().SetPosition(glm::vec3(x, y, 0.0f));
+            auto sphereNodeResult = scene->CreateNode("Sphere_" + std::to_string(i));
+            if (sphereNodeResult.IsSuccess()) {
+                auto sphereNode = sphereNodeResult.GetValue();
+                sphereNode->SetMesh(sphereMesh);
+                sphereNode->SetMaterial(pbrMaterial);
+                sphereNode->GetTransform().SetPosition(glm::vec3(x, y, 0.0f));
+            }
 
         }
         
@@ -105,14 +119,19 @@ public:
             // 使用加载的模型
             auto mesh = modelResult.meshes[0];
             auto material = modelResult.materials.empty() ? 
-                HybridPBR::ResourceManager::GetInstance().CreateMaterial("Default", HybridPBR::MaterialProperties{}) : 
+                nullptr : 
                 modelResult.materials[0];
-            material->SetShaderType(HybridPBR::ShaderType::PBR);
+            if (material) {
+                material->SetShaderType(HybridPBR::ShaderType::PBR);
+            }
             // 创建场景节点
-            auto modelNode = scene->CreateNode("Model");
-            modelNode->SetMesh(mesh);
-            modelNode->SetMaterial(material);
-            modelNode->GetTransform().SetPosition(glm::vec3(0.0f, -1.0f, 2.0f));
+            auto modelNodeResult = scene->CreateNode("Model");
+            if (modelNodeResult.IsSuccess()) {
+                auto modelNode = modelNodeResult.GetValue();
+                modelNode->SetMesh(mesh);
+                modelNode->SetMaterial(material);
+                modelNode->GetTransform().SetPosition(glm::vec3(0.0f, -1.0f, 2.0f));
+            }
         } 
     }
     void LoadCornellBox() {
@@ -125,15 +144,18 @@ public:
                 auto mesh = modelResult.meshes[i];
                 auto material = modelResult.materials.size() > i ? 
                     modelResult.materials[i] : 
-                    HybridPBR::ResourceManager::GetInstance().CreateMaterial("Default", HybridPBR::MaterialProperties{});
+                    nullptr;
                     
                 material->SetCustomShader("sphere_pbr");
                 
                 // 创建场景节点
-                auto modelNode = scene->CreateNode("cornellBox_" + std::to_string(i));
-                modelNode->SetMesh(mesh);
-                modelNode->SetMaterial(material);
-                modelNode->GetTransform().SetPosition(glm::vec3(0.0f, 5.0f, 0.0f));
+                auto modelNodeResult = scene->CreateNode("cornellBox_" + std::to_string(i));
+                if (modelNodeResult.IsSuccess()) {
+                    auto modelNode = modelNodeResult.GetValue();
+                    modelNode->SetMesh(mesh);
+                    modelNode->SetMaterial(material);
+                    modelNode->GetTransform().SetPosition(glm::vec3(0.0f, 5.0f, 0.0f));
+                }
             }
         } 
     }
@@ -146,14 +168,19 @@ public:
             // 使用加载的模型
             auto mesh = modelResult.meshes[0];
             auto material = modelResult.materials.empty() ? 
-                HybridPBR::ResourceManager::GetInstance().CreateMaterial("Default", HybridPBR::MaterialProperties{}) : 
+                nullptr : 
                 modelResult.materials[0];
-            material->SetShaderType(HybridPBR::ShaderType::PBR);
+            if (material) {
+                material->SetShaderType(HybridPBR::ShaderType::PBR);
+            }
             // 创建场景节点
-            auto modelNode = scene->CreateNode("Mirror");
-            modelNode->SetMesh(mesh);
-            modelNode->SetMaterial(material);
-            modelNode->GetTransform().SetPosition(glm::vec3(2.0f, 0.0f, 2.0f));
+            auto modelNodeResult = scene->CreateNode("Mirror");
+            if (modelNodeResult.IsSuccess()) {
+                auto modelNode = modelNodeResult.GetValue();
+                modelNode->SetMesh(mesh);
+                modelNode->SetMaterial(material);
+                modelNode->GetTransform().SetPosition(glm::vec3(2.0f, 0.0f, 2.0f));
+            }
         } 
     }
     void CreateLights() { 
@@ -176,60 +203,102 @@ public:
     
     void CreateIBLlSystem() { 
         iblSystem = std::make_unique<HybridPBR::IBL>();
+        // 使用正确的HDR格式文件
         if (!iblSystem->SetupFromHDR(HybridPBR::FileIO::GetAssetsPath() + "textures/HDR/ibl_hdr_radiance.png",512)) {
+            LOG_ERROR("Failed to setup IBL from HDR file");
             return;
         }
-        iblSystem->PrecomputeIrradianceMap(32);
-        iblSystem->PrecomputePrefilterMap(128,5);
-        iblSystem->GenerateBRDFLUT(512);
+        if (!iblSystem->PrecomputeIrradianceMap(32)) {
+            LOG_ERROR("Failed to precompute irradiance map");
+        }
+        if (!iblSystem->PrecomputePrefilterMap(128,5)) {
+            LOG_ERROR("Failed to precompute prefilter map");
+        }
+        if (!iblSystem->GenerateBRDFLUT(512)) {
+            LOG_ERROR("Failed to generate BRDF LUT");
+        }
+        LOG_INFO("IBL system initialized successfully");
 
     }
-    bool OnInitialize() override {
-        //创建IBL系统
+    HybridPBR::Result<void> OnInitialize() override {
+        // 创建IBL系统
         CreateIBLlSystem();
         
-        // 初始化渲染器
-        rasterizer = std::make_unique<HybridPBR::Rasterizer>();
-        if (!rasterizer->Initialize()) {
-            return false;
+        // 初始化混合渲染器
+        hybridRenderer = std::make_unique<HybridPBR::HybridRenderer>();
+        auto renderDevice = GetService<HybridPBR::IRenderDevice>();
+        if (!renderDevice) {
+            return HybridPBR::Result<void>::Failure(
+                HybridPBR::Error(HybridPBR::ErrorType::DeviceLost, "Render device not available"));
         }
-        HybridPBR::ShaderManager::GetInstance().LoadShader("sphere_pbr",HybridPBR::FileIO::GetAssetsPath() +"shaders/basic.vert", HybridPBR::FileIO::GetAssetsPath() +"shaders/basic.frag");
-        iblSystem->BindIBLTextures(HybridPBR::ShaderManager::GetInstance().GetShader("sphere_pbr"));
+        
+        auto initResult = hybridRenderer->Initialize(renderDevice);
+        if (!initResult.IsSuccess()) {
+            return initResult;
+        }
 
-        //创建延迟渲染器
+        // 初始化传统渲染器（向后兼容）
+        rasterizer = std::make_unique<HybridPBR::Rasterizer>();
+        auto rasterizerInitResult = rasterizer->Initialize(renderDevice);
+        if (!rasterizerInitResult.IsSuccess()) {
+            return rasterizerInitResult;
+        }
+
+        // 加载着色器
+        auto& shaderManager = HybridPBR::ShaderManager::GetInstance();
+        shaderManager.LoadShader("sphere_pbr", HybridPBR::FileIO::GetAssetsPath() + "shaders/basic.vert", 
+                                HybridPBR::FileIO::GetAssetsPath() + "shaders/basic.frag");
+        
+        if (auto shader = shaderManager.GetShader("sphere_pbr")) {
+            iblSystem->BindIBLTextures(shader);
+        }
+
+        // 创建延迟渲染器
         deferredRenderer = std::make_unique<HybridPBR::DeferredRenderer>();
-        if (!deferredRenderer->Initialize(window->GetWidth(), window->GetHeight())){
-             return false;
+        if (!deferredRenderer->Initialize(GetWindow().GetWidth(), GetWindow().GetHeight())) {
+            return HybridPBR::Result<void>::Failure(
+                HybridPBR::Error(HybridPBR::ErrorType::Initialization, "Failed to initialize deferred renderer"));
         }
         deferredRenderer->SetIBLSystem(iblSystem);
         deferredRenderer->SetSSAOEnabled(false);
         useDeferredRendering = false;
 
-        //创建光线追踪渲染器
+        // 创建光线追踪渲染器
         HybridPBR::RayTracerConfig rtConfig;
-            rtConfig.width = GetWindow().GetWidth();
-            rtConfig.height = GetWindow().GetHeight();
-            rtConfig.maxBounces = 4;
-            rtConfig.samplesPerPixel = 1;
-            rtConfig.denoiseEnabled = false;
+        rtConfig.width = GetWindow().GetWidth();
+        rtConfig.height = GetWindow().GetHeight();
+        rtConfig.maxBounces = 4;
+        rtConfig.samplesPerPixel = 1;
+        rtConfig.denoiseEnabled = false;
+        
         rayTracer = std::make_unique<HybridPBR::RayTracer>();
-        if (!rayTracer->Initialize(rtConfig)){
-            return false;
+        if (!rayTracer->Initialize(rtConfig)) {
+            return HybridPBR::Result<void>::Failure(
+                HybridPBR::Error(HybridPBR::ErrorType::Initialization, "Failed to initialize ray tracer"));
         }
         rayTracer->SetIBLSystem(iblSystem);
         useRayTracing = false;
 
-        auto& shaderManager = HybridPBR::ShaderManager::GetInstance();
         iblSystem->BindIBLTextures(shaderManager.GetShader(HybridPBR::ShaderType::PBR));
         iblSystem->BindIBLTexturesRT(rayTracer->GetPathTracingShader());
 
-        //添加天空盒通道
+        // 添加天空盒通道 - 确保在最后添加
         auto skyboxPass = std::make_shared<HybridPBR::SkyboxPass>();
-        skyboxPass->SetSkyboxTexture(iblSystem->GetEnvironmentMap());
-        rasterizer->AddRenderPass(skyboxPass);
+        auto envMap = iblSystem->GetEnvironmentMap();
+        if (envMap) {
+            skyboxPass->SetSkyboxTexture(envMap);
+            rasterizer->AddRenderPass(skyboxPass);
+            LOG_INFO("Added skybox pass with environment map ID: " + std::to_string(envMap->GetID()));
+        } else {
+            LOG_ERROR("Failed to get environment map from IBL system");
+        }
         
         // 创建场景
         scene = std::make_unique<HybridPBR::Scene>();
+        if (!scene->Initialize().IsSuccess()) {
+            return HybridPBR::Result<void>::Failure(
+                HybridPBR::Error(HybridPBR::ErrorType::Initialization, "Failed to initialize scene"));
+        }
         
         // 创建主相机
         camera = std::make_shared<HybridPBR::Camera>();
@@ -248,34 +317,22 @@ public:
         
         // 加载3D模型
         LoadModels();
-        //LoadModels2();
         LoadCornellBox();
+        
         // 创建光源
         CreateLights();
         
         rotationSpeed = 45.0f; // 度/秒
         
-        HybridPBR::LOG_INFO("Test application initialized with scene");
-        return true;
+        LOG_INFO("Test application initialized with scene");
+        return HybridPBR::Result<void>::Success();
     }
     
-    void OnUpdate(float deltaTime) override {
-        
+    HybridPBR::Result<void> OnUpdate(float deltaTime) override {
         // 更新相机控制器
         if (cameraController) {
             cameraController->Update(deltaTime);
         }
-        
-        // 旋转模型
-        // if (auto modelNode = scene->FindNode("Model")) {
-        //     auto rotation = modelNode->GetTransform().GetRotation();
-        //     rotation.y += rotationSpeed * deltaTime;
-        //     modelNode->GetTransform().SetRotation(rotation);
-        // } else if (auto cubeNode = scene->FindNode("Cube")) {
-        //     auto rotation = cubeNode->GetTransform().GetRotation();
-        //     rotation.y += rotationSpeed * deltaTime;
-        //     cubeNode->GetTransform().SetRotation(rotation);
-        // }
         
         // 更新相机纵横比
         if (auto camera = scene->GetMainCamera()) {
@@ -299,37 +356,39 @@ public:
         }
         
         // 检查相机是否移动
-        static glm::vec3 lastCameraPos = scene->GetMainCamera()->GetPosition();
-        static glm::mat4 lastCameraView = scene->GetMainCamera()->GetViewMatrix();
-
-        glm::vec3 currentCameraPos = scene->GetMainCamera()->GetPosition();
-        glm::mat4 currentCameraView = scene->GetMainCamera()->GetViewMatrix();
-    
-        if (currentCameraView != lastCameraView) {
-            if (rayTracer) {
-                rayTracer->ResetAccumulation();
+        static glm::vec3 lastCameraPos = glm::vec3(0.0f);
+        static glm::mat4 lastCameraView = glm::mat4(1.0f);
+        
+        if (auto camera = scene->GetMainCamera()) {
+            glm::vec3 currentCameraPos = camera->GetPosition();
+            glm::mat4 currentCameraView = camera->GetViewMatrix();
+        
+            if (currentCameraView != lastCameraView) {
+                if (rayTracer) {
+                    rayTracer->ResetAccumulation();
+                }
+                lastCameraView = currentCameraView;
             }
-            lastCameraView = currentCameraView;
+        
+            if (glm::distance(lastCameraPos, currentCameraPos) > 0.01f) {
+                if (rayTracer) {
+                    rayTracer->ResetAccumulation();
+                }
+                lastCameraPos = currentCameraPos;
+            }
         }
     
-        if (glm::distance(lastCameraPos, currentCameraPos) > 0.01f) {
-            if (rayTracer) {
-                rayTracer->ResetAccumulation();
-            }
-            lastCameraPos = currentCameraPos;
-        }
-    
-        scene->Update();
+        scene->Update(deltaTime);
+        return HybridPBR::Result<void>::Success();
     }
     
-    void OnRender() override {
-        
+    HybridPBR::Result<void> OnRender() override {
         if (useRayTracing && !useHybridRendering) {
             // 纯光线追踪模式
             rayTracer->Render(*scene);
             // 在这里可以显示光线追踪结果
             // 实际应用中需要将光线追踪纹理渲染到屏幕上
-            rayTracer->DrawOutputToScreen();
+            rayTracer->DrawOutputToScreen(GetWindow().GetWidth(), GetWindow().GetHeight());
             
         } else if (useHybridRendering) {
             // 混合渲染模式
@@ -337,7 +396,10 @@ public:
                 deferredRenderer->Render(*scene);
                 // 可以在这里组合光线追踪结果
             } else {
-                rasterizer->Render(*scene);
+                auto renderResult = rasterizer->Render(*scene);
+                if (!renderResult.IsSuccess()) {
+                    return renderResult;
+                }
             }
             
             // 同时进行光线追踪（异步或同步）
@@ -349,20 +411,27 @@ public:
             if (useDeferredRendering) {
                 deferredRenderer->Render(*scene);
             } else {
-                rasterizer->SetViewport(window->GetWidth(), window->GetHeight());
-                rasterizer->Render(*scene);
+                rasterizer->SetViewport(GetWindow().GetWidth(), GetWindow().GetHeight());
+                auto renderResult = rasterizer->Render(*scene);
+                if (!renderResult.IsSuccess()) {
+                    return renderResult;
+                }
             }
         }
         
+        return HybridPBR::Result<void>::Success();
     }
 
-    void OnImGuiRender() override {
+    HybridPBR::Result<void> OnImGuiRender() override {
         ImGui::SetWindowFontScale(1.5f);
+        
         // 显示渲染统计
         auto stats = rasterizer->GetStats();
         ImGui::Begin("Renderer Stats");
         ImGui::Text("Renderer Stats");
-        ImGui::Checkbox("Use ray tracing",&useRayTracing);
+        ImGui::Checkbox("Use ray tracing", &useRayTracing);
+        ImGui::Checkbox("Use deferred rendering", &useDeferredRendering);
+        ImGui::Checkbox("Use hybrid rendering", &useHybridRendering);
         ImGui::Text("Draw calls: %d", stats.drawCalls);
         ImGui::Text("Triangles: %d", stats.triangleCount);
         ImGui::Text("Vertices: %d", stats.vertexCount);
@@ -373,18 +442,42 @@ public:
         }
         ImGui::End();
 
-        auto componentManager = imguiManager->GetComponentManager();
-
-        // 处理gizmo交互
-        // componentManager->HandleGizmoInteraction(*camera, *scene, timer.GetDeltaTime());
-        // // 渲染gizmo
-        // componentManager->RenderGizmo(*camera, *scene);
+        auto imguiManager = GetService<HybridPBR::ImGuiManager>();
+        if (imguiManager) {
+            auto componentManager = imguiManager->GetComponentManager();
+            if (componentManager) {
+                componentManager->ShowSceneStats(scene);
+                componentManager->ShowSceneHierarchy(scene);
+                componentManager->ShowInspector(componentManager->GetSelectedNode());
+                componentManager->ShowLightHierarchy(scene);
+            }
+        }
         
-        componentManager->ShowSceneStats(scene);
-        componentManager->ShowSceneHierarchy(scene);
-        componentManager->ShowInspector(componentManager->GetSelectedNode());
-        componentManager->ShowLightHierarchy(scene);
-
+        return HybridPBR::Result<void>::Success();
+    }
+    
+    void OnMouseMoved(double x, double y) override {
+        if (cameraController) {
+            cameraController->OnMouseMove(x, y);
+        }
+    }
+    
+    void OnMouseClicked(int button) override {
+        if (cameraController) {
+            cameraController->OnMouseButton(button, GLFW_PRESS, 0);
+        }
+    }
+    
+    void OnMouseReleased(int button) override {
+        if (cameraController) {
+            cameraController->OnMouseButton(button, GLFW_RELEASE, 0);
+        }
+    }
+    
+    void OnMouseScroll(double xoffset, double yoffset) override {
+        if (cameraController) {
+            cameraController->OnMouseScroll(xoffset, yoffset);
+        }
     }
     
     void OnShutdown() override {
@@ -399,14 +492,20 @@ public:
     }
 
 private:
+    // 渲染器
+    std::unique_ptr<HybridPBR::HybridRenderer> hybridRenderer;
     std::unique_ptr<HybridPBR::Rasterizer> rasterizer;
     std::unique_ptr<HybridPBR::DeferredRenderer> deferredRenderer;
     std::unique_ptr<HybridPBR::RayTracer> rayTracer;
 
+    // 场景和相机
+    std::unique_ptr<HybridPBR::Scene> scene;
     std::shared_ptr<HybridPBR::IBL> iblSystem;
     std::shared_ptr<HybridPBR::Camera> camera;
+    std::unique_ptr<HybridPBR::CameraController> cameraController;
+    
+    // 配置参数
     float rotationSpeed;
-
     bool useDeferredRendering = false;
     bool useRayTracing = false;
     bool useHybridRendering = false;

@@ -200,7 +200,9 @@ namespace HybridPBR {
             if (extent[axis] < 0.00001f) continue;
 
             Bin bins[BIN_COUNT];
+            // 计算缩放比例，将数据范围映射到桶的数量
             float scale = BIN_COUNT / extent[axis];
+            // 获取当前轴向上的最小值边界
             float minVal = bounds.min[axis];
 
             // 将图元放入桶中

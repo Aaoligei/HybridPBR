@@ -23,7 +23,9 @@ namespace HybridPBR {
         ApplyRenderState();
         
         // 渲染场景中的所有几何体
-        RenderSceneNode(*scene.GetRoot(), glm::mat4(1.0f), scene);
+        if (auto rootNode = scene.GetRoot()) {
+            RenderSceneNode(*rootNode, glm::mat4(1.0f), scene);
+        }
     }
 
     void GeometryPass::Cleanup() {
@@ -63,7 +65,6 @@ namespace HybridPBR {
 
     void GeometryPass::RenderSceneNode(const SceneNode& node, const glm::mat4& parentTransform, const Scene& scene) {
         auto transform = parentTransform * node.GetTransform().GetLocalMatrix();
-
         
         // 渲染当前节点的网格
         if (auto mesh = node.GetMesh()) {
@@ -73,9 +74,24 @@ namespace HybridPBR {
         }
         
         // 渲染子节点
-        for (auto& child : node.GetChildren()) {
-            RenderSceneNode(*child, transform, scene);
+        const auto& children = node.GetChildren();
+        
+        // 检查是否有无限循环
+        static int depth = 0;
+        depth++;
+        if (depth > 100) {
+            LOG_ERROR("GeometryPass", "Scene node depth too deep, possible infinite loop!");
+            depth--;
+            return;
         }
+        
+        for (const auto& child : children) {
+            if (child) {
+                RenderSceneNode(*child, transform, scene);
+            }
+        }
+        
+        depth--;
     }
 
     void GeometryPass::RenderMesh(const Mesh& mesh, const Material& material, const glm::mat4& transform) {
@@ -103,7 +119,7 @@ namespace HybridPBR {
         mesh.Render();
         
         // 更新统计信息
-        auto& stats = Rasterizer::GetStats();
+        auto& stats = const_cast<RenderStats&>(Rasterizer::GetCurrentInstance()->GetStats());
         stats.drawCalls++;
         stats.triangleCount += mesh.GetTriangleCount();
         stats.vertexCount += mesh.GetVertexCount();
@@ -115,16 +131,25 @@ namespace HybridPBR {
     }
 
     void SkyboxPass::Execute(const Scene& scene) {
-        if (!skyboxTexture) return;
+        if (!skyboxTexture) {
+            LOG_ERROR("SkyboxPass: No skybox texture set");
+            return;
+        }
+    
         
         auto camera = scene.GetMainCamera();
-        if (!camera) return;
+        if (!camera) {
+            LOG_ERROR("SkyboxPass: No camera in scene");
+            return;
+        }
         
         auto& shaderManager = ShaderManager::GetInstance();
         auto skyboxShader = shaderManager.GetShader(ShaderType::SKYBOX);
-        if (!skyboxShader) return;
+        if (!skyboxShader) {
+            LOG_ERROR("SkyboxPass: Skybox shader not loaded");
+            return;
+        }
         
-        glBindFramebuffer(GL_FRAMEBUFFER,0);
         // 1. 保存旧状态
         GLint oldDepthFunc, oldCullFace;
         GLboolean oldDepthMask;
@@ -132,19 +157,28 @@ namespace HybridPBR {
         glGetIntegerv(GL_CULL_FACE_MODE,  &oldCullFace);
         glGetBooleanv(GL_DEPTH_WRITEMASK, &oldDepthMask);
 
-        //设天空盒专用状态
-        glDepthFunc(GL_LEQUAL);
-        glDisable(GL_CULL_FACE);
-        glDepthMask(GL_FALSE);   // 不写深度
+        // 设置天空盒专用状态
+        glDepthFunc(GL_LEQUAL);  // 深度测试小于等于，确保天空盒在远处
+        glDisable(GL_CULL_FACE); // 禁用面剔除，看到立方体内部
+        glDepthMask(GL_FALSE);   // 不写深度缓冲区
         
         shaderManager.SetCurrentShader(skyboxShader);
         
         // 设置天空盒统一变量
-        skyboxShader->SetMat4("view", glm::mat4(glm::mat3(camera->GetViewMatrix()))); // 移除平移
+        skyboxShader->SetMat4("view", glm::mat4(glm::mat3(camera->GetViewMatrix()))); // 移除平移，让天空盒跟随相机
         skyboxShader->SetMat4("projection", camera->GetProjectionMatrix());
         skyboxShader->SetInt("environmentMap", 0);
+        
+        // 绑定天空盒纹理
         skyboxTexture->Bind(0);
         
+        // 检查OpenGL错误
+        GLenum err = glGetError();
+        if (err != GL_NO_ERROR) {
+            LOG_ERROR("SkyboxPass: OpenGL error after binding texture: " + std::to_string(err));
+        }
+        
+        // 初始化立方体VAO
         if (cubeVAO == 0){
             glCreateVertexArrays(1, &cubeVAO);
             glCreateBuffers(1, &cubeVBO);
@@ -165,16 +199,27 @@ namespace HybridPBR {
             glEnableVertexArrayAttrib(cubeVAO, 2);
             glVertexArrayAttribFormat(cubeVAO, 2, 2, GL_FLOAT, GL_FALSE, 6 * sizeof(float));
             glVertexArrayAttribBinding(cubeVAO, 2, 0);
+            
+            LOG_INFO("SkyboxPass: Initialized cube VAO with ID: " + std::to_string(cubeVAO));
         }
-        // render Cube
+        
+        // 渲染立方体
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
+        
+        // 检查绘制错误
+        err = glGetError();
+        if (err != GL_NO_ERROR) {
+            LOG_ERROR("SkyboxPass: OpenGL error after drawing: " + std::to_string(err));
+        }
+        
         glBindVertexArray(0);
         
         // 恢复渲染状态
         glDepthFunc(oldDepthFunc);
         glDepthMask(oldDepthMask);
         glEnable(GL_CULL_FACE);
+        
 
     }
 
@@ -323,7 +368,7 @@ namespace HybridPBR {
         mesh.Render();
         
         // 更新统计信息
-        auto& stats = Rasterizer::GetStats();
+        auto& stats = const_cast<RenderStats&>(Rasterizer::GetCurrentInstance()->GetStats());
         stats.drawCalls++;
         stats.triangleCount += mesh.GetTriangleCount();
         stats.vertexCount += mesh.GetVertexCount();
@@ -474,7 +519,7 @@ namespace HybridPBR {
         
         // 设置方向光
         int directionalLightCount = 0;
-        for (const auto& light : scene.GetLights()) {
+        for (const auto& light : scene.GetAllLights()) {
             if (!light->IsEnabled()) continue;
             
             if (light->GetType() == LightType::DIRECTIONAL && directionalLightCount == 0) {

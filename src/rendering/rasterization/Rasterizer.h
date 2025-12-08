@@ -12,17 +12,25 @@ namespace HybridPBR {
 
     class Rasterizer : public IRasterizer {
     public:
-        Rasterizer() {stats = RenderStats();};
+        Rasterizer() = default;
         ~Rasterizer();
         
         // IRenderer接口实现
-        bool Initialize() override;
+        Result<void> Initialize(std::shared_ptr<IRenderDevice> device) override;
         void Shutdown() override;
-        void Render(const Scene& scene) override;
-        void BeginFrame() override;
-        void EndFrame() override;
-        void SetViewport(int width, int height) override;
-        void SetClearColor(const glm::vec4& color) override;
+        bool IsInitialized() const override { return initialized_; }
+        Result<void> Render(const Scene& scene) override;
+        Result<void> BeginFrame() override;
+        Result<void> EndFrame() override;
+        Result<void> SetViewport(int width, int height) override;
+        Result<void> SetClearColor(const glm::vec4& color) override;
+        Result<void> Resize(uint32_t width, uint32_t height) override;
+        std::shared_ptr<IRenderPipelineManager> GetPipelineManager() override;
+        Result<void> AddPipeline(std::shared_ptr<IRenderPipeline> pipeline) override;
+        std::shared_ptr<Texture> GetOutputTexture() const override;
+        std::shared_ptr<IRenderDevice> GetDevice() const override;
+        void SetDebugMode(bool enabled) override;
+        bool IsDebugMode() const override;
         
         // IRasterizer接口实现
         void SetWireframe(bool enabled) override;
@@ -42,14 +50,19 @@ namespace HybridPBR {
         // 场景管理
         void SetCurrentScene(const Scene& scene) { currentScene = &scene; }
         static const Scene* GetCurrentScene() { return currentScene; }
-        static RenderStats& GetStats() { return stats; }
+        static Rasterizer* GetCurrentInstance() { return currentInstance; }
+        static void SetCurrentInstance(Rasterizer* instance) { currentInstance = instance; }
+        const RenderStats& GetStats() const override { return stats; }
+        void ResetStats() override { stats.Reset(); }
         // 设置
         void SetSkyboxTexture(std::shared_ptr<Texture> texture);
     private:
         // 渲染状态
+        bool initialized_ = false;
         bool wireframe = false;
         bool backfaceCulling = true;
         bool depthTest = true;
+        bool debugMode_ = false;
         glm::vec4 clearColor = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
         
         // 渲染通道
@@ -57,7 +70,8 @@ namespace HybridPBR {
 
         // 当前场景
         static const Scene* currentScene;
-        static RenderStats stats;
+        static Rasterizer* currentInstance;
+        RenderStats stats;
 
         // UBO
         std::unique_ptr<UniformBuffer> cameraUBO;

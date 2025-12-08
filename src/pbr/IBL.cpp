@@ -41,27 +41,71 @@ namespace HybridPBR {
             return false;
         }
         
+        // 确保立方体贴图有正确的纹理参数
+        environmentMap->SetWrapMode(TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE);
+        environmentMap->SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
+        
+        LOG_INFO("Created environment cubemap with ID: " + std::to_string(environmentMap->GetID()) + 
+                " size: " + std::to_string(cubemapSize));
+        
         // 将等距柱状投影转换为立方体贴图
         equirectangularToCubemapShader->Use();
         equirectangularToCubemapShader->SetInt("equirectangularMap", 0);
         equirectangularToCubemapShader->SetMat4("projection", captureProjection);
+        
+        // 确保HDR纹理正确绑定
         hdrTexture->Bind(0);
+        
+        // 验证着色器 uniform 设置
+        GLint texLoc = glGetUniformLocation(equirectangularToCubemapShader->GetID(), "equirectangularMap");
+        if (texLoc == -1) {
+            LOG_ERROR("Failed to find equirectangularMap uniform in shader");
+        } else {
+            LOG_INFO("equirectangularMap uniform location: " + std::to_string(texLoc));
+        }
+        
+        LOG_INFO("HDR texture loaded with ID: " + std::to_string(hdrTexture->GetID()) + 
+                " size: " + std::to_string(hdrTexture->GetWidth()) + "x" + std::to_string(hdrTexture->GetHeight()));
         
         glViewport(0, 0, cubemapSize, cubemapSize);
         glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+
+        glDisable(GL_CULL_FACE);
+        // 检查FBO状态
+        GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        if (status != GL_FRAMEBUFFER_COMPLETE) {
+            LOG_ERROR("FBO not complete: " + std::to_string(status));
+            return false;
+        }
         
         for (unsigned int i = 0; i < 6; ++i) {
             equirectangularToCubemapShader->SetMat4("view", captureViews[i]);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
                                   GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, environmentMap->GetID(), 0);
+            
+            // 再次检查FBO状态
+            status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+            if (status != GL_FRAMEBUFFER_COMPLETE) {
+                LOG_ERROR("FBO not complete for face " + std::to_string(i) + ": " + std::to_string(status));
+                return false;
+            }
+            
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             RenderCube();
+            
+            // 检查绘制错误
+            GLenum err = glGetError();
+            if (err != GL_NO_ERROR) {
+                LOG_ERROR("OpenGL error during cubemap face " + std::to_string(i) + " rendering: " + std::to_string(err));
+            }
         }
         
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        
+        glEnable(GL_CULL_FACE);
+
         // 生成mipmaps
         environmentMap->GenerateMipmaps();
+        LOG_INFO("Environment map generated with ID: " + std::to_string(environmentMap->GetID()));
         
         LOG_INFO("Successfully created environment map from HDR: " + hdrFilePath);
         return true;
@@ -83,6 +127,7 @@ namespace HybridPBR {
         
         glViewport(0, 0, size, size);
         glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+        glDisable(GL_CULL_FACE);
         
         for (unsigned int i = 0; i < 6; ++i) {
             irradianceShader->SetMat4("view", captureViews[i]);
@@ -93,6 +138,7 @@ namespace HybridPBR {
         }
         
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glEnable(GL_CULL_FACE);
         
         LOG_INFO("Successfully precomputed irradiance map");
         return true;
@@ -114,6 +160,7 @@ namespace HybridPBR {
         environmentMap->Bind(0);
         
         glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+        glDisable(GL_CULL_FACE);
         
         for (unsigned int mip = 0; mip < maxMipLevels; ++mip) {
             unsigned int mipWidth = size * std::pow(0.5, mip);
@@ -136,6 +183,7 @@ namespace HybridPBR {
         }
         
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glEnable(GL_CULL_FACE);
         
         LOG_INFO("Successfully precomputed prefilter map with " + std::to_string(maxMipLevels) + " mip levels");
         return true;

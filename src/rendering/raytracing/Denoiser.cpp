@@ -1,6 +1,7 @@
 #include "Denoiser.h"
 #include "utils/Logger.h"
 #include "utils/GLCheck.h"
+#include "utils/FileIO.h"
 #include <glad/glad.h>
 
 namespace HybridPBR {
@@ -83,7 +84,7 @@ namespace HybridPBR {
 
     bool Denoiser::CreateShaders() {
         denoiserShader = std::make_shared<ComputeShader>();
-        if (!denoiserShader->LoadFromFile("assets/shaders/compute/denoiser.comp")) {
+        if (!denoiserShader->LoadFromFile(FileIO::GetAssetsPath() + "shaders/compute/denoiser.comp")) {
             LOG_ERROR("Failed to load denoiser shader");
             return false;
         }

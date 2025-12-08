@@ -60,9 +60,9 @@ namespace HybridPBR {
         if (scene) {
             ImGui::Separator();
             ImGui::Text("Nodes: %zu", scene->GetNodeCount());
-            ImGui::Text("Lights: %zu", scene->GetLights().size());
-            ImGui::Text("Meshes: %zu", ResourceManager::GetInstance().GetMeshCount());
-            ImGui::Text("Materials: %zu", ResourceManager::GetInstance().GetMaterialCount());
+            ImGui::Text("Lights: %zu", scene->GetAllLights().size());
+            // ImGui::Text("Meshes: %zu", ResourceManager::GetInstance().GetMeshCount());
+            // ImGui::Text("Materials: %zu", ResourceManager::GetInstance().GetMaterialCount());
         }
         
         ImGui::End();
@@ -144,7 +144,7 @@ namespace HybridPBR {
     }
 
     void ImGuiComponentManager::DisplayLightTree(std::unique_ptr<Scene>& scene) {
-        const auto& lights = scene->GetLights();
+        const auto& lights = scene->GetAllLights();
         
         ImGuiTreeNodeFlags baseFlags = ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
         

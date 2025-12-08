@@ -8,7 +8,7 @@
 
 namespace HybridPBR {
 
-    class SceneNode {
+    class SceneNode : public std::enable_shared_from_this<SceneNode> {
     public:
         SceneNode(const std::string& name = "Node");
         ~SceneNode();

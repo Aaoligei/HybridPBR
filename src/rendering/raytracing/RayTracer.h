@@ -45,7 +45,7 @@ namespace HybridPBR {
         
         // 获取输出
         std::shared_ptr<Texture> GetOutputTexture() const { return outputTexture; }
-        void DrawOutputToScreen();
+        void DrawOutputToScreen(int width, int height);
         
         // 配置
         void SetConfig(const RayTracerConfig& config) { this->config = config; }

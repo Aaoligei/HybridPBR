@@ -37,7 +37,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 156,
+				"line" : 162,
 				"parent" : 0
 			},
 			{
@@ -229,7 +229,13 @@
 				40,
 				41,
 				42,
-				43
+				43,
+				44,
+				45,
+				46,
+				47,
+				48,
+				49
 			]
 		}
 	],
@@ -373,7 +379,13 @@
 				40,
 				41,
 				42,
-				43
+				43,
+				44,
+				45,
+				46,
+				47,
+				48,
+				49
 			]
 		}
 	],
@@ -401,6 +413,24 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/core/Timer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/core/ServiceLocator.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/core/Services.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/core/Events.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -467,6 +497,24 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/rendering/common/UniformBuffer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/rendering/OpenGLRenderDevice.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/rendering/HybridRenderer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/rendering/RenderPipelineManager.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

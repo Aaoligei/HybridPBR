@@ -109,6 +109,9 @@ add_executable(HybridPBR
     src/core/Window.cpp
     src/core/Input.cpp
     src/core/Timer.cpp
+    src/core/ServiceLocator.cpp
+    src/core/Services.cpp
+    src/core/Events.cpp
     src/pbr/BRDF.cpp
     src/pbr/IBL.cpp
     src/pbr/PBRMaterial.cpp
@@ -120,6 +123,9 @@ add_executable(HybridPBR
     src/rendering/common/Material.cpp
     src/rendering/common/Texture.cpp
     src/rendering/common/UniformBuffer.cpp
+    src/rendering/OpenGLRenderDevice.cpp
+    src/rendering/HybridRenderer.cpp
+    src/rendering/RenderPipelineManager.cpp
     src/rendering/deferred/GBuffer.cpp
     src/rendering/deferred/DeferredRenderer.cpp
     src/rendering/postprocess/SSAO.cpp

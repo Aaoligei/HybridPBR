@@ -369,7 +369,6 @@ namespace HybridPBR {
         materialsBuffer.Bind(6);
 
         // 绑定所有纹理
-        LOG_INFO("Textures: "+std::to_string(sceneTextures.size()));
         for (int i = 0; i < sceneTextures.size(); ++i) {
             if (sceneTextures[i]) {
                 // 绑定到纹理单元 i
@@ -420,7 +419,7 @@ namespace HybridPBR {
         blitFBO = 0;
     }
     }
-    void RayTracer::DrawOutputToScreen() {
+    void RayTracer::DrawOutputToScreen(int width, int height) {
         if (!initialized || blitFBO == 0) return;
 
         // 1. 确定要显示的纹理
@@ -437,6 +436,7 @@ namespace HybridPBR {
         glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &lastReadFBO);
         glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &lastDrawFBO);
 
+
         // 2. 准备读取源 (Read Framebuffer)
         glBindFramebuffer(GL_READ_FRAMEBUFFER, blitFBO);
         // 将纹理附加到 FBO 的颜色附件0
@@ -445,11 +445,12 @@ namespace HybridPBR {
 
         // 3. 准备绘制目标 (Draw Framebuffer) -> 屏幕 (ID 0)
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glViewport(0, 0, width, height);
 
         // 4. 执行 Blit (拷贝)
         // 参数：srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter
         glBlitFramebuffer(0, 0, config.width, config.height,  // 源矩形
-                        0, 0, config.width, config.height,  // 目标矩形 (假设铺满窗口)
+                        0, 0, width, height,  // 目标矩形 (假设铺满窗口)
                         GL_COLOR_BUFFER_BIT,                // 拷贝颜色缓冲
                         GL_NEAREST);                        // 过滤方式 (点对点拷贝用 NEAREST 即可)
 
@@ -471,7 +472,7 @@ namespace HybridPBR {
 
         // 收集光源数据
         LightData lightData;
-        const auto& lights = scene.GetLights();
+        const auto& lights = scene.GetAllLights();
         lightData.lightCount = std::min((int)lights.size(), 16);
         
         for(int i=0; i < lightData.lightCount; ++i) {
@@ -545,7 +546,7 @@ namespace HybridPBR {
         rtShadowShader->SetInt("height", config.height);
         
         // 获取主光源位置 (假设第一个光源)
-        const auto& lights = scene.GetLights();
+        const auto& lights = scene.GetAllLights();
         if (!lights.empty()) {
             rtShadowShader->SetVec3("lightPos", lights[0]->GetPosition());
         } else {

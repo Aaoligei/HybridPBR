@@ -2,6 +2,9 @@
 
 layout(local_size_x = 32, local_size_y = 32) in;
 
+const float PI = 3.14159265359;
+const float INV_PI = 0.31830988618;
+
 // ... (Ray, HitRecord, Triangle 等结构体保持不变，请确保 BVHNode 还是 vec4 版本) ...
 struct Ray {
     vec3 origin;
@@ -107,6 +110,14 @@ layout(std430, binding = 4) buffer BVHNodesBuffer { BVHNode bvhNodes[]; };
 layout(std430, binding = 5) buffer TrianglesBuffer { Triangle triangles[]; };
 layout(std430, binding = 6) buffer MaterialsBuffer { GPUMaterial materials[]; };
 
+// IBL纹理
+uniform samplerCube irradianceMap;
+uniform samplerCube prefilterMap;
+uniform sampler2D brdfLUT;
+
+// 天空盒 HDR 纹理
+uniform samplerCube environmentMap;
+
 uniform uint width;
 uniform uint height;
 uniform uint maxBounces;
@@ -114,8 +125,6 @@ uniform uint samplesPerPixel;
 uniform uint frameNumber;
 uniform sampler2D textureMaps[32];
 
-const float PI = 3.14159265359;
-const float INV_PI = 0.31830988618;
 
 // --- 随机数生成器 (保持不变) ---
 uint WangHash(uint seed) {
@@ -320,70 +329,68 @@ vec3 GetShadingNormal(GPUMaterial mat, HitRecord rec) {
 // 现在只采样一个光源，而不是全部
 vec3 CalculateDirectLightStochastic(HitRecord rec, vec3 shadingNormal, vec3 viewDir, SurfaceMaterial surf, inout uint seed) {
     if (lightCount == 0) return vec3(0.0);
-
-    // 1. 随机选择一个光源索引
-    int lightIndex = int(RandomFloat(seed) * float(lightCount));
-    if (lightIndex >= lightCount) lightIndex = lightCount - 1;
-    
-    Light light = lights[lightIndex];
-    
-    vec3 L;
-    float attenuation = 1.0;
-    float distanceToLight;
-
-    if(light.type == 0) { // Directional
-        L = normalize(-light.direction);
-        distanceToLight = 10000.0;
-    } else { // Point or Spot
-        vec3 lightToPos = light.position - rec.position;
-        distanceToLight = length(lightToPos);
-        L = normalize(lightToPos);
-        attenuation = 1.0 / (light.constant + light.linear * distanceToLight + light.quadratic * distanceToLight * distanceToLight);
+    vec3 Lo = vec3(0.0);
+    for(int lightIndex = 0; lightIndex < lightCount; lightIndex++){
+        Light light = lights[lightIndex];
         
-        if(light.type == 2) { // Spot
-             float theta = dot(L, normalize(-light.direction));
-             float epsilon = light.innerCutoff - light.outerCutoff;
-             float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
-             attenuation *= intensity;
+        vec3 L;
+        float attenuation = 1.0;
+        float distanceToLight;
+
+        if(light.type == 0) { // Directional
+            L = normalize(-light.direction);
+            distanceToLight = 10000.0;
+        } else { // Point or Spot
+            vec3 lightToPos = light.position - rec.position;
+            distanceToLight = length(lightToPos);
+            L = normalize(lightToPos);
+            attenuation = 1.0 / (light.constant + light.linear * distanceToLight + light.quadratic * distanceToLight * distanceToLight);
+            
+            if(light.type == 2) { // Spot
+                float theta = dot(L, normalize(-light.direction));
+                float epsilon = light.innerCutoff - light.outerCutoff;
+                float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
+                attenuation *= intensity;
+            }
         }
+
+        float NdotL = dot(shadingNormal, L);
+        if (NdotL <= 0.0 || attenuation < 0.0001) continue;
+
+        // 阴影射线
+        Ray shadowRay;
+        float bias = 0.01;
+        shadowRay.origin = rec.position + rec.normal * bias;
+        shadowRay.direction = L;
+        
+        // 如果被遮挡，直接返回
+        if (BVHIntersectAnyHit(shadowRay, distanceToLight - 0.05)) {
+            continue;
+        }
+
+        // PBR 计算
+        vec3 H = normalize(viewDir + L);
+        vec3 F0 = mix(vec3(0.04), surf.albedo, surf.metallic);
+        
+        float NDF = DistributionGGX(shadingNormal, H, surf.roughness);
+        float G = GeometrySmith(shadingNormal, viewDir, L, surf.roughness);
+        vec3 F = FresnelSchlick(max(dot(H, viewDir), 0.0), F0);
+        
+        vec3 num = NDF * G * F;
+        float den = 4.0 * max(dot(shadingNormal, viewDir), 0.0) * NdotL + 0.001;
+        vec3 specular = num / den;
+        
+        vec3 kS = F;
+        vec3 kD = (vec3(1.0) - kS) * (1.0 - surf.metallic);
+        
+        vec3 radiance = light.color * light.intensity * attenuation;
+        Lo += (kD * surf.albedo * INV_PI + specular) * radiance * NdotL;
+
+        // === 关键：权重补偿 ===
+        // 因为我们只采样了 1/N 个光源，所以结果要乘以 N (即 lightCount)
+        // 蒙特卡洛积分公式：Result = Sample / PDF. 这里 PDF = 1/lightCount.
     }
-
-    float NdotL = dot(shadingNormal, L);
-    if (NdotL <= 0.0 || attenuation < 0.0001) return vec3(0.0);
-
-    // 阴影射线
-    Ray shadowRay;
-    float bias = 0.01;
-    shadowRay.origin = rec.position + rec.normal * bias;
-    shadowRay.direction = L;
-    
-    // 如果被遮挡，直接返回
-    if (BVHIntersectAnyHit(shadowRay, distanceToLight - 0.05)) {
-        return vec3(0.0);
-    }
-
-    // PBR 计算
-    vec3 H = normalize(viewDir + L);
-    vec3 F0 = mix(vec3(0.04), surf.albedo, surf.metallic);
-    
-    float NDF = DistributionGGX(shadingNormal, H, surf.roughness);
-    float G = GeometrySmith(shadingNormal, viewDir, L, surf.roughness);
-    vec3 F = FresnelSchlick(max(dot(H, viewDir), 0.0), F0);
-    
-    vec3 num = NDF * G * F;
-    float den = 4.0 * max(dot(shadingNormal, viewDir), 0.0) * NdotL + 0.001;
-    vec3 specular = num / den;
-    
-    vec3 kS = F;
-    vec3 kD = (vec3(1.0) - kS) * (1.0 - surf.metallic);
-    
-    vec3 radiance = light.color * light.intensity * attenuation;
-    vec3 Lo = (kD * surf.albedo * INV_PI + specular) * radiance * NdotL;
-
-    // === 关键：权重补偿 ===
-    // 因为我们只采样了 1/N 个光源，所以结果要乘以 N (即 lightCount)
-    // 蒙特卡洛积分公式：Result = Sample / PDF. 这里 PDF = 1/lightCount.
-    return Lo * float(lightCount);
+    return Lo;
 }
 
 vec3 TracePath(Ray ray, inout uint seed) {
@@ -393,7 +400,7 @@ vec3 TracePath(Ray ray, inout uint seed) {
     for (int bounce = 0; bounce < maxBounces; bounce++) {
         HitInfo info;
         if (!BVHIntersect(ray, 0.001, 10000.0, info)) {
-            vec3 skyColor = vec3(0.1, 0.2, 0.3); 
+            vec3 skyColor = textureLod(environmentMap, ray.direction, 0.0).rgb;
             totalRadiance += throughput * skyColor;
             break;
         }

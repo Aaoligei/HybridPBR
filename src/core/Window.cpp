@@ -8,7 +8,7 @@ namespace HybridPBR {
     Window::Window() {
         // GLFW初始化
         if (!glfwInit()) {
-            LOG_CRITICAL("Failed to initialize GLFW");
+            LOG_CRITICAL("Window", "Failed to initialize GLFW");
             return;
         }
         
@@ -34,7 +34,7 @@ namespace HybridPBR {
         window = glfwCreateWindow(width, height, title.c_str(), 
                                  config.fullscreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
         if (!window) {
-            LOG_CRITICAL("Failed to create GLFW window");
+            LOG_CRITICAL("Window", "Failed to create GLFW window");
             return false;
         }
         
@@ -42,7 +42,7 @@ namespace HybridPBR {
         
         // 初始化GLAD
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-            LOG_CRITICAL("Failed to initialize GLAD");
+            LOG_CRITICAL("Window", "Failed to initialize GLAD");
             return false;
         }
         
@@ -52,8 +52,8 @@ namespace HybridPBR {
         // 设置回调
         SetupCallbacks();
         
-        LOG_INFO("Window created: " + std::to_string(width) + "x" + std::to_string(height));
-        LOG_INFO("OpenGL Version: " + std::string((char*)glGetString(GL_VERSION)));
+        LOG_INFO("Window", "Window created: " + std::to_string(width) + "x" + std::to_string(height));
+        LOG_INFO("Window", "OpenGL Version: " + std::string((char*)glGetString(GL_VERSION)));
         
         return true;
     }

@@ -1,5 +1,5 @@
 #include "HybridRenderer.h"
-#include "../rhi/opengl/GL_Device.h" // 具体后端实现
+#include "../rhi/opengl/GL_Device.h"
 #include "utils/Logger.h"
 
 namespace HybridPBR {
@@ -10,11 +10,11 @@ namespace HybridPBR {
         Shutdown();
     }
 
-    Result<void> HybridRenderer::Initialize(std::shared_ptr<IRenderDevice> /*oldDevice*/) {
+    // [修改] 移除参数，内部创建 OpenGLDevice
+    Result<void> HybridRenderer::Initialize() {
         LOG_INFO("Renderer", "Initializing Hybrid Renderer (RHI Architecture)");
 
-        // 1. 创建 RHI 设备 (OpenGL 后端)
-        // 未来这里可以根据配置切换 VulkanDevice
+        // 1. 创建 RHI 设备
         m_rhiDevice = std::make_unique<OpenGLDevice>();
         
         if (!m_rhiDevice->Initialize()) {
@@ -51,36 +51,35 @@ namespace HybridPBR {
     }
 
     Result<void> HybridRenderer::Render(const Scene& scene) {
-        if (!initialized_ || !m_rhiDevice) return Result<void>::Failure(Error(ErrorType::Initialization, "Not initialized"));
-
-        // 1. 获取每帧的命令列表 (Immediate Mode 下每帧获取一个新的或重置的)
-        //BeginFrame();
+        if (!initialized_ || !m_rhiDevice) 
+            return Result<void>::Failure(Error(ErrorType::Initialization, "Not initialized"));
 
         auto cmd = m_rhiDevice->GetImmediateCommandList();
         cmd->Begin();
 
-        // 3. 构建渲染上下文
+        // 设置视口
+        Rect2D viewport{0, 0, m_width, m_height};
+        cmd->SetViewport(viewport);
+        cmd->SetScissor(viewport);
+        cmd->Clear(true, true, m_clearColor, 1.0f);
+
+        // 构建上下文并执行 Pass
         RenderContext ctx;
         ctx.device = m_rhiDevice.get();
         ctx.cmdList = cmd;
         ctx.scene = &scene;
         
-        // 4. 执行 Pass
         if (m_geometryPass) {
             m_geometryPass->Execute(ctx);
         }
 
-        // 5. 结束命令录制
         cmd->End();
-
-        //EndFrame();
-
         return Result<void>::Success();
     }
 
     Result<void> HybridRenderer::EndFrame() {
         if (m_rhiDevice) {
-            m_rhiDevice->Present(); // SwapBuffers
+            m_rhiDevice->Present();
         }
         return Result<void>::Success();
     }
@@ -88,8 +87,6 @@ namespace HybridPBR {
     Result<void> HybridRenderer::SetViewport(int width, int height) {
         m_width = width;
         m_height = height;
-        // RHI 的 SetViewport 是在 CommandList 里做的，这里只需存下来供 Pass 使用
-        // 实际上 RenderContext 应该包含 Viewport 信息，或者 Pass 自己去取
         return Result<void>::Success();
     }
 

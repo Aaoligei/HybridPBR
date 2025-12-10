@@ -143,26 +143,11 @@ CMakeFiles/HybridPBR.dir/src/core/Timer.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/HybridPBR.dir/src/core/Timer.cpp.s"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\core\Timer.cpp -o CMakeFiles\HybridPBR.dir\src\core\Timer.cpp.s
 
-CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.obj: CMakeFiles/HybridPBR.dir/flags.make
-CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
-CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/ServiceLocator.cpp
-CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.obj"
-	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\core\ServiceLocator.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\core\ServiceLocator.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\core\ServiceLocator.cpp
-
-CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.i"
-	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\core\ServiceLocator.cpp > CMakeFiles\HybridPBR.dir\src\core\ServiceLocator.cpp.i
-
-CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.s"
-	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\core\ServiceLocator.cpp -o CMakeFiles\HybridPBR.dir\src\core\ServiceLocator.cpp.s
-
 CMakeFiles/HybridPBR.dir/src/core/Services.cpp.obj: CMakeFiles/HybridPBR.dir/flags.make
 CMakeFiles/HybridPBR.dir/src/core/Services.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/core/Services.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/Services.cpp
 CMakeFiles/HybridPBR.dir/src/core/Services.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/HybridPBR.dir/src/core/Services.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/HybridPBR.dir/src/core/Services.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/core/Services.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\core\Services.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\core\Services.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\core\Services.cpp
 
 CMakeFiles/HybridPBR.dir/src/core/Services.cpp.i: cmake_force
@@ -177,7 +162,7 @@ CMakeFiles/HybridPBR.dir/src/core/Events.cpp.obj: CMakeFiles/HybridPBR.dir/flags
 CMakeFiles/HybridPBR.dir/src/core/Events.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/core/Events.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/Events.cpp
 CMakeFiles/HybridPBR.dir/src/core/Events.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/HybridPBR.dir/src/core/Events.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/HybridPBR.dir/src/core/Events.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/core/Events.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\core\Events.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\core\Events.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\core\Events.cpp
 
 CMakeFiles/HybridPBR.dir/src/core/Events.cpp.i: cmake_force
@@ -192,7 +177,7 @@ CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_Device.cpp.obj: CMakeFiles/HybridPBR.
 CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_Device.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_Device.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rhi/opengl/GL_Device.cpp
 CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_Device.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_Device.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_Device.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_Device.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rhi\opengl\GL_Device.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rhi\opengl\GL_Device.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rhi\opengl\GL_Device.cpp
 
 CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_Device.cpp.i: cmake_force
@@ -207,7 +192,7 @@ CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_CommandList.cpp.obj: CMakeFiles/Hybri
 CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_CommandList.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_CommandList.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rhi/opengl/GL_CommandList.cpp
 CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_CommandList.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_CommandList.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_CommandList.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_CommandList.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rhi\opengl\GL_CommandList.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rhi\opengl\GL_CommandList.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rhi\opengl\GL_CommandList.cpp
 
 CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_CommandList.cpp.i: cmake_force
@@ -222,7 +207,7 @@ CMakeFiles/HybridPBR.dir/src/resources/Mesh.cpp.obj: CMakeFiles/HybridPBR.dir/fl
 CMakeFiles/HybridPBR.dir/src/resources/Mesh.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/resources/Mesh.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/resources/Mesh.cpp
 CMakeFiles/HybridPBR.dir/src/resources/Mesh.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/HybridPBR.dir/src/resources/Mesh.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/HybridPBR.dir/src/resources/Mesh.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/resources/Mesh.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\resources\Mesh.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\resources\Mesh.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\resources\Mesh.cpp
 
 CMakeFiles/HybridPBR.dir/src/resources/Mesh.cpp.i: cmake_force
@@ -237,7 +222,7 @@ CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.obj: CMakeFiles/HybridPBR
 CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/resources/ModelLoader.cpp
 CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\resources\ModelLoader.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\resources\ModelLoader.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\resources\ModelLoader.cpp
 
 CMakeFiles/HybridPBR.dir/src/resources/ModelLoader.cpp.i: cmake_force
@@ -252,7 +237,7 @@ CMakeFiles/HybridPBR.dir/src/resources/ResourceManager.cpp.obj: CMakeFiles/Hybri
 CMakeFiles/HybridPBR.dir/src/resources/ResourceManager.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/resources/ResourceManager.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/resources/ResourceManager.cpp
 CMakeFiles/HybridPBR.dir/src/resources/ResourceManager.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/HybridPBR.dir/src/resources/ResourceManager.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/HybridPBR.dir/src/resources/ResourceManager.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/resources/ResourceManager.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\resources\ResourceManager.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\resources\ResourceManager.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\resources\ResourceManager.cpp
 
 CMakeFiles/HybridPBR.dir/src/resources/ResourceManager.cpp.i: cmake_force
@@ -267,7 +252,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/HybridRenderer.cpp.obj: CMakeFiles/Hybrid
 CMakeFiles/HybridPBR.dir/src/rendering/HybridRenderer.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/HybridRenderer.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/HybridRenderer.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/HybridRenderer.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/HybridRenderer.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/HybridRenderer.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/HybridRenderer.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\HybridRenderer.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\HybridRenderer.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\HybridRenderer.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/HybridRenderer.cpp.i: cmake_force
@@ -282,7 +267,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/GpuMesh.cpp.obj: CMakeFiles/HybridPBR.dir
 CMakeFiles/HybridPBR.dir/src/rendering/GpuMesh.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/GpuMesh.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/GpuMesh.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/GpuMesh.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/GpuMesh.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/GpuMesh.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/GpuMesh.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\GpuMesh.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\GpuMesh.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\GpuMesh.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/GpuMesh.cpp.i: cmake_force
@@ -297,7 +282,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/passes/GeometryPass.cpp.obj: CMakeFiles/H
 CMakeFiles/HybridPBR.dir/src/rendering/passes/GeometryPass.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/passes/GeometryPass.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/passes/GeometryPass.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/passes/GeometryPass.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/passes/GeometryPass.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/passes/GeometryPass.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/passes/GeometryPass.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\passes\GeometryPass.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\passes\GeometryPass.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\passes\GeometryPass.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/passes/GeometryPass.cpp.i: cmake_force
@@ -312,7 +297,7 @@ CMakeFiles/HybridPBR.dir/src/scene/Scene.cpp.obj: CMakeFiles/HybridPBR.dir/flags
 CMakeFiles/HybridPBR.dir/src/scene/Scene.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/scene/Scene.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Scene.cpp
 CMakeFiles/HybridPBR.dir/src/scene/Scene.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/HybridPBR.dir/src/scene/Scene.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/HybridPBR.dir/src/scene/Scene.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/scene/Scene.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\scene\Scene.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\scene\Scene.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\scene\Scene.cpp
 
 CMakeFiles/HybridPBR.dir/src/scene/Scene.cpp.i: cmake_force
@@ -327,7 +312,7 @@ CMakeFiles/HybridPBR.dir/src/scene/SceneNode.cpp.obj: CMakeFiles/HybridPBR.dir/f
 CMakeFiles/HybridPBR.dir/src/scene/SceneNode.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/scene/SceneNode.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/SceneNode.cpp
 CMakeFiles/HybridPBR.dir/src/scene/SceneNode.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/HybridPBR.dir/src/scene/SceneNode.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/HybridPBR.dir/src/scene/SceneNode.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/scene/SceneNode.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\scene\SceneNode.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\scene\SceneNode.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\scene\SceneNode.cpp
 
 CMakeFiles/HybridPBR.dir/src/scene/SceneNode.cpp.i: cmake_force
@@ -342,7 +327,7 @@ CMakeFiles/HybridPBR.dir/src/scene/Transform.cpp.obj: CMakeFiles/HybridPBR.dir/f
 CMakeFiles/HybridPBR.dir/src/scene/Transform.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/scene/Transform.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/scene/Transform.cpp
 CMakeFiles/HybridPBR.dir/src/scene/Transform.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/HybridPBR.dir/src/scene/Transform.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/HybridPBR.dir/src/scene/Transform.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/scene/Transform.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\scene\Transform.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\scene\Transform.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\scene\Transform.cpp
 
 CMakeFiles/HybridPBR.dir/src/scene/Transform.cpp.i: cmake_force
@@ -357,7 +342,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.obj: CMakeFiles/
 CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/Camera.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\rasterization\Camera.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\rasterization\Camera.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\rasterization\Camera.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Camera.cpp.i: cmake_force
@@ -372,7 +357,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/rasterization/CameraController.cpp.obj: C
 CMakeFiles/HybridPBR.dir/src/rendering/rasterization/CameraController.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/rasterization/CameraController.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/CameraController.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/rasterization/CameraController.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/rasterization/CameraController.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/rasterization/CameraController.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/rasterization/CameraController.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\rasterization\CameraController.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\rasterization\CameraController.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\rasterization\CameraController.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/rasterization/CameraController.cpp.i: cmake_force
@@ -387,7 +372,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/common/Material.cpp.obj: CMakeFiles/Hybri
 CMakeFiles/HybridPBR.dir/src/rendering/common/Material.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/common/Material.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Material.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/common/Material.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/common/Material.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/common/Material.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/common/Material.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\common\Material.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\common\Material.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\common\Material.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/common/Material.cpp.i: cmake_force
@@ -402,7 +387,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.obj: CMakeFiles/Hybrid
 CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Texture.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\common\Texture.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\common\Texture.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\common\Texture.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.i: cmake_force
@@ -417,7 +402,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/common/Light.cpp.obj: CMakeFiles/HybridPB
 CMakeFiles/HybridPBR.dir/src/rendering/common/Light.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/common/Light.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/common/Light.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/common/Light.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/common/Light.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/common/Light.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/common/Light.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\common\Light.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\common\Light.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\common\Light.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/common/Light.cpp.i: cmake_force
@@ -432,7 +417,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/Shader.cpp.obj: CMakeFiles/HybridPBR.dir/
 CMakeFiles/HybridPBR.dir/src/rendering/Shader.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/Shader.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/Shader.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/Shader.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/Shader.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/Shader.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/Shader.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\Shader.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\Shader.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\Shader.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/Shader.cpp.i: cmake_force
@@ -447,7 +432,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/ShaderManager.cpp.obj: CMakeFiles/HybridP
 CMakeFiles/HybridPBR.dir/src/rendering/ShaderManager.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/ShaderManager.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ShaderManager.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/ShaderManager.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/ShaderManager.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/ShaderManager.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/ShaderManager.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\ShaderManager.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\ShaderManager.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\ShaderManager.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/ShaderManager.cpp.i: cmake_force
@@ -462,7 +447,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/ImGuiManager.cpp.obj: CMakeFiles/HybridPB
 CMakeFiles/HybridPBR.dir/src/rendering/ImGuiManager.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/ImGuiManager.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ImGuiManager.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/ImGuiManager.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/ImGuiManager.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/ImGuiManager.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/ImGuiManager.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\ImGuiManager.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\ImGuiManager.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\ImGuiManager.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/ImGuiManager.cpp.i: cmake_force
@@ -477,7 +462,7 @@ CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.obj: CMakeFiles
 CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/ImGuiComponentManager.cpp
 CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\ImGuiComponentManager.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\ImGuiComponentManager.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\ImGuiComponentManager.cpp
 
 CMakeFiles/HybridPBR.dir/src/rendering/ImGuiComponentManager.cpp.i: cmake_force
@@ -492,7 +477,7 @@ CMakeFiles/HybridPBR.dir/src/pbr/PBRMaterial.cpp.obj: CMakeFiles/HybridPBR.dir/f
 CMakeFiles/HybridPBR.dir/src/pbr/PBRMaterial.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/pbr/PBRMaterial.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/pbr/PBRMaterial.cpp
 CMakeFiles/HybridPBR.dir/src/pbr/PBRMaterial.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/HybridPBR.dir/src/pbr/PBRMaterial.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/HybridPBR.dir/src/pbr/PBRMaterial.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/pbr/PBRMaterial.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\pbr\PBRMaterial.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\pbr\PBRMaterial.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\pbr\PBRMaterial.cpp
 
 CMakeFiles/HybridPBR.dir/src/pbr/PBRMaterial.cpp.i: cmake_force
@@ -507,7 +492,7 @@ CMakeFiles/HybridPBR.dir/src/pbr/BRDF.cpp.obj: CMakeFiles/HybridPBR.dir/flags.ma
 CMakeFiles/HybridPBR.dir/src/pbr/BRDF.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/pbr/BRDF.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/pbr/BRDF.cpp
 CMakeFiles/HybridPBR.dir/src/pbr/BRDF.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/HybridPBR.dir/src/pbr/BRDF.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/HybridPBR.dir/src/pbr/BRDF.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/pbr/BRDF.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\pbr\BRDF.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\pbr\BRDF.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\pbr\BRDF.cpp
 
 CMakeFiles/HybridPBR.dir/src/pbr/BRDF.cpp.i: cmake_force
@@ -522,7 +507,7 @@ CMakeFiles/HybridPBR.dir/src/utils/Logger.cpp.obj: CMakeFiles/HybridPBR.dir/flag
 CMakeFiles/HybridPBR.dir/src/utils/Logger.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/utils/Logger.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/Logger.cpp
 CMakeFiles/HybridPBR.dir/src/utils/Logger.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/HybridPBR.dir/src/utils/Logger.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/HybridPBR.dir/src/utils/Logger.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/utils/Logger.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\utils\Logger.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\utils\Logger.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\utils\Logger.cpp
 
 CMakeFiles/HybridPBR.dir/src/utils/Logger.cpp.i: cmake_force
@@ -537,7 +522,7 @@ CMakeFiles/HybridPBR.dir/src/utils/FileIO.cpp.obj: CMakeFiles/HybridPBR.dir/flag
 CMakeFiles/HybridPBR.dir/src/utils/FileIO.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/utils/FileIO.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/FileIO.cpp
 CMakeFiles/HybridPBR.dir/src/utils/FileIO.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/HybridPBR.dir/src/utils/FileIO.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/HybridPBR.dir/src/utils/FileIO.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/utils/FileIO.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\utils\FileIO.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\utils\FileIO.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\utils\FileIO.cpp
 
 CMakeFiles/HybridPBR.dir/src/utils/FileIO.cpp.i: cmake_force
@@ -552,7 +537,7 @@ CMakeFiles/HybridPBR.dir/src/utils/MathUtils.cpp.obj: CMakeFiles/HybridPBR.dir/f
 CMakeFiles/HybridPBR.dir/src/utils/MathUtils.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/src/utils/MathUtils.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/MathUtils.cpp
 CMakeFiles/HybridPBR.dir/src/utils/MathUtils.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/HybridPBR.dir/src/utils/MathUtils.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/HybridPBR.dir/src/utils/MathUtils.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/utils/MathUtils.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\utils\MathUtils.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\utils\MathUtils.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\utils\MathUtils.cpp
 
 CMakeFiles/HybridPBR.dir/src/utils/MathUtils.cpp.i: cmake_force
@@ -563,41 +548,11 @@ CMakeFiles/HybridPBR.dir/src/utils/MathUtils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/HybridPBR.dir/src/utils/MathUtils.cpp.s"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\utils\MathUtils.cpp -o CMakeFiles\HybridPBR.dir\src\utils\MathUtils.cpp.s
 
-CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.obj: CMakeFiles/HybridPBR.dir/flags.make
-CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
-CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/OpenGLRenderDevice.cpp
-CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.obj"
-	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\OpenGLRenderDevice.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\OpenGLRenderDevice.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\OpenGLRenderDevice.cpp
-
-CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.i"
-	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\OpenGLRenderDevice.cpp > CMakeFiles\HybridPBR.dir\src\rendering\OpenGLRenderDevice.cpp.i
-
-CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.s"
-	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\OpenGLRenderDevice.cpp -o CMakeFiles\HybridPBR.dir\src\rendering\OpenGLRenderDevice.cpp.s
-
-CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.obj: CMakeFiles/HybridPBR.dir/flags.make
-CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
-CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.obj: C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/RenderPipelineManager.cpp
-CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.obj"
-	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.obj -MF CMakeFiles\HybridPBR.dir\src\rendering\RenderPipelineManager.cpp.obj.d -o CMakeFiles\HybridPBR.dir\src\rendering\RenderPipelineManager.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\RenderPipelineManager.cpp
-
-CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.i"
-	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\RenderPipelineManager.cpp > CMakeFiles\HybridPBR.dir\src\rendering\RenderPipelineManager.cpp.i
-
-CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.s"
-	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\src\rendering\RenderPipelineManager.cpp -o CMakeFiles\HybridPBR.dir\src\rendering\RenderPipelineManager.cpp.s
-
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui.cpp.obj: CMakeFiles/HybridPBR.dir/flags.make
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui.cpp.obj: _deps/imgui-src/imgui.cpp
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui.cpp.obj -MF CMakeFiles\HybridPBR.dir\_deps\imgui-src\imgui.cpp.obj.d -o CMakeFiles\HybridPBR.dir\_deps\imgui-src\imgui.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\_deps\imgui-src\imgui.cpp
 
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui.cpp.i: cmake_force
@@ -612,7 +567,7 @@ CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_demo.cpp.obj: CMakeFiles/HybridPB
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_demo.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_demo.cpp.obj: _deps/imgui-src/imgui_demo.cpp
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_demo.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_demo.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_demo.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_demo.cpp.obj -MF CMakeFiles\HybridPBR.dir\_deps\imgui-src\imgui_demo.cpp.obj.d -o CMakeFiles\HybridPBR.dir\_deps\imgui-src\imgui_demo.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\_deps\imgui-src\imgui_demo.cpp
 
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_demo.cpp.i: cmake_force
@@ -627,7 +582,7 @@ CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_draw.cpp.obj: CMakeFiles/HybridPB
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_draw.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_draw.cpp.obj: _deps/imgui-src/imgui_draw.cpp
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_draw.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_draw.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_draw.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_draw.cpp.obj -MF CMakeFiles\HybridPBR.dir\_deps\imgui-src\imgui_draw.cpp.obj.d -o CMakeFiles\HybridPBR.dir\_deps\imgui-src\imgui_draw.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\_deps\imgui-src\imgui_draw.cpp
 
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_draw.cpp.i: cmake_force
@@ -642,7 +597,7 @@ CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_tables.cpp.obj: CMakeFiles/Hybrid
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_tables.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_tables.cpp.obj: _deps/imgui-src/imgui_tables.cpp
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_tables.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_tables.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_tables.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_tables.cpp.obj -MF CMakeFiles\HybridPBR.dir\_deps\imgui-src\imgui_tables.cpp.obj.d -o CMakeFiles\HybridPBR.dir\_deps\imgui-src\imgui_tables.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\_deps\imgui-src\imgui_tables.cpp
 
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_tables.cpp.i: cmake_force
@@ -657,7 +612,7 @@ CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_widgets.cpp.obj: CMakeFiles/Hybri
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_widgets.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_widgets.cpp.obj: _deps/imgui-src/imgui_widgets.cpp
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_widgets.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Building CXX object CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_widgets.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_widgets.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_widgets.cpp.obj -MF CMakeFiles\HybridPBR.dir\_deps\imgui-src\imgui_widgets.cpp.obj.d -o CMakeFiles\HybridPBR.dir\_deps\imgui-src\imgui_widgets.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\_deps\imgui-src\imgui_widgets.cpp
 
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_widgets.cpp.i: cmake_force
@@ -672,7 +627,7 @@ CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.obj: CMake
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.obj: _deps/imgui-src/backends/imgui_impl_glfw.cpp
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_41) "Building CXX object CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.obj -MF CMakeFiles\HybridPBR.dir\_deps\imgui-src\backends\imgui_impl_glfw.cpp.obj.d -o CMakeFiles\HybridPBR.dir\_deps\imgui-src\backends\imgui_impl_glfw.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\_deps\imgui-src\backends\imgui_impl_glfw.cpp
 
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.i: cmake_force
@@ -687,7 +642,7 @@ CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.obj: CM
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.obj: CMakeFiles/HybridPBR.dir/includes_CXX.rsp
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.obj: _deps/imgui-src/backends/imgui_impl_opengl3.cpp
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.obj: CMakeFiles/HybridPBR.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_42) "Building CXX object CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.obj"
 	C:\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.obj -MF CMakeFiles\HybridPBR.dir\_deps\imgui-src\backends\imgui_impl_opengl3.cpp.obj.d -o CMakeFiles\HybridPBR.dir\_deps\imgui-src\backends\imgui_impl_opengl3.cpp.obj -c C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\_deps\imgui-src\backends\imgui_impl_opengl3.cpp
 
 CMakeFiles/HybridPBR.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.i: cmake_force
@@ -705,7 +660,6 @@ HybridPBR_OBJECTS = \
 "CMakeFiles/HybridPBR.dir/src/core/Window.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/core/Input.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/core/Timer.cpp.obj" \
-"CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/core/Services.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/core/Events.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_Device.cpp.obj" \
@@ -733,8 +687,6 @@ HybridPBR_OBJECTS = \
 "CMakeFiles/HybridPBR.dir/src/utils/Logger.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/utils/FileIO.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/src/utils/MathUtils.cpp.obj" \
-"CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.obj" \
-"CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_demo.cpp.obj" \
 "CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_draw.cpp.obj" \
@@ -751,7 +703,6 @@ bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/core/Application.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/core/Window.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/core/Input.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/core/Timer.cpp.obj
-bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/core/Services.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/core/Events.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_Device.cpp.obj
@@ -779,8 +730,6 @@ bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/pbr/BRDF.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/utils/Logger.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/utils/FileIO.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/utils/MathUtils.cpp.obj
-bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.obj
-bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_demo.cpp.obj
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_draw.cpp.obj
@@ -796,7 +745,7 @@ bin/HybridPBR.exe: lib/libzlibstaticd.a
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/linkLibs.rsp
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/objects1.rsp
 bin/HybridPBR.exe: CMakeFiles/HybridPBR.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_43) "Linking CXX executable bin\HybridPBR.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\25342\OneDrive\Desktop\projects\HybridPBR\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_40) "Linking CXX executable bin\HybridPBR.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\HybridPBR.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

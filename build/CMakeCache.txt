@@ -73,10 +73,6 @@ ASSIMP_COVERALLS:BOOL=OFF
 //Set to ON to enable double precision processing
 ASSIMP_DOUBLE_PRECISION:BOOL=OFF
 
-//adds the target headercheck which compiles every header file,
-// default disabled because it adds many targets
-ASSIMP_HEADERCHECK:BOOL=OFF
-
 //Enable Hunter package manager support
 ASSIMP_HUNTER_ENABLED:BOOL=OFF
 
@@ -446,10 +442,6 @@ FETCHCONTENT_QUIET:BOOL=ON
 FETCHCONTENT_SOURCE_DIR_ASSIMP:PATH=
 
 //When not empty, overrides where to find pre-populated content
-// for glad
-FETCHCONTENT_SOURCE_DIR_GLAD:PATH=
-
-//When not empty, overrides where to find pre-populated content
 // for glfw
 FETCHCONTENT_SOURCE_DIR_GLFW:PATH=
 
@@ -475,9 +467,6 @@ FETCHCONTENT_UPDATES_DISCONNECTED:BOOL=OFF
 //Enables UPDATE_DISCONNECTED behavior just for population of assimp
 FETCHCONTENT_UPDATES_DISCONNECTED_ASSIMP:BOOL=OFF
 
-//Enables UPDATE_DISCONNECTED behavior just for population of glad
-FETCHCONTENT_UPDATES_DISCONNECTED_GLAD:BOOL=OFF
-
 //Enables UPDATE_DISCONNECTED behavior just for population of glfw
 FETCHCONTENT_UPDATES_DISCONNECTED_GLFW:BOOL=OFF
 
@@ -495,50 +484,6 @@ FETCHCONTENT_UPDATES_DISCONNECTED_STB:BOOL=OFF
 
 //Git command line client
 GIT_EXECUTABLE:FILEPATH=C:/Program Files/Git/cmd/git.exe
-
-//Include all extensions instead of those specified by GLAD_EXTENSIONS
-GLAD_ALL_EXTENSIONS:BOOL=OFF
-
-//API type/version pairs, like "gl=3.2,gles=", no version means
-// latest
-GLAD_API:STRING=
-
-//Value Computed by CMake
-GLAD_BINARY_DIR:STATIC=C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glad-build
-
-//Set export variables for external project
-GLAD_EXPORT:BOOL=ON
-
-//Path to extensions file or comma separated list of extensions,
-// if missing all extensions are included
-GLAD_EXTENSIONS:STRING=
-
-//Language to generate the binding for
-GLAD_GENERATOR:STRING=c
-
-//Generate installation target
-GLAD_INSTALL:BOOL=OFF
-
-//Value Computed by CMake
-GLAD_IS_TOP_LEVEL:STATIC=OFF
-
-//No loader
-GLAD_NO_LOADER:BOOL=OFF
-
-//Output directory
-GLAD_OUT_DIR:STRING=C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glad-build
-
-//OpenGL profile
-GLAD_PROFILE:STRING=compatibility
-
-//Reproducible build
-GLAD_REPRODUCIBLE:BOOL=OFF
-
-//Value Computed by CMake
-GLAD_SOURCE_DIR:STATIC=C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glad-src
-
-//Name of the spec or list of multiple specs (separated by semicolons).
-GLAD_SPEC:STRING=gl
 
 //Value Computed by CMake
 GLFW_BINARY_DIR:STATIC=C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glfw-build
@@ -614,9 +559,6 @@ PKG_CONFIG_ARGN:STRING=
 
 //pkg-config executable
 PKG_CONFIG_EXECUTABLE:FILEPATH=PKG_CONFIG_EXECUTABLE-NOTFOUND
-
-//Skip FetchContent downloads for third-party libraries
-SKIP_FETCHCONTENT:BOOL=OFF
 
 //Path to a file.
 ZLIB_INCLUDE_DIR:PATH=ZLIB_INCLUDE_DIR-NOTFOUND
@@ -810,7 +752,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=12
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=11
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -870,8 +812,6 @@ CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 DINPUT_H_FOUND:INTERNAL=1
 //ADVANCED property for variable: DOXYGEN_EXECUTABLE
 DOXYGEN_EXECUTABLE-ADVANCED:INTERNAL=1
-//Details about finding Python
-FIND_PACKAGE_MESSAGE_DETAILS_Python:INTERNAL=[C:/Users/25342/anaconda3/python.exe][cfound components: Interpreter ][v3.12.4()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //ADVANCED property for variable: GIT_EXECUTABLE
@@ -915,17 +855,4 @@ _GLFW_HAS_ASLR:INTERNAL=1
 _GLFW_HAS_DEP:INTERNAL=1
 //CMAKE_INSTALL_PREFIX during last run
 _GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Program Files (x86)/HybridPBR
-//Compiler reason failure
-_Python_Compiler_REASON_FAILURE:INTERNAL=
-//Development reason failure
-_Python_Development_REASON_FAILURE:INTERNAL=
-//Path to a program.
-_Python_EXECUTABLE:INTERNAL=C:/Users/25342/anaconda3/python.exe
-//Path to a program.
-_Python_EXECUTABLE_DEBUG:INTERNAL=_Python_EXECUTABLE_DEBUG-NOTFOUND
-//Python Properties
-_Python_INTERPRETER_PROPERTIES:INTERNAL=Python;3;12;4;64;32;<none>;cp312-win_amd64;;C:\Users\25342\anaconda3\Lib;C:\Users\25342\anaconda3\Lib;C:\Users\25342\anaconda3\Lib\site-packages;C:\Users\25342\anaconda3\Lib\site-packages
-_Python_INTERPRETER_SIGNATURE:INTERNAL=b68506a6c911d4c17240e5391f3559dd
-//NumPy reason failure
-_Python_NumPy_REASON_FAILURE:INTERNAL=
 

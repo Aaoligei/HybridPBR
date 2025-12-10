@@ -20,6 +20,7 @@ namespace HybridPBR {
         TextureFormat format;
         bool isRenderTarget = false;
     };
+    
 
     class RHI_Device {
     public:
@@ -45,11 +46,19 @@ namespace HybridPBR {
 
         // 获取命令列表（用于记录绘制指令）
         virtual std::shared_ptr<RHI_CommandList> GetImmediateCommandList() = 0;
+        virtual uint64_t GetTextureBindlessHandle(TextureHandle handle) = 0;
 
         virtual void UpdateBuffer(BufferHandle handle, const void* data, uint64_t size, uint64_t offset = 0) =0;
         // 帧管理
         virtual void BeginFrame() = 0;
         virtual void Present() = 0; // 交换缓冲区 (SwapBuffers)
+
+        // [新增] 生成 Mipmaps (在获取 Bindless Handle 前调用)
+        virtual void GenerateMipmaps(TextureHandle handle) = 0;
+
+        // [新增] 设置采样器状态 (在获取 Bindless Handle 前调用)
+        // 注意：Bindless Handle 生成后，采样器状态通常不可变，或者需要重新生成 Handle
+        virtual void SetTextureSampler(TextureHandle handle, const SamplerDesc& sampler) = 0;
     };
 
 } // namespace HybridPBR

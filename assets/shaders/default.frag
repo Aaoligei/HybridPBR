@@ -1,4 +1,7 @@
 #version 460 core
+// [核心] 开启 Bindless 纹理扩展
+#extension GL_ARB_bindless_texture : require
+
 out vec4 FragColor;
 
 in VS_OUT {
@@ -9,6 +12,41 @@ in VS_OUT {
     vec3 WorldPos;
 } fs_in;
 
+layout (std140, binding = 2) uniform MaterialData {
+    // 0-16
+    vec4 material_albedoFactor;      
+    // 16-32
+    vec3 material_emissiveFactor;    
+    float material_emissiveIntensity;
+    
+    // 32-48
+    float material_metallicFactor;   
+    float material_roughnessFactor;  
+    float material_aoFactor;         
+    float material_normalScale;      
+    
+    // 48-96 (Bindless Handles, sampler2D = 8 bytes)
+    sampler2D material_albedoMap;    
+    sampler2D material_normalMap;    
+    sampler2D material_metallicMap;  
+    sampler2D material_roughnessMap; 
+    sampler2D material_aoMap;        
+    sampler2D material_emissiveMap;  
+    
+    // 96-120 (Flags, int = 4 bytes)
+    int material_useAlbedoMap;
+    int material_useNormalMap;
+    int material_useMetallicMap;
+    int material_useRoughnessMap;
+    int material_useAOMap;
+    int material_useEmissiveMap;
+    
+    // 120-128 (Padding)
+    float pad3;
+    float pad4;
+};
+
+// --- 光照数据 (保持不变) ---
 struct Light {
     vec3 position;  float pad0;
     vec3 direction; float pad1;
@@ -16,8 +54,7 @@ struct Light {
     float range;    float constant;
     float linear;   float quadratic;
     float innerCutoff; float outerCutoff;
-    int type;       // 0=Directional, 1=Point, 2=Spot
-    float pad2; float pad3; float pad4;
+    int type;       float pad2, pad3, pad4;
 };
 
 layout (std140, binding = 1) uniform LightData {
@@ -28,73 +65,99 @@ layout (std140, binding = 1) uniform LightData {
 
 const float PI = 3.14159265359;
 
+// --- PBR 函数 (保持不变) ---
+vec3 fresnelSchlick(float cosTheta, vec3 F0) {
+    return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}
+float DistributionGGX(vec3 N, vec3 H, float roughness) {
+    float a = roughness * roughness;
+    float a2 = a * a;
+    float NdotH = max(dot(N, H), 0.0);
+    float NdotH2 = NdotH * NdotH;
+    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+    return a2 / (PI * denom * denom + 0.0001);
+}
+float GeometrySchlickGGX(float NdotV, float roughness) {
+    float r = (roughness + 1.0);
+    float k = (r * r) / 8.0;
+    return NdotV / (NdotV * (1.0 - k) + k);
+}
+float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+    return GeometrySchlickGGX(NdotV, roughness) * GeometrySchlickGGX(NdotL, roughness);
+}
+
 void main()
 {       
-    vec3 N = normalize(fs_in.Normal);
-    vec3 V = normalize(fs_in.ViewPos - fs_in.WorldPos);
+    // 1. 读取材质属性 (从 UBO)
+    vec3 albedo = material_albedoFactor.rgb;
+    // 使用 Bindless 纹理采样
+    if (material_useAlbedoMap != 0) {
+        albedo = texture(material_albedoMap, fs_in.TexCoord).rgb;
+        albedo = pow(albedo, vec3(2.2)); // sRGB -> Linear
+    }
     
-    // 默认材质参数 (银灰色金属)
-    vec3 albedo = vec3(0.8, 0.8, 0.8); 
-    float roughness = 0.4;
-    float metallic = 0.0; // 先设为非金属，更容易看清光照
 
-    vec3 Lo = vec3(0.0);
-
-    // 调试：如果没有光源，显示红色警告
-    if (lightCount == 0) {
-        FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-        return;
+    float roughness = material_roughnessFactor;
+    if (material_useRoughnessMap != 0) {
+        // 假设 roughness 在 G 通道
+        roughness = texture(material_roughnessMap, fs_in.TexCoord).g;
     }
 
-    for(int i = 0; i < lightCount; ++i) 
-    {
-        vec3 L;
-        float attenuation = 1.0;
+    float metallic = material_metallicFactor;
+    if (material_useMetallicMap != 0) {
+        // 假设 metallic 在 B 通道
+        metallic = texture(material_metallicMap, fs_in.TexCoord).b;
+    }
+    
+    // 简单的法线处理 (暂不处理法线贴图，先把颜色跑通)
+    vec3 N = normalize(fs_in.Normal);
+    vec3 V = normalize(fs_in.ViewPos - fs_in.WorldPos);
 
-        // --- 核心修复：正确处理光照类型 ---
-        if (lights[i].type == 0) { 
-            // 0 = Directional Light (方向光)
-            // 方向光的方向是从光源发出的，计算 L (指向光源) 需要取反
-            L = normalize(-lights[i].direction);
-        } 
-        else { 
-            // 1 = Point Light (点光源)
-            vec3 distVec = lights[i].position - fs_in.WorldPos;
-            float distance = length(distVec);
-            L = normalize(distVec);
-            
-            // 简单衰减
-            if (lights[i].range > 0.0) {
-                attenuation = 1.0 / (distance * distance);
-            }
-        }
+    vec3 F0 = vec3(0.04); 
+    F0 = mix(F0, albedo, metallic);
 
+    // 2. 光照计算
+    vec3 Lo = vec3(0.0);
+    for(int i = 0; i < lightCount; ++i) {
+        vec3 L = normalize(lights[i].position - fs_in.WorldPos);
         vec3 H = normalize(V + L);
-        float NdotL = max(dot(N, L), 0.0);
         
-        // 简单 Blinn-Phong 用于测试 (确保不是 PBR 公式的问题)
-        // 只要 NdotL > 0，这里就必须亮！
+        float distance = length(lights[i].position - fs_in.WorldPos);
+        float attenuation = 1.0 / (distance * distance); // 简单物理衰减
+        if (lights[i].type == 0) { // Directional
+             L = normalize(-lights[i].direction);
+             attenuation = 1.0;
+        }
+        
         vec3 radiance = lights[i].color * lights[i].intensity * attenuation;
+
+        // Cook-Torrance BRDF
+        float NDF = DistributionGGX(N, H, roughness);   
+        float G   = GeometrySmith(N, V, L, roughness);      
+        vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
+           
+        vec3 numerator    = NDF * G * F; 
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; 
+        vec3 specular = numerator / denominator;
         
-        // 简单的漫反射 + 高光
-        vec3 diffuse = albedo / PI;
-        float spec = pow(max(dot(N, H), 0.0), 32.0); // 硬编码高光
-        
-        Lo += (diffuse + vec3(spec)) * radiance * NdotL; 
+        vec3 kS = F;
+        vec3 kD = vec3(1.0) - kS;
+        kD *= 1.0 - metallic;	  
+
+        float NdotL = max(dot(N, L), 0.0);        
+        Lo += (kD * albedo / PI + specular) * radiance * NdotL;
     }   
     
-    // 环境光 (防止死黑)
-    vec3 ambient = vec3(0.05) * albedo;
+    // 3. 环境光 + 自发光
+    vec3 ambient = vec3(0.03) * albedo * material_aoFactor;
     vec3 color = ambient + Lo;
-    
-    // Tone mapping (Reinhard)
-    // 注意：ToneMapping 会把超亮的颜色压回 1.0 (白色)
-    // 如果你想看到 "调节强度" 的效果，可以暂时注释掉下面这行
-    //color = color / (color + vec3(1.0));
-    
-    // Gamma correction
+
+    // Tone mapping
+    color = color / (color + vec3(1.0));
+    // Gamma correct
     color = pow(color, vec3(1.0/2.2)); 
 
     FragColor = vec4(color, 1.0);
-    //FragColor = vec4(fs_in.Normal, 1.0); // 用法线调试
 }

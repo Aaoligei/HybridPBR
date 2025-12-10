@@ -4,7 +4,7 @@
 #include <memory>
 #include "Transform.h"
 #include "../resources/Mesh.h"
-#include "../rendering/common/Material.h"
+#include "rendering/common/Material.h"
 
 namespace HybridPBR {
 

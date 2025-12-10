@@ -161,6 +161,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named glad
+
+# Build rule for target.
+glad: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 glad
+.PHONY : glad
+
+# fast build rule for target.
+glad/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\glad.dir\build.make CMakeFiles/glad.dir/build
+.PHONY : glad/fast
+
+#=============================================================================
 # Target rules for targets named HybridPBR
 
 # Build rule for target.
@@ -590,32 +603,6 @@ windows/fast:
 .PHONY : windows/fast
 
 #=============================================================================
-# Target rules for targets named glad-generate-files
-
-# Build rule for target.
-glad-generate-files: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 glad-generate-files
-.PHONY : glad-generate-files
-
-# fast build rule for target.
-glad-generate-files/fast:
-	$(MAKE) $(MAKESILENT) -f _deps\glad-build\CMakeFiles\glad-generate-files.dir\build.make _deps/glad-build/CMakeFiles/glad-generate-files.dir/build
-.PHONY : glad-generate-files/fast
-
-#=============================================================================
-# Target rules for targets named glad
-
-# Build rule for target.
-glad: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 glad
-.PHONY : glad
-
-# fast build rule for target.
-glad/fast:
-	$(MAKE) $(MAKESILENT) -f _deps\glad-build\CMakeFiles\glad.dir\build.make _deps/glad-build/CMakeFiles/glad.dir/build
-.PHONY : glad/fast
-
-#=============================================================================
 # Target rules for targets named zlibstatic
 
 # Build rule for target.
@@ -809,6 +796,30 @@ _deps/imgui-src/imgui_widgets.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/_deps/imgui-src/imgui_widgets.cpp.s
 .PHONY : _deps/imgui-src/imgui_widgets.cpp.s
 
+include/glad/src/glad.obj: include/glad/src/glad.c.obj
+.PHONY : include/glad/src/glad.obj
+
+# target to build an object file
+include/glad/src/glad.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\glad.dir\build.make CMakeFiles/glad.dir/include/glad/src/glad.c.obj
+.PHONY : include/glad/src/glad.c.obj
+
+include/glad/src/glad.i: include/glad/src/glad.c.i
+.PHONY : include/glad/src/glad.i
+
+# target to preprocess a source file
+include/glad/src/glad.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\glad.dir\build.make CMakeFiles/glad.dir/include/glad/src/glad.c.i
+.PHONY : include/glad/src/glad.c.i
+
+include/glad/src/glad.s: include/glad/src/glad.c.s
+.PHONY : include/glad/src/glad.s
+
+# target to generate assembly for a file
+include/glad/src/glad.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\glad.dir\build.make CMakeFiles/glad.dir/include/glad/src/glad.c.s
+.PHONY : include/glad/src/glad.c.s
+
 src/core/Application.obj: src/core/Application.cpp.obj
 .PHONY : src/core/Application.obj
 
@@ -880,30 +891,6 @@ src/core/Input.s: src/core/Input.cpp.s
 src/core/Input.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/core/Input.cpp.s
 .PHONY : src/core/Input.cpp.s
-
-src/core/ServiceLocator.obj: src/core/ServiceLocator.cpp.obj
-.PHONY : src/core/ServiceLocator.obj
-
-# target to build an object file
-src/core/ServiceLocator.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.obj
-.PHONY : src/core/ServiceLocator.cpp.obj
-
-src/core/ServiceLocator.i: src/core/ServiceLocator.cpp.i
-.PHONY : src/core/ServiceLocator.i
-
-# target to preprocess a source file
-src/core/ServiceLocator.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.i
-.PHONY : src/core/ServiceLocator.cpp.i
-
-src/core/ServiceLocator.s: src/core/ServiceLocator.cpp.s
-.PHONY : src/core/ServiceLocator.s
-
-# target to generate assembly for a file
-src/core/ServiceLocator.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.s
-.PHONY : src/core/ServiceLocator.cpp.s
 
 src/core/Services.obj: src/core/Services.cpp.obj
 .PHONY : src/core/Services.obj
@@ -1144,54 +1131,6 @@ src/rendering/ImGuiManager.s: src/rendering/ImGuiManager.cpp.s
 src/rendering/ImGuiManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/ImGuiManager.cpp.s
 .PHONY : src/rendering/ImGuiManager.cpp.s
-
-src/rendering/OpenGLRenderDevice.obj: src/rendering/OpenGLRenderDevice.cpp.obj
-.PHONY : src/rendering/OpenGLRenderDevice.obj
-
-# target to build an object file
-src/rendering/OpenGLRenderDevice.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.obj
-.PHONY : src/rendering/OpenGLRenderDevice.cpp.obj
-
-src/rendering/OpenGLRenderDevice.i: src/rendering/OpenGLRenderDevice.cpp.i
-.PHONY : src/rendering/OpenGLRenderDevice.i
-
-# target to preprocess a source file
-src/rendering/OpenGLRenderDevice.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.i
-.PHONY : src/rendering/OpenGLRenderDevice.cpp.i
-
-src/rendering/OpenGLRenderDevice.s: src/rendering/OpenGLRenderDevice.cpp.s
-.PHONY : src/rendering/OpenGLRenderDevice.s
-
-# target to generate assembly for a file
-src/rendering/OpenGLRenderDevice.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.s
-.PHONY : src/rendering/OpenGLRenderDevice.cpp.s
-
-src/rendering/RenderPipelineManager.obj: src/rendering/RenderPipelineManager.cpp.obj
-.PHONY : src/rendering/RenderPipelineManager.obj
-
-# target to build an object file
-src/rendering/RenderPipelineManager.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.obj
-.PHONY : src/rendering/RenderPipelineManager.cpp.obj
-
-src/rendering/RenderPipelineManager.i: src/rendering/RenderPipelineManager.cpp.i
-.PHONY : src/rendering/RenderPipelineManager.i
-
-# target to preprocess a source file
-src/rendering/RenderPipelineManager.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.i
-.PHONY : src/rendering/RenderPipelineManager.cpp.i
-
-src/rendering/RenderPipelineManager.s: src/rendering/RenderPipelineManager.cpp.s
-.PHONY : src/rendering/RenderPipelineManager.s
-
-# target to generate assembly for a file
-src/rendering/RenderPipelineManager.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.s
-.PHONY : src/rendering/RenderPipelineManager.cpp.s
 
 src/rendering/Shader.obj: src/rendering/Shader.cpp.obj
 .PHONY : src/rendering/Shader.obj
@@ -1661,7 +1600,6 @@ help:
 	@echo ... install/strip
 	@echo ... list_install_components
 	@echo ... rebuild_cache
-	@echo ... glad-generate-files
 	@echo ... uninstall
 	@echo ... update_mappings
 	@echo ... HybridPBR
@@ -1719,6 +1657,9 @@ help:
 	@echo ... _deps/imgui-src/imgui_widgets.obj
 	@echo ... _deps/imgui-src/imgui_widgets.i
 	@echo ... _deps/imgui-src/imgui_widgets.s
+	@echo ... include/glad/src/glad.obj
+	@echo ... include/glad/src/glad.i
+	@echo ... include/glad/src/glad.s
 	@echo ... src/core/Application.obj
 	@echo ... src/core/Application.i
 	@echo ... src/core/Application.s
@@ -1728,9 +1669,6 @@ help:
 	@echo ... src/core/Input.obj
 	@echo ... src/core/Input.i
 	@echo ... src/core/Input.s
-	@echo ... src/core/ServiceLocator.obj
-	@echo ... src/core/ServiceLocator.i
-	@echo ... src/core/ServiceLocator.s
 	@echo ... src/core/Services.obj
 	@echo ... src/core/Services.i
 	@echo ... src/core/Services.s
@@ -1761,12 +1699,6 @@ help:
 	@echo ... src/rendering/ImGuiManager.obj
 	@echo ... src/rendering/ImGuiManager.i
 	@echo ... src/rendering/ImGuiManager.s
-	@echo ... src/rendering/OpenGLRenderDevice.obj
-	@echo ... src/rendering/OpenGLRenderDevice.i
-	@echo ... src/rendering/OpenGLRenderDevice.s
-	@echo ... src/rendering/RenderPipelineManager.obj
-	@echo ... src/rendering/RenderPipelineManager.i
-	@echo ... src/rendering/RenderPipelineManager.s
 	@echo ... src/rendering/Shader.obj
 	@echo ... src/rendering/Shader.i
 	@echo ... src/rendering/Shader.s

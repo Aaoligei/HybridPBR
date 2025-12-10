@@ -8,10 +8,12 @@
 #include "scene/Scene.h"
 #include "resources/ModelLoader.h"
 #include "rendering/rasterization/CameraController.h"
-// 注意：现在使用的是 resources 目录下的纯数据 Mesh
 #include "resources/Mesh.h" 
 #include "rendering/common/Material.h"
 #include "rendering/common/Light.h"
+
+// 包含 RHI 以便使用 RHI_Device 类型
+#include "rhi/RHI_Device.h"
 
 using namespace HybridPBR;
 
@@ -22,7 +24,7 @@ public:
         auto config = GetConfig();
         config.window.width = 1600;
         config.window.height = 900;
-        config.window.title = "HybridPBR - RHI Refactor Test";
+        config.window.title = "HybridPBR - RHI Refactor Test (Bindless)";
         config.window.vsync = true;
         SetConfig(config);
     }
@@ -34,12 +36,15 @@ public:
         // A. 初始化新版渲染器
         // 传入 nullptr，因为 HybridRenderer 内部会自动创建 OpenGLDevice
         m_renderer = std::make_unique<HybridRenderer>();
-        Result<void> initRes = m_renderer->Initialize(nullptr);
+        Result<void> initRes = m_renderer->Initialize(); // [修改] 移除参数
         if (initRes.IsFailure()) {
             return initRes;
         }
         
-        // 设置背景色 (测试 RHI Clear 指令)
+        // 获取 RHI Device 指针，供资源创建使用
+        RHI_Device* device = m_renderer->GetRHIDevice(); // [修改] 需要在 HybridRenderer 中公开此方法
+
+        // 设置背景色
         m_renderer->SetClearColor({0.1f, 0.1f, 0.15f, 1.0f});
 
         // B. 初始化场景
@@ -49,34 +54,34 @@ public:
         // C. 设置相机
         auto camera = std::make_shared<Camera>();
         camera->SetPerspective(45.0f, GetWindow().GetAspectRatio(), 0.1f, 100.0f);
-        camera->LookAt({0.0f, 2.0f, 8.0f}, {0.0f, 0.0f, 0.0f}); //稍微抬高视角
+        camera->LookAt({0.0f, 2.0f, 8.0f}, {0.0f, 0.0f, 0.0f});
         m_scene->SetMainCamera(camera);
 
         m_cameraController = std::make_unique<CameraController>(camera.get());
-        m_cameraController->SetMovementSpeed(5.0f); // 移动稍微快点
+        m_cameraController->SetMovementSpeed(5.0f);
 
-        // D. 加载场景内容 (保留原逻辑)
+        // D. 加载场景内容
         CreateLights();
-        CreatePBRTestSpheres();
-        LoadModels(); // 椅子
-        LoadCornellBox(); 
+        
+        // [修改] 传递 device
+        CreatePBRTestSpheres(device);
+        LoadModels(device); 
+        LoadCornellBox(device); 
 
-        LOG_INFO("App", "Scene loaded successfully. GPU resources will be created lazily on first frame.");
+        LOG_INFO("App", "Scene loaded successfully.");
         return Result<void>::Success();
     }
 
     // 3. 更新逻辑
     Result<void> OnUpdate(float deltaTime) override {
-        // 更新相机
         if (m_cameraController) {
             m_cameraController->Update(deltaTime);
         }
         
-        // 简单的旋转动画 (测试 PushConstants 更新)
+        // 简单的旋转动画
         static float time = 0.0f;
         time += deltaTime;
         
-        // 让第一个球体旋转一下，证明 Transform 更新有效
         if (auto node = m_scene->FindNode("Chair")) {
             node->GetTransform().SetRotation({0.0f, time * 30.0f, 0.0f});
         }
@@ -87,8 +92,6 @@ public:
 
     // 4. 渲染循环
     Result<void> OnRender() override {
-        // 调用新版渲染器
-        // 内部流程: BeginFrame -> GeometryPass(Record Commands) -> EndFrame(Present)
         return m_renderer->Render(*m_scene);
     }
 
@@ -97,10 +100,10 @@ public:
         if (m_cameraController) m_cameraController->OnMouseMove(x, y);
     }
     void OnMouseClicked(int button) override {
-        if (m_cameraController) m_cameraController->OnMouseButton(button, 1, 0); // 1 = Press
+        if (m_cameraController) m_cameraController->OnMouseButton(button, 1, 0); 
     }
     void OnMouseReleased(int button) override {
-        if (m_cameraController) m_cameraController->OnMouseButton(button, 0, 0); // 0 = Release
+        if (m_cameraController) m_cameraController->OnMouseButton(button, 0, 0); 
     }
     void OnMouseScroll(double xoffset, double yoffset) override {
         if (m_cameraController) m_cameraController->OnMouseScroll(xoffset, yoffset);
@@ -116,10 +119,7 @@ private:
     std::unique_ptr<Scene> m_scene;
     std::unique_ptr<CameraController> m_cameraController;
 
-    // --- 场景构建辅助函数 (复刻自 DefferedApplication.h) ---
-
     void CreateLights() {
-        // 创建一个简单的方向光
         auto light = std::make_shared<Light>(LightType::DIRECTIONAL, "Sun");
         light->SetDirection({-1.0f, -1.0f, -1.0f});
         light->GetProperties().color = {1.0f, 0.95f, 0.8f};
@@ -127,26 +127,52 @@ private:
         m_scene->AddLight(light);
     }
 
-    void CreatePBRTestSpheres() {
-        // 创建共享的球体网格 (纯 CPU 数据)
+    // [修改] 增加 device 参数
+    void CreatePBRTestSpheres(RHI_Device* device) {
         auto sphereMesh = std::make_shared<Mesh>("SphereMesh");
         sphereMesh->GenerateSphere(1.0f, 64);
 
         int gridSize = 3;
         float spacing = 2.5f;
 
-        for (int i = 0; i < 6; ++i) { // 创建6个不同材质的球
-            // 创建节点
+        // 材质参数组合 (金属度, 粗糙度)
+        std::vector<glm::vec2> params = {
+            {0.0f, 0.1f}, {0.0f, 0.5f}, {0.0f, 0.9f}, // 非金属
+            {1.0f, 0.1f}, {1.0f, 0.5f}, {1.0f, 0.9f}  // 金属
+        };
+        
+        std::vector<glm::vec3> colors = {
+            {0.8f, 0.2f, 0.2f}, {0.2f, 0.8f, 0.2f}, {0.2f, 0.2f, 0.8f},
+            {0.8f, 0.8f, 0.2f}, {0.8f, 0.2f, 0.8f}, {0.2f, 0.8f, 0.8f}
+        };
+
+        for (int i = 0; i < 6; ++i) { 
             auto nodeResult = m_scene->CreateNode("Sphere_" + std::to_string(i));
             if (nodeResult.IsFailure()) continue;
             auto node = nodeResult.GetValue();
 
-            // 设置网格
             node->SetMesh(sphereMesh);
 
-            // 设置材质 (注意：目前的 GeometryPass 只是画出形状，尚未完全接入 PBR 材质参数到 Shader)
-            // 但我们需要设置 Material 对象以避免空指针
+            // [修改] 使用新版 Material API
             auto mat = std::make_shared<Material>("Mat_" + std::to_string(i));
+            
+            // 1. 初始化 UBO
+            mat->Initialize(device); 
+            
+            // 2. 使用 Setter 设置属性 (这会自动更新 UBO 数据结构)
+            glm::vec3 color = colors[i % colors.size()];
+            float metallic = params[i].x;
+            float roughness = params[i].y;
+
+            mat->SetAlbedoColor(glm::vec4(color, 1.0f));
+            mat->SetMetallic(metallic);
+            mat->SetRoughness(roughness);
+            mat->SetAO(1.0f);
+            
+            // 3. 将数据上传到 GPU (UBO)
+            mat->UpdateToGPU();
+
+            node->SetMaterial(mat);
             
             // 设置位置
             int row = i / gridSize;
@@ -154,27 +180,31 @@ private:
             float x = (col - gridSize / 2.0f + 0.5f) * spacing;
             float y = (row - gridSize / 2.0f + 0.5f) * spacing;
             
-            node->GetTransform().SetPosition({x, y + 5.0f, 0.0f}); // 放在空中
-            node->SetMaterial(mat);
+            node->GetTransform().SetPosition({x, y + 5.0f, 0.0f});
         }
     }
 
-    void LoadModels() {
-        // 加载椅子
+    // [修改] 增加 device 参数
+    void LoadModels(RHI_Device* device) {
         std::string path = FileIO::GetAssetsPath() + "models/mid_century_lounge_chair_4k.gltf/mid_century_lounge_chair_4k.gltf";
-        auto result = ModelLoader::LoadFromFile(path);
+
+        // [修改] 调用 ModelLoader 时传入 device
+        auto result = ModelLoader::LoadFromFile(path, device);
         
         if (result.success && !result.meshes.empty()) {
             auto nodeRes = m_scene->CreateNode("Chair");
             if (nodeRes.IsSuccess()) {
                 auto node = nodeRes.GetValue();
-                // 这里的 mesh 已经是新版 Mesh (纯数据)
                 node->SetMesh(result.meshes[0]); 
-                // 设置材质 (暂时使用默认材质，如果 ModelLoader 加载了材质也可以用)
+                
                 if (!result.materials.empty()) {
                     node->SetMaterial(result.materials[0]);
                 } else {
-                    node->SetMaterial(std::make_shared<Material>("ChairMat"));
+                    // 创建默认材质并初始化
+                    auto defMat = std::make_shared<Material>("ChairMat");
+                    defMat->Initialize(device);
+                    defMat->UpdateToGPU();
+                    node->SetMaterial(defMat);
                 }
                 node->GetTransform().SetPosition({0.0f, -2.0f, 2.0f});
                 node->GetTransform().SetScale({2.0f, 2.0f, 2.0f});
@@ -184,9 +214,12 @@ private:
         }
     }
 
-    void LoadCornellBox() {
+    // [修改] 增加 device 参数
+    void LoadCornellBox(RHI_Device* device) {
         std::string path = FileIO::GetAssetsPath() + "models/CornellBox-Original/CornellBox-Original.obj";
-        auto result = ModelLoader::LoadFromFile(path);
+        
+        // [修改] 传入 device
+        auto result = ModelLoader::LoadFromFile(path, device);
 
         if (result.success) {
             for (size_t i = 0; i < result.meshes.size(); ++i) {
@@ -194,11 +227,14 @@ private:
                 if (nodeRes.IsSuccess()) {
                     auto node = nodeRes.GetValue();
                     node->SetMesh(result.meshes[i]);
-                    // 同样，材质暂时从简
+                    
                     if (i < result.materials.size()) {
                         node->SetMaterial(result.materials[i]);
                     } else {
-                        node->SetMaterial(std::make_shared<Material>("BoxMat"));
+                        auto defMat = std::make_shared<Material>("BoxMat");
+                        defMat->Initialize(device);
+                        defMat->UpdateToGPU();
+                        node->SetMaterial(defMat);
                     }
                     node->GetTransform().SetPosition({0.0f, 5.0f, -5.0f});
                 }

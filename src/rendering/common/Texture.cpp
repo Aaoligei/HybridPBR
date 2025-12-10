@@ -1,246 +1,167 @@
 #include "Texture.h"
 #include "utils/Logger.h"
+#include "utils/FileIO.h" // [新增]
+
+// [核心修复] 将 STB 符号设为静态，防止与 Assimp 冲突
+#define STB_IMAGE_STATIC 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
 namespace HybridPBR {
-    /* ---------- 工具：把 TextureWrap / TextureFilter 转成 GLenum ---------- */
-    static GLenum ToGL(TextureWrap w) {
-        switch (w) {
-            case TextureWrap::REPEAT:            return GL_REPEAT;
-            case TextureWrap::CLAMP_TO_EDGE:     return GL_CLAMP_TO_EDGE;
-            case TextureWrap::CLAMP_TO_BORDER:   return GL_CLAMP_TO_BORDER;
-            case TextureWrap::MIRRORED_REPEAT:   return GL_MIRRORED_REPEAT;
-        }
-        return GL_REPEAT;
-    }
-    static GLenum ToGL(TextureFilter f) {
-        switch (f) {
-            case TextureFilter::NEAREST: return GL_NEAREST;
-            case TextureFilter::LINEAR:  return GL_LINEAR;
-            case TextureFilter::NEAREST_MIPMAP_NEAREST: return GL_NEAREST_MIPMAP_NEAREST;
-            case TextureFilter::LINEAR_MIPMAP_NEAREST:  return GL_LINEAR_MIPMAP_NEAREST;
-            case TextureFilter::NEAREST_MIPMAP_LINEAR:  return GL_NEAREST_MIPMAP_LINEAR;
-            case TextureFilter::LINEAR_MIPMAP_LINEAR:   return GL_LINEAR_MIPMAP_LINEAR;
-        }
-        return GL_LINEAR;
-    }
-    Texture::Texture() {}
 
-    Texture::~Texture() {
-        if (textureID != 0) {
-            glDeleteTextures(1, &textureID);
-        }
-    }
-    
-    bool Texture::Create2D(int w, int h, GLenum internalFormat, 
-                          GLenum format, GLenum dataType,
-                          const void* data) {
-        width = w;
-        height = h;
-        isCubemap = false;
-        m_internalFormat = internalFormat;
-        m_format = format;
-        
-        /* 1. 创建 + 一次性分配存储 */
-        if (textureID) glDeleteTextures(1, &textureID);
-        glCreateTextures(GL_TEXTURE_2D, 1, &textureID);
-        glTextureStorage2D(textureID, 1, internalFormat, w, h);
-
-        /* 2. 上传数据（如有） */
-        if (data)
-            glTextureSubImage2D(textureID, 0, 0, 0, w, h, format, dataType, data);
-        
-        // 设置默认参数
-        SetWrapMode(TextureWrap::REPEAT, TextureWrap::REPEAT);
-        SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
-        
-        return true;
+    // --- [新增] 静态包装器实现 ---
+    unsigned char* Texture::LoadImageFromMemory(const void* data, int len, int* width, int* height, int* channels, int desired_channels) {
+        // 这里调用的 stbi_load_from_memory 是我们上面定义的 static 版本
+        // 绝对不会调用到 Assimp 的版本
+        stbi_set_flip_vertically_on_load(true);
+        return stbi_load_from_memory((const stbi_uc*)data, len, width, height, channels, desired_channels);
     }
 
-    bool Texture::LoadFromFile(const std::string& filepath, TextureType textureType) {
-        this->filePath = filepath;
-        type = textureType;
-        isCubemap = false;
-        
-        int channels;
-        void* data = nullptr;
-        
-        if (!LoadImageData(filepath, width, height, channels, &data)) {
+    float* Texture::LoadImageFloatFromMemory(const void* data, int len, int* width, int* height, int* channels, int desired_channels) {
+        stbi_set_flip_vertically_on_load(true);
+        return stbi_loadf_from_memory((const stbi_uc*)data, len, width, height, channels, desired_channels);
+    }
+
+    void Texture::FreeImage(void* data) {
+        stbi_image_free(data);
+    }
+
+    // --- 现有成员函数 ---
+
+    Texture::~Texture() { Cleanup(); }
+
+    Texture::Texture(Texture&& other) noexcept { *this = std::move(other); }
+
+    Texture& Texture::operator=(Texture&& other) noexcept {
+        if (this != &other) {
+            Cleanup();
+            m_device = other.m_device;
+            m_handle = other.m_handle;
+            m_bindlessHandle = other.m_bindlessHandle;
+            m_width = other.m_width;
+            m_height = other.m_height;
+            m_type = other.m_type;
+            m_filePath = std::move(other.m_filePath);
+            m_isCubemap = other.m_isCubemap;
+
+            other.m_handle = TextureHandle::Invalid();
+            other.m_bindlessHandle = 0;
+            other.m_device = nullptr;
+        }
+        return *this;
+    }
+
+    void Texture::Cleanup() {
+        if (m_device && m_handle.IsValid()) {
+            m_device->DestroyTexture(m_handle);
+        }
+        m_handle = TextureHandle::Invalid();
+        m_bindlessHandle = 0;
+    }
+
+    bool Texture::Create2D(RHI_Device* device, int w, int h, TextureFormat format, const void* data) {
+        if (!device) return false;
+        Cleanup();
+        m_device = device;
+        m_width = w; m_height = h; m_isCubemap = false;
+
+        TextureDesc desc;
+        desc.width = w; desc.height = h; desc.format = format;
+        desc.name = "Texture2D"; 
+        m_handle = m_device->CreateTexture(desc, data);
+        SamplerDesc defaultSampler;
+        defaultSampler.minFilter = SamplerFilter::Linear;
+        defaultSampler.magFilter = SamplerFilter::Linear;
+        // ...
+        SetSamplerState(defaultSampler);
+        return m_handle.IsValid();
+    }
+
+    bool Texture::LoadFromFile(RHI_Device* device, const std::string& filepath, TextureType type) {
+        m_filePath = filepath;
+        m_type = type;
+
+        // 改用 FileIO + 静态包装器，统一路径
+        std::vector<char> fileData = FileIO::ReadBinaryFile(filepath);
+        if (fileData.empty()) {
+            LOG_ERROR("Texture file not found: " + filepath);
             return false;
         }
+
+        int width, height, channels;
+        unsigned char* data = Texture::LoadImageFromMemory(fileData.data(), fileData.size(), &width, &height, &channels, 4);
         
-        // 确定格式
-        GLenum format = GL_RGB;
-        GLenum internalFormat = GL_RGB8;
-        
-        if (channels == 1) {
-            format = GL_RED;
-            internalFormat = GL_R8;
-        } else if (channels == 3) {
-            format = GL_RGB;
-            internalFormat = type == TextureType::DIFFUSE ? GL_SRGB8 : GL_RGB8;
-        } else if (channels == 4) {
-            format = GL_RGBA;
-            internalFormat = type == TextureType::DIFFUSE ? GL_SRGB8_ALPHA8 : GL_RGBA8;
+        if (!data) {
+            LOG_ERROR("Failed to decode texture: " + filepath);
+            return false;
         }
-        bool success = Create2D(width, height, internalFormat, format, GL_UNSIGNED_BYTE, data);
-        
-        FreeImageData(data);
+
+        TextureFormat format = (type == TextureType::DIFFUSE || type == TextureType::EMISSIVE) 
+                             ? TextureFormat::RGBA8_SRGB : TextureFormat::RGBA8_UNORM;
+
+        bool success = Create2D(device, width, height, format, data);
+        if (success) {
+            GenerateMipmaps();
+            SamplerDesc sampler;
+            sampler.useMipmaps = true;
+            SetSamplerState(sampler);
+        }
+
+        FreeImage(data);
         return success;
     }
 
-    bool Texture::LoadHDR(const std::string& filepath) {
-        this->filePath = filepath;
-        type = TextureType::HDR;
-        isCubemap = false;
-        
-        stbi_set_flip_vertically_on_load(true);
-        
-        int channels;
-        float* data = stbi_loadf(filepath.c_str(), &width, &height, &channels, 0);
-        
+    bool Texture::LoadHDR(RHI_Device* device, const std::string& filepath) {
+        m_filePath = filepath;
+        m_type = TextureType::HDR;
+
+        std::vector<char> fileData = FileIO::ReadBinaryFile(filepath);
+        if (fileData.empty()) return false;
+
+        int width, height, channels;
+        float* data = Texture::LoadImageFloatFromMemory(fileData.data(), fileData.size(), &width, &height, &channels, 4);
+
         if (!data) {
-            LOG_ERROR("Failed to load HDR image: " + filepath);
+            LOG_ERROR("Failed to load HDR: " + filepath);
             return false;
         }
-        
-        glCreateTextures(GL_TEXTURE_2D, 1, &textureID);
-        glTextureStorage2D(textureID, 1, GL_RGB16F, width, height);
-        glTextureSubImage2D(textureID, 0, 0, 0, width, height, GL_RGB, GL_FLOAT, data);
-        
-        SetWrapMode(TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE);
-        SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
-        
-        stbi_image_free(data);
-        return true;
-    }
 
-    bool Texture::CreateCubemap(int size, GLenum internalFormat) {
-        width = size;
-        height = size;
-        isCubemap = true;
-        type = TextureType::CUBEMAP;
-        
-        if (textureID) glDeleteTextures(1, &textureID);
-        glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &textureID);
-        glTextureStorage2D(textureID, 1, internalFormat, size, size); // 6 面一起分配
-        
-        SetWrapMode(TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE);
-        SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
-       
-        return true;
-    }
-
-    bool Texture::LoadCubemap(const std::vector<std::string>& faces) {
-        if (faces.size() != 6) { LOG_ERROR("Cubemap needs 6 faces"); return false; }
-        isCubemap = true;
-        type = TextureType::CUBEMAP;
-
-        if (textureID) glDeleteTextures(1, &textureID);
-        glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &textureID);
-
-        int w = 0, h = 0;
-        for (int i = 0; i < 6; ++i) {
-            int channels;
-            stbi_set_flip_vertically_on_load(false);
-            unsigned char* data = stbi_load(faces[i].c_str(), &w, &h, &channels, 0);
-            if (!data) { LOG_ERROR("Failed cubemap face: " + faces[i]); return false; }
-
-            GLenum format = GetGLFormat(channels);
-            if (i == 0) glTextureStorage2D(textureID, 1, GL_RGBA8, w, h); // 只需一次
-            glTextureSubImage3D(textureID, 0, 0, 0, i, w, h, 1, format, GL_UNSIGNED_BYTE, data);
-            stbi_image_free(data);
+        bool success = Create2D(device, width, height, TextureFormat::RGBA32_FLOAT, data);
+        if (success) {
+            SamplerDesc sampler;
+            sampler.addressU = SamplerAddressMode::ClampToEdge;
+            sampler.addressV = SamplerAddressMode::ClampToEdge;
+            SetSamplerState(sampler);
         }
-        width = w; height = h;
 
-        SetWrapMode(TextureWrap::CLAMP_TO_EDGE,
-                    TextureWrap::CLAMP_TO_EDGE,
-                    TextureWrap::CLAMP_TO_EDGE);
-        SetFilter(TextureFilter::LINEAR, TextureFilter::LINEAR);
-        return true;
+        FreeImage(data);
+        return success;
     }
 
-    void Texture::SetWrapMode(TextureWrap wrapS, TextureWrap wrapT, TextureWrap wrapR) {
-        glTextureParameteri(textureID, GL_TEXTURE_WRAP_S, ToGL(wrapS));
-        glTextureParameteri(textureID, GL_TEXTURE_WRAP_T, ToGL(wrapT));
-        if (isCubemap)
-            glTextureParameteri(textureID, GL_TEXTURE_WRAP_R, ToGL(wrapR));
-        
+    bool Texture::CreateCubemap(RHI_Device* device, int size, TextureFormat format) {
+        if (!device) return false;
+        Cleanup();
+        m_device = device;
+        m_width = size; m_height = size; m_isCubemap = true; m_type = TextureType::CUBEMAP;
+        // 暂未实现 RHI CreateCubemap，留空
+        return false; 
     }
 
-    void Texture::SetFilter(TextureFilter minFilter, TextureFilter magFilter) {
-        glTextureParameteri(textureID, GL_TEXTURE_MIN_FILTER, ToGL(minFilter));
-        glTextureParameteri(textureID, GL_TEXTURE_MAG_FILTER, ToGL(magFilter));
+    void Texture::SetSamplerState(const SamplerDesc& desc) {
+        if (m_device && m_handle.IsValid()) m_device->SetTextureSampler(m_handle, desc);
     }
 
     void Texture::GenerateMipmaps() {
-        glGenerateTextureMipmap(textureID);
+        if (m_device && m_handle.IsValid()) m_device->GenerateMipmaps(m_handle);
     }
 
-    void Texture::Bind(uint32_t unit) const {
-        glBindTextureUnit(unit, textureID);
-    }
-
-    void Texture::BindImage(uint32_t unit, uint32_t level, GLenum access) const {
-        // 1. 激活图像单元
-        glBindImageTexture(
-            unit,                       // 图像单元索引 0
-            textureID,                  // 纹理对象名（OpenGL 名字）
-            level,                      // mipmap level 0
-            GL_FALSE,                   // 不是分层纹理（3D/数组）
-            0,                          // 单层索引 0
-            access,                     // GL_WRITE_ONLY / READ_ONLY / READ_WRITE
-            m_internalFormat            // 纹理创建时的内部格式，例如 GL_RGBA32F
-        );
-    }
-
-    void Texture::Unbind() const {
-        glBindTextureUnit(0, 0);
-    }
-
-    GLenum Texture::GetGLInternalFormat(GLenum format, bool sRGB) {
-        switch (format) {
-            case GL_RED: return sRGB ? GL_SRGB8 : GL_R8;
-            case GL_RG: return sRGB ? GL_SRGB8 : GL_RG8;
-            case GL_RGB: return sRGB ? GL_SRGB8 : GL_RGB8;
-            case GL_RGBA: return sRGB ? GL_SRGB8_ALPHA8 : GL_RGBA8;
-            case GL_DEPTH_COMPONENT: return GL_DEPTH_COMPONENT24;
-            case GL_DEPTH_STENCIL: return GL_DEPTH24_STENCIL8;
-            default: return sRGB ? GL_SRGB8 : GL_RGB8;
-        }
-    }
-
-    GLenum Texture::GetGLFormat(int channels) {
-        switch (channels) {
-            case 1: return GL_RED;
-            case 2: return GL_RG;
-            case 3: return GL_RGB;
-            case 4: return GL_RGBA;
-            default: return GL_RGB;
-        }
-    }
-
-    bool Texture::LoadImageData(const std::string& filepath, int& w, int& h, 
-                               int& channels, void** data, bool flipY) {
-        stbi_set_flip_vertically_on_load(flipY);
-        
-        *data = stbi_load(filepath.c_str(), &w, &h, &channels, 0);
-        
-        if (!*data) {
-            LOG_ERROR("Failed to load image: " + filepath);
-            return false;
-        }
-        
-        return true;
-    }
-
-    void Texture::FreeImageData(void* data) {
-        if (data) {
-            stbi_image_free(data);
-        }
+    uint64_t Texture::GetBindlessHandle() {
+        if (m_bindlessHandle != 0) return m_bindlessHandle;
+        if (m_device && m_handle.IsValid()) m_bindlessHandle = m_device->GetTextureBindlessHandle(m_handle);
+        return m_bindlessHandle;
     }
 
 } // namespace HybridPBR

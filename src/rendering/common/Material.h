@@ -3,85 +3,55 @@
 #include <memory>
 #include <unordered_map>
 #include "Texture.h"
-#include "rendering/Shader.h"
-#include "rendering/ShaderManager.h"
+#include "rhi/RHI_Device.h"
 
 namespace HybridPBR {
 
-    struct MaterialProperties {
-        // 基础颜色
-        glm::vec4 albedo = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
-        
-        // PBR参数
-        float metallic = 0.0f;
-        float roughness = 0.5f;
-        float ambientOcclusion = 1.0f;
-        
-        // 其他参数
-        float normalScale = 1.0f;
-        float emissiveIntensity = 0.0f;
-        glm::vec3 emissiveColor = glm::vec3(0.0f);
-        
-        // 纹理缩放
-        glm::vec2 textureScale = glm::vec2(1.0f);
-        glm::vec2 textureOffset = glm::vec2(0.0f);
-
-        // 着色器类型
-        ShaderType shaderType = ShaderType::DEFAULT;
-        std::string customShaderName = "null"; // 自定义着色器名称
-    };
-
-    class Material {
+class Material {
     public:
-        Material(const std::string& name, const MaterialProperties& properties = MaterialProperties());
-        virtual ~Material() = default; // 添加虚析构函数使Material成为多态类型
-        
-        // 纹理设置
-        void SetTexture(TextureType type, std::shared_ptr<Texture> texture);
-        void RemoveTexture(TextureType type);
-        std::shared_ptr<Texture> GetTexture(TextureType type) const;
-        
-        // 属性设置
-        void SetProperties(const MaterialProperties& props) { properties = props; }
-        const MaterialProperties& GetProperties() const { return properties; }
-        MaterialProperties& GetProperties() { return properties; }
-        
-        // 着色器管理
-        void SetShaderType(ShaderType type) { properties.shaderType = type; }
-        void SetCustomShader(const std::string& shaderName) { properties.customShaderName = shaderName; }
-        ShaderType GetShaderType() const { return properties.shaderType; }
-        inline std::string GetShaderTypeString() const {
-            switch (properties.shaderType) {
-                case ShaderType::DEFAULT: return "DEFAULT";
-                case ShaderType::PBR: return "PBR";
-                case ShaderType::SKYBOX: return "SKYBOX";
-                case ShaderType::UNLIT: return "UNLIT";
-                case ShaderType::WIREFRAME: return "WIREFRAME";
-                case ShaderType::DEPTH: return "DEPTH";
-                case ShaderType::POST_PROCESS: return "POST_PROCESS";
-                case ShaderType::CUSTOM: return "CUSTOM";
-                default: return "UNKNOWN";
-            }
-        }
-        std::string GetCustomShaderName() const { return properties.customShaderName; }
-        
-        // 获取对应的着色器
-        std::shared_ptr<Shader> GetShader() const;
+        Material(const std::string& name);
+        virtual ~Material();
 
-        // 名称管理
-        const std::string& GetName() const { return name; }
-        void SetName(const std::string& newName) { name = newName; }
+        // --- 资源初始化与更新 ---
+        // 在这一步，我们需要传入 RHI_Device 来创建 UBO
+        void Initialize(RHI_Device* device);
         
-        // 着色器参数应用（默认pbr）
-        virtual void ApplyToShader(std::shared_ptr<Shader> shader) const;
-        
-        // 验证材质是否完整
-        bool HasRequiredTextures() const;
+        // 当属性发生变化时，上传数据到 GPU
+        void UpdateToGPU();
 
-    protected:
-        std::string name;
-        MaterialProperties properties;
-        std::unordered_map<TextureType, std::shared_ptr<Texture>> textures;
+        // --- 绑定操作 ---
+        // 将此材质的资源绑定到 CommandList
+        void Bind(RHI_CommandList* cmdList);
+
+        // --- 属性设置 ---
+        void SetAlbedoColor(const glm::vec4& color);
+        void SetMetallic(float val);
+        void SetRoughness(float val);
+        // ... 其他 Setters ...
+        void SetAO(float val);
+        void SetEmissiveColor(const glm::vec3& color);
+
+        // --- 纹理设置 (传入 RHI Handle) ---
+        void SetTexture(MaterialTextureSlot slot, TextureHandle handle);
+        TextureHandle GetTexture(MaterialTextureSlot slot) const;
+
+        // 获取名称
+        const std::string& GetName() const { return m_name; }
+        MaterialConstants& GetConstants() { return m_constants; }
+
+    private:
+        std::string m_name;
+        RHI_Device* m_device = nullptr;
+
+        // CPU 端数据
+        MaterialConstants m_constants;
+        bool m_dirty = true;
+
+        // GPU 端资源
+        BufferHandle m_constantBuffer = BufferHandle::Invalid();
+        
+        // 纹理句柄数组 (对应 enum MaterialTextureSlot)
+        TextureHandle m_textures[6] = { TextureHandle::Invalid() };
     };
 
 } // namespace HybridPBR

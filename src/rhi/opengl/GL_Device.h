@@ -64,10 +64,14 @@ namespace HybridPBR {
 
         // --- 命令列表 ---
         std::shared_ptr<RHI_CommandList> GetImmediateCommandList() override;
+        virtual uint64_t GetTextureBindlessHandle(TextureHandle handle) override;
 
         // --- 帧管理 ---
         void BeginFrame() override;
         void Present() override;
+
+        virtual void GenerateMipmaps(TextureHandle handle) override;
+        virtual void SetTextureSampler(TextureHandle handle, const SamplerDesc& sampler) override;
 
     public:
         // --- 内部公共方法 (供 CommandList 使用) ---

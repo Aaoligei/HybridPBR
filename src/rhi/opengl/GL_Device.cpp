@@ -17,6 +17,7 @@ namespace HybridPBR {
             case TextureFormat::RGBA16_FLOAT: return GL_RGBA16F;
             case TextureFormat::RGBA32_FLOAT: return GL_RGBA32F;
             case TextureFormat::D24_S8_UINT:  return GL_DEPTH24_STENCIL8;
+            case TextureFormat::RGBA8_SRGB:   return GL_SRGB8_ALPHA8;
             default: LOG_WARNING("RHI", "Unknown TextureFormat, defaulting to RGBA8"); return GL_RGBA8;
         }
     }
@@ -408,5 +409,57 @@ namespace HybridPBR {
         // 使用 DSA 更新
         glNamedBufferSubData(glBuf.id, offset, size, data);
     }
+    uint64_t OpenGLDevice::GetTextureBindlessHandle(TextureHandle handle) {
+        if (!handle.IsValid() || handle.id > m_textures.size()) return 0;
+        
+        const GLTexture& glTex = m_textures[handle.id - 1];
+        GLuint textureID = glTex.id;
 
+        // 1. 获取 Handle
+        // 注意：如果硬件不支持 GL_ARB_bindless_texture，这里会崩溃或返回0，实际项目中需要检查扩展
+        GLuint64 glHandle = glGetTextureHandleARB(textureID);
+        
+        // 2. 必须设为 Resident 才能在 Shader 中使用
+        if (!glIsTextureHandleResidentARB(glHandle)) {
+            glMakeTextureHandleResidentARB(glHandle);
+        }
+
+        return static_cast<uint64_t>(glHandle);
+    }
+
+    // src/rhi/opengl/GL_Device.cpp
+
+void OpenGLDevice::GenerateMipmaps(TextureHandle handle) {
+    GLuint id = GetGLTextureID(handle);
+    if (id) glGenerateTextureMipmap(id);
+}
+
+void OpenGLDevice::SetTextureSampler(TextureHandle handle, const SamplerDesc& desc) {
+    GLuint id = GetGLTextureID(handle);
+    if (!id) return;
+
+    // 转换枚举到 GL
+    auto toGLFilter = [](SamplerFilter f) { return f == SamplerFilter::Nearest ? GL_NEAREST : GL_LINEAR; };
+    auto toGLWrap = [](SamplerAddressMode m) {
+        switch(m) {
+            case SamplerAddressMode::Repeat: return GL_REPEAT;
+            case SamplerAddressMode::ClampToEdge: return GL_CLAMP_TO_EDGE;
+            case SamplerAddressMode::MirroredRepeat: return GL_MIRRORED_REPEAT;
+            default: return GL_REPEAT;
+        }
+    };
+
+    GLenum minFilter = toGLFilter(desc.minFilter);
+    GLenum magFilter = toGLFilter(desc.magFilter);
+
+    if (desc.useMipmaps && desc.minFilter == SamplerFilter::Linear) {
+        minFilter = GL_LINEAR_MIPMAP_LINEAR; // 简化的 Mipmap 逻辑
+    }
+
+    glTextureParameteri(id, GL_TEXTURE_MIN_FILTER, minFilter);
+    glTextureParameteri(id, GL_TEXTURE_MAG_FILTER, magFilter);
+    glTextureParameteri(id, GL_TEXTURE_WRAP_S, toGLWrap(desc.addressU));
+    glTextureParameteri(id, GL_TEXTURE_WRAP_T, toGLWrap(desc.addressV));
+    glTextureParameteri(id, GL_TEXTURE_WRAP_R, toGLWrap(desc.addressW));
+}
 } // namespace HybridPBR

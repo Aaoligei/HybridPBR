@@ -1,6 +1,12 @@
 [
 {
   "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
+  "command": "C:\\mingw64\\bin\\gcc.exe  @CMakeFiles/glad.dir/includes_C.rsp -g -o CMakeFiles\\glad.dir\\include\\glad\\src\\glad.c.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\include\\glad\\src\\glad.c",
+  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/include/glad/src/glad.c",
+  "output": "CMakeFiles/glad.dir/include/glad/src/glad.c.obj"
+},
+{
+  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
   "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp  -g -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\main.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\main.cpp",
   "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/main.cpp",
   "output": "CMakeFiles/HybridPBR.dir/src/main.cpp.obj"
@@ -28,12 +34,6 @@
   "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp  -g -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\core\\Timer.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\core\\Timer.cpp",
   "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/Timer.cpp",
   "output": "CMakeFiles/HybridPBR.dir/src/core/Timer.cpp.obj"
-},
-{
-  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
-  "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp  -g -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\core\\ServiceLocator.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\core\\ServiceLocator.cpp",
-  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/core/ServiceLocator.cpp",
-  "output": "CMakeFiles/HybridPBR.dir/src/core/ServiceLocator.cpp.obj"
 },
 {
   "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
@@ -196,18 +196,6 @@
   "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp  -g -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\utils\\MathUtils.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\utils\\MathUtils.cpp",
   "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/utils/MathUtils.cpp",
   "output": "CMakeFiles/HybridPBR.dir/src/utils/MathUtils.cpp.obj"
-},
-{
-  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
-  "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp  -g -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\OpenGLRenderDevice.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\OpenGLRenderDevice.cpp",
-  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/OpenGLRenderDevice.cpp",
-  "output": "CMakeFiles/HybridPBR.dir/src/rendering/OpenGLRenderDevice.cpp.obj"
-},
-{
-  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
-  "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp  -g -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\RenderPipelineManager.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\RenderPipelineManager.cpp",
-  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/RenderPipelineManager.cpp",
-  "output": "CMakeFiles/HybridPBR.dir/src/rendering/RenderPipelineManager.cpp.obj"
 },
 {
   "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
@@ -766,12 +754,6 @@
   "command": "C:\\mingw64\\bin\\gcc.exe  @CMakeFiles/windows.dir/includes_C.rsp -g -std=gnu99 -o CMakeFiles\\windows.dir\\__\\deps\\glad_gl.c.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\build\\_deps\\glfw-src\\deps\\glad_gl.c",
   "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glfw-src/deps/glad_gl.c",
   "output": "_deps/glfw-build/tests/CMakeFiles/windows.dir/__/deps/glad_gl.c.obj"
-},
-{
-  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glad-build",
-  "command": "C:\\mingw64\\bin\\gcc.exe  @CMakeFiles/glad.dir/includes_C.rsp -g -o CMakeFiles\\glad.dir\\src\\glad.c.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\build\\_deps\\glad-build\\src\\glad.c",
-  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/glad-build/src/glad.c",
-  "output": "_deps/glad-build/CMakeFiles/glad.dir/src/glad.c.obj"
 },
 {
   "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build/_deps/assimp-build/contrib/zlib",

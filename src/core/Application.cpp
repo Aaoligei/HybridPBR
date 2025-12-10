@@ -34,9 +34,6 @@ namespace HybridPBR {
         if (!window_->Initialize(config_.window)) {
             return Result<void>::Failure(Error(ErrorType::Initialization, "Failed to initialize window"));
         }
-
-        // 在OpenGL上下文创建后初始化渲染设备
-        RETURN_IF_ERROR(Services::InitializeRenderDeviceAfterContext());
         
         // 初始化渲染器
         RETURN_IF_ERROR(Services::InitializeRenderer());

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(HybridPBR VERSION 0.1.0 LANGUAGES CXX)
+project(HybridPBR VERSION 0.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -30,12 +30,12 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(glfw)
 
 # GLAD
-FetchContent_Declare(
-    glad
-    GIT_REPOSITORY https://github.com/Dav1dde/glad.git
-    GIT_TAG v0.1.36
+add_library(glad STATIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/glad/src/glad.c
 )
-FetchContent_MakeAvailable(glad)
+target_include_directories(glad PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/glad/include
+)
 
 # GLM
 FetchContent_Declare(
@@ -86,7 +86,6 @@ FetchContent_MakeAvailable(assimp)
 include_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${glm_SOURCE_DIR})
-include_directories(${glad_SOURCE_DIR}/include)
 include_directories(${stb_SOURCE_DIR})
 include_directories(${imgui_SOURCE_DIR})
 include_directories(${imgui_SOURCE_DIR}/backends)
@@ -105,14 +104,12 @@ endif()
 
 # 可执行文件
 add_executable(HybridPBR
-src/main.cpp
-    
+    src/main.cpp
     # Core
     src/core/Application.cpp
     src/core/Window.cpp
     src/core/Input.cpp
     src/core/Timer.cpp
-    src/core/ServiceLocator.cpp
     src/core/Services.cpp
     src/core/Events.cpp
     
@@ -156,9 +153,6 @@ src/main.cpp
     src/utils/Logger.cpp
     src/utils/FileIO.cpp
     src/utils/MathUtils.cpp
-
-    src/rendering/OpenGLRenderDevice.cpp
-    src/rendering/RenderPipelineManager.cpp
     # ImGui源文件
     ${imgui_SOURCE_DIR}/imgui.cpp
     ${imgui_SOURCE_DIR}/imgui_demo.cpp

@@ -21,6 +21,7 @@ namespace HybridPBR {
         // Key: Mesh ID (或指针), Value: GpuMesh
         // 注意：实际项目中应该由 ResourceManager 管理
         std::unordered_map<const void*, std::unique_ptr<GpuMesh>> m_gpuMeshCache;
+        std::shared_ptr<Material> m_defaultMaterial;
         
         // 新增：全局 UBO
         BufferHandle m_globalUBO = BufferHandle::Invalid();

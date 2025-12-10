@@ -40,8 +40,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "C:/Program Files/CMake/share/cmake-3.30/Modules/FindPackageHandleStandardArgs.cmake"
   "C:/Program Files/CMake/share/cmake-3.30/Modules/FindPackageMessage.cmake"
   "C:/Program Files/CMake/share/cmake-3.30/Modules/FindPkgConfig.cmake"
-  "C:/Program Files/CMake/share/cmake-3.30/Modules/FindPython.cmake"
-  "C:/Program Files/CMake/share/cmake-3.30/Modules/FindPython/Support.cmake"
   "C:/Program Files/CMake/share/cmake-3.30/Modules/FindThreads.cmake"
   "C:/Program Files/CMake/share/cmake-3.30/Modules/GNUInstallDirs.cmake"
   "C:/Program Files/CMake/share/cmake-3.30/Modules/Internal/CheckCompilerFlag.cmake"
@@ -74,7 +72,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "_deps/assimp-src/contrib/zlib/zlib.pc.cmakein"
   "_deps/assimp-src/include/assimp/config.h.in"
   "_deps/assimp-src/revision.h.in"
-  "_deps/glad-src/CMakeLists.txt"
   "_deps/glfw-src/CMakeLists.txt"
   "_deps/glfw-src/cmake_uninstall.cmake.in"
   "_deps/glfw-src/examples/CMakeLists.txt"
@@ -100,7 +97,6 @@ set(CMAKE_MAKEFILE_OUTPUTS
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
   "_deps/glfw-subbuild/CMakeLists.txt"
-  "_deps/glad-subbuild/CMakeLists.txt"
   "_deps/glm-subbuild/CMakeLists.txt"
   "_deps/stb-subbuild/CMakeLists.txt"
   "_deps/imgui-subbuild/CMakeLists.txt"
@@ -116,7 +112,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "_deps/glfw-build/src/CMakeFiles/CMakeDirectoryInformation.cmake"
   "_deps/glfw-build/examples/CMakeFiles/CMakeDirectoryInformation.cmake"
   "_deps/glfw-build/tests/CMakeFiles/CMakeDirectoryInformation.cmake"
-  "_deps/glad-build/CMakeFiles/CMakeDirectoryInformation.cmake"
   "_deps/glm-build/CMakeFiles/CMakeDirectoryInformation.cmake"
   "_deps/glm-build/glm/CMakeFiles/CMakeDirectoryInformation.cmake"
   "_deps/nlohmann_json-build/nlohmann_json.pc"
@@ -137,6 +132,7 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
+  "CMakeFiles/glad.dir/DependInfo.cmake"
   "CMakeFiles/HybridPBR.dir/DependInfo.cmake"
   "_deps/glfw-build/CMakeFiles/uninstall.dir/DependInfo.cmake"
   "_deps/glfw-build/src/CMakeFiles/update_mappings.dir/DependInfo.cmake"
@@ -170,8 +166,6 @@ set(CMAKE_DEPEND_INFO_FILES
   "_deps/glfw-build/tests/CMakeFiles/title.dir/DependInfo.cmake"
   "_deps/glfw-build/tests/CMakeFiles/triangle-vulkan.dir/DependInfo.cmake"
   "_deps/glfw-build/tests/CMakeFiles/windows.dir/DependInfo.cmake"
-  "_deps/glad-build/CMakeFiles/glad-generate-files.dir/DependInfo.cmake"
-  "_deps/glad-build/CMakeFiles/glad.dir/DependInfo.cmake"
   "_deps/assimp-build/contrib/zlib/CMakeFiles/zlibstatic.dir/DependInfo.cmake"
   "_deps/assimp-build/code/CMakeFiles/assimp.dir/DependInfo.cmake"
   )

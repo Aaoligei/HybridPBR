@@ -210,26 +210,23 @@ namespace HybridPBR {
         ImGui::Text("Material: %s", material->GetName().c_str());
         ImGui::Separator();
 
-        MaterialProperties& props = material->GetProperties();
-        ImGui::Text("Shader Name: %s", material->GetCustomShaderName().c_str());
-        ImGui::Text("Shader Type: %s", material->GetShaderTypeString().c_str());
-
+        auto& props = material->GetConstants();
 
         // Albedo color picker
         ImGui::Text("Albedo Color");
-        ImGui::ColorEdit4("##Albedo", glm::value_ptr(props.albedo));
+        ImGui::ColorEdit4("##Albedo", glm::value_ptr(props.albedoFactor));
 
         // Metallic slider
         ImGui::Text("Metallic");
-        ImGui::SliderFloat("##Metallic", &props.metallic, 0.0f, 1.0f);
+        ImGui::SliderFloat("##Metallic", &props.metallicFactor, 0.0f, 1.0f);
 
         // Roughness slider
         ImGui::Text("Roughness");
-        ImGui::SliderFloat("##Roughness", &props.roughness, 0.0f, 1.0f);
+        ImGui::SliderFloat("##Roughness", &props.roughnessFactor, 0.0f, 1.0f);
 
         // Ambient Occlusion slider
         ImGui::Text("Ambient Occlusion");
-        ImGui::SliderFloat("##AO", &props.ambientOcclusion, 0.0f, 1.0f);
+        ImGui::SliderFloat("##AO", &props.aoFactor, 0.0f, 1.0f);
 
         // Normal Scale slider
         ImGui::Text("Normal Scale");
@@ -240,52 +237,11 @@ namespace HybridPBR {
         ImGui::SliderFloat("##EmissiveIntensity", &props.emissiveIntensity, 0.0f, 5.0f);
 
         ImGui::Text("Emissive Color");
-        ImGui::ColorEdit3("##EmissiveColor", glm::value_ptr(props.emissiveColor));
-
-        // Texture scale and offset
-        ImGui::Text("Texture Scale");
-        ImGui::DragFloat2("##TextureScale", glm::value_ptr(props.textureScale), 0.1f);
-
-        ImGui::Text("Texture Offset");
-        ImGui::DragFloat2("##TextureOffset", glm::value_ptr(props.textureOffset), 0.1f);
+        ImGui::ColorEdit3("##EmissiveColor", glm::value_ptr(props.emissiveFactor));
 
         ImGui::Separator();
         ImGui::Text("Textures:");
         ImGui::Indent();
-
-        // 显示各种类型的纹理
-        const char* textureTypes[] = { 
-            "Diffuse", "Specular", "Normal", "Height", "Roughness", 
-            "Metallic", "Ambient Occlusion", "Emissive", "HDR", "Cubemap" 
-        };
-
-        for (int i = 0; i < static_cast<int>(TextureType::CUBEMAP) + 1; ++i) {
-            TextureType type = static_cast<TextureType>(i);
-            std::shared_ptr<Texture> texture = material->GetTexture(type);
-            
-            ImGui::Text("%s: ", textureTypes[i]);
-            ImGui::SameLine();
-            
-            if (texture) {
-                ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Assigned (%dx%d)", 
-                                 texture->GetWidth(), texture->GetHeight());
-                
-                // 添加纹理预览按钮
-                ImGui::SameLine();
-                std::string buttonLabel = std::string("Preview##") + textureTypes[i] + std::to_string(i);
-                if (ImGui::SmallButton(buttonLabel.c_str())) {
-                    // 纹理预览功能可以在这里实现
-                    // 当前只是占位符，后续可以添加实际的纹理查看器
-                }
-                
-                // 显示纹理文件路径
-                if (!texture->GetFilePath().empty()) {
-                    ImGui::Text("    Path: %s", texture->GetFilePath().c_str());
-                }
-            } else {
-                ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "None");
-            }
-        }
 
         ImGui::Unindent();
     }

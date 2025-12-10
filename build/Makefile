@@ -1025,30 +1025,6 @@ src/pbr/BRDF.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/pbr/BRDF.cpp.s
 .PHONY : src/pbr/BRDF.cpp.s
 
-src/pbr/IBL.obj: src/pbr/IBL.cpp.obj
-.PHONY : src/pbr/IBL.obj
-
-# target to build an object file
-src/pbr/IBL.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/pbr/IBL.cpp.obj
-.PHONY : src/pbr/IBL.cpp.obj
-
-src/pbr/IBL.i: src/pbr/IBL.cpp.i
-.PHONY : src/pbr/IBL.i
-
-# target to preprocess a source file
-src/pbr/IBL.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/pbr/IBL.cpp.i
-.PHONY : src/pbr/IBL.cpp.i
-
-src/pbr/IBL.s: src/pbr/IBL.cpp.s
-.PHONY : src/pbr/IBL.s
-
-# target to generate assembly for a file
-src/pbr/IBL.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/pbr/IBL.cpp.s
-.PHONY : src/pbr/IBL.cpp.s
-
 src/pbr/PBRMaterial.obj: src/pbr/PBRMaterial.cpp.obj
 .PHONY : src/pbr/PBRMaterial.obj
 
@@ -1072,6 +1048,30 @@ src/pbr/PBRMaterial.s: src/pbr/PBRMaterial.cpp.s
 src/pbr/PBRMaterial.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/pbr/PBRMaterial.cpp.s
 .PHONY : src/pbr/PBRMaterial.cpp.s
+
+src/rendering/GpuMesh.obj: src/rendering/GpuMesh.cpp.obj
+.PHONY : src/rendering/GpuMesh.obj
+
+# target to build an object file
+src/rendering/GpuMesh.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/GpuMesh.cpp.obj
+.PHONY : src/rendering/GpuMesh.cpp.obj
+
+src/rendering/GpuMesh.i: src/rendering/GpuMesh.cpp.i
+.PHONY : src/rendering/GpuMesh.i
+
+# target to preprocess a source file
+src/rendering/GpuMesh.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/GpuMesh.cpp.i
+.PHONY : src/rendering/GpuMesh.cpp.i
+
+src/rendering/GpuMesh.s: src/rendering/GpuMesh.cpp.s
+.PHONY : src/rendering/GpuMesh.s
+
+# target to generate assembly for a file
+src/rendering/GpuMesh.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/GpuMesh.cpp.s
+.PHONY : src/rendering/GpuMesh.cpp.s
 
 src/rendering/HybridRenderer.obj: src/rendering/HybridRenderer.cpp.obj
 .PHONY : src/rendering/HybridRenderer.obj
@@ -1313,101 +1313,29 @@ src/rendering/common/Texture.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/Texture.cpp.s
 .PHONY : src/rendering/common/Texture.cpp.s
 
-src/rendering/common/UniformBuffer.obj: src/rendering/common/UniformBuffer.cpp.obj
-.PHONY : src/rendering/common/UniformBuffer.obj
+src/rendering/passes/GeometryPass.obj: src/rendering/passes/GeometryPass.cpp.obj
+.PHONY : src/rendering/passes/GeometryPass.obj
 
 # target to build an object file
-src/rendering/common/UniformBuffer.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/UniformBuffer.cpp.obj
-.PHONY : src/rendering/common/UniformBuffer.cpp.obj
+src/rendering/passes/GeometryPass.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/passes/GeometryPass.cpp.obj
+.PHONY : src/rendering/passes/GeometryPass.cpp.obj
 
-src/rendering/common/UniformBuffer.i: src/rendering/common/UniformBuffer.cpp.i
-.PHONY : src/rendering/common/UniformBuffer.i
-
-# target to preprocess a source file
-src/rendering/common/UniformBuffer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/UniformBuffer.cpp.i
-.PHONY : src/rendering/common/UniformBuffer.cpp.i
-
-src/rendering/common/UniformBuffer.s: src/rendering/common/UniformBuffer.cpp.s
-.PHONY : src/rendering/common/UniformBuffer.s
-
-# target to generate assembly for a file
-src/rendering/common/UniformBuffer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/common/UniformBuffer.cpp.s
-.PHONY : src/rendering/common/UniformBuffer.cpp.s
-
-src/rendering/deferred/DeferredRenderer.obj: src/rendering/deferred/DeferredRenderer.cpp.obj
-.PHONY : src/rendering/deferred/DeferredRenderer.obj
-
-# target to build an object file
-src/rendering/deferred/DeferredRenderer.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/deferred/DeferredRenderer.cpp.obj
-.PHONY : src/rendering/deferred/DeferredRenderer.cpp.obj
-
-src/rendering/deferred/DeferredRenderer.i: src/rendering/deferred/DeferredRenderer.cpp.i
-.PHONY : src/rendering/deferred/DeferredRenderer.i
+src/rendering/passes/GeometryPass.i: src/rendering/passes/GeometryPass.cpp.i
+.PHONY : src/rendering/passes/GeometryPass.i
 
 # target to preprocess a source file
-src/rendering/deferred/DeferredRenderer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/deferred/DeferredRenderer.cpp.i
-.PHONY : src/rendering/deferred/DeferredRenderer.cpp.i
+src/rendering/passes/GeometryPass.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/passes/GeometryPass.cpp.i
+.PHONY : src/rendering/passes/GeometryPass.cpp.i
 
-src/rendering/deferred/DeferredRenderer.s: src/rendering/deferred/DeferredRenderer.cpp.s
-.PHONY : src/rendering/deferred/DeferredRenderer.s
-
-# target to generate assembly for a file
-src/rendering/deferred/DeferredRenderer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/deferred/DeferredRenderer.cpp.s
-.PHONY : src/rendering/deferred/DeferredRenderer.cpp.s
-
-src/rendering/deferred/GBuffer.obj: src/rendering/deferred/GBuffer.cpp.obj
-.PHONY : src/rendering/deferred/GBuffer.obj
-
-# target to build an object file
-src/rendering/deferred/GBuffer.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/deferred/GBuffer.cpp.obj
-.PHONY : src/rendering/deferred/GBuffer.cpp.obj
-
-src/rendering/deferred/GBuffer.i: src/rendering/deferred/GBuffer.cpp.i
-.PHONY : src/rendering/deferred/GBuffer.i
-
-# target to preprocess a source file
-src/rendering/deferred/GBuffer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/deferred/GBuffer.cpp.i
-.PHONY : src/rendering/deferred/GBuffer.cpp.i
-
-src/rendering/deferred/GBuffer.s: src/rendering/deferred/GBuffer.cpp.s
-.PHONY : src/rendering/deferred/GBuffer.s
+src/rendering/passes/GeometryPass.s: src/rendering/passes/GeometryPass.cpp.s
+.PHONY : src/rendering/passes/GeometryPass.s
 
 # target to generate assembly for a file
-src/rendering/deferred/GBuffer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/deferred/GBuffer.cpp.s
-.PHONY : src/rendering/deferred/GBuffer.cpp.s
-
-src/rendering/postprocess/SSAO.obj: src/rendering/postprocess/SSAO.cpp.obj
-.PHONY : src/rendering/postprocess/SSAO.obj
-
-# target to build an object file
-src/rendering/postprocess/SSAO.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/postprocess/SSAO.cpp.obj
-.PHONY : src/rendering/postprocess/SSAO.cpp.obj
-
-src/rendering/postprocess/SSAO.i: src/rendering/postprocess/SSAO.cpp.i
-.PHONY : src/rendering/postprocess/SSAO.i
-
-# target to preprocess a source file
-src/rendering/postprocess/SSAO.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/postprocess/SSAO.cpp.i
-.PHONY : src/rendering/postprocess/SSAO.cpp.i
-
-src/rendering/postprocess/SSAO.s: src/rendering/postprocess/SSAO.cpp.s
-.PHONY : src/rendering/postprocess/SSAO.s
-
-# target to generate assembly for a file
-src/rendering/postprocess/SSAO.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/postprocess/SSAO.cpp.s
-.PHONY : src/rendering/postprocess/SSAO.cpp.s
+src/rendering/passes/GeometryPass.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/passes/GeometryPass.cpp.s
+.PHONY : src/rendering/passes/GeometryPass.cpp.s
 
 src/rendering/rasterization/Camera.obj: src/rendering/rasterization/Camera.cpp.obj
 .PHONY : src/rendering/rasterization/Camera.obj
@@ -1457,197 +1385,29 @@ src/rendering/rasterization/CameraController.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/CameraController.cpp.s
 .PHONY : src/rendering/rasterization/CameraController.cpp.s
 
-src/rendering/rasterization/Mesh.obj: src/rendering/rasterization/Mesh.cpp.obj
-.PHONY : src/rendering/rasterization/Mesh.obj
+src/resources/Mesh.obj: src/resources/Mesh.cpp.obj
+.PHONY : src/resources/Mesh.obj
 
 # target to build an object file
-src/rendering/rasterization/Mesh.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Mesh.cpp.obj
-.PHONY : src/rendering/rasterization/Mesh.cpp.obj
+src/resources/Mesh.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/resources/Mesh.cpp.obj
+.PHONY : src/resources/Mesh.cpp.obj
 
-src/rendering/rasterization/Mesh.i: src/rendering/rasterization/Mesh.cpp.i
-.PHONY : src/rendering/rasterization/Mesh.i
-
-# target to preprocess a source file
-src/rendering/rasterization/Mesh.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Mesh.cpp.i
-.PHONY : src/rendering/rasterization/Mesh.cpp.i
-
-src/rendering/rasterization/Mesh.s: src/rendering/rasterization/Mesh.cpp.s
-.PHONY : src/rendering/rasterization/Mesh.s
-
-# target to generate assembly for a file
-src/rendering/rasterization/Mesh.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Mesh.cpp.s
-.PHONY : src/rendering/rasterization/Mesh.cpp.s
-
-src/rendering/rasterization/Rasterizer.obj: src/rendering/rasterization/Rasterizer.cpp.obj
-.PHONY : src/rendering/rasterization/Rasterizer.obj
-
-# target to build an object file
-src/rendering/rasterization/Rasterizer.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Rasterizer.cpp.obj
-.PHONY : src/rendering/rasterization/Rasterizer.cpp.obj
-
-src/rendering/rasterization/Rasterizer.i: src/rendering/rasterization/Rasterizer.cpp.i
-.PHONY : src/rendering/rasterization/Rasterizer.i
+src/resources/Mesh.i: src/resources/Mesh.cpp.i
+.PHONY : src/resources/Mesh.i
 
 # target to preprocess a source file
-src/rendering/rasterization/Rasterizer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Rasterizer.cpp.i
-.PHONY : src/rendering/rasterization/Rasterizer.cpp.i
+src/resources/Mesh.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/resources/Mesh.cpp.i
+.PHONY : src/resources/Mesh.cpp.i
 
-src/rendering/rasterization/Rasterizer.s: src/rendering/rasterization/Rasterizer.cpp.s
-.PHONY : src/rendering/rasterization/Rasterizer.s
-
-# target to generate assembly for a file
-src/rendering/rasterization/Rasterizer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Rasterizer.cpp.s
-.PHONY : src/rendering/rasterization/Rasterizer.cpp.s
-
-src/rendering/rasterization/RenderPass.obj: src/rendering/rasterization/RenderPass.cpp.obj
-.PHONY : src/rendering/rasterization/RenderPass.obj
-
-# target to build an object file
-src/rendering/rasterization/RenderPass.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.obj
-.PHONY : src/rendering/rasterization/RenderPass.cpp.obj
-
-src/rendering/rasterization/RenderPass.i: src/rendering/rasterization/RenderPass.cpp.i
-.PHONY : src/rendering/rasterization/RenderPass.i
-
-# target to preprocess a source file
-src/rendering/rasterization/RenderPass.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.i
-.PHONY : src/rendering/rasterization/RenderPass.cpp.i
-
-src/rendering/rasterization/RenderPass.s: src/rendering/rasterization/RenderPass.cpp.s
-.PHONY : src/rendering/rasterization/RenderPass.s
+src/resources/Mesh.s: src/resources/Mesh.cpp.s
+.PHONY : src/resources/Mesh.s
 
 # target to generate assembly for a file
-src/rendering/rasterization/RenderPass.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.s
-.PHONY : src/rendering/rasterization/RenderPass.cpp.s
-
-src/rendering/raytracing/BVH.obj: src/rendering/raytracing/BVH.cpp.obj
-.PHONY : src/rendering/raytracing/BVH.obj
-
-# target to build an object file
-src/rendering/raytracing/BVH.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.obj
-.PHONY : src/rendering/raytracing/BVH.cpp.obj
-
-src/rendering/raytracing/BVH.i: src/rendering/raytracing/BVH.cpp.i
-.PHONY : src/rendering/raytracing/BVH.i
-
-# target to preprocess a source file
-src/rendering/raytracing/BVH.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.i
-.PHONY : src/rendering/raytracing/BVH.cpp.i
-
-src/rendering/raytracing/BVH.s: src/rendering/raytracing/BVH.cpp.s
-.PHONY : src/rendering/raytracing/BVH.s
-
-# target to generate assembly for a file
-src/rendering/raytracing/BVH.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.s
-.PHONY : src/rendering/raytracing/BVH.cpp.s
-
-src/rendering/raytracing/ComputeBuffer.obj: src/rendering/raytracing/ComputeBuffer.cpp.obj
-.PHONY : src/rendering/raytracing/ComputeBuffer.obj
-
-# target to build an object file
-src/rendering/raytracing/ComputeBuffer.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.obj
-.PHONY : src/rendering/raytracing/ComputeBuffer.cpp.obj
-
-src/rendering/raytracing/ComputeBuffer.i: src/rendering/raytracing/ComputeBuffer.cpp.i
-.PHONY : src/rendering/raytracing/ComputeBuffer.i
-
-# target to preprocess a source file
-src/rendering/raytracing/ComputeBuffer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.i
-.PHONY : src/rendering/raytracing/ComputeBuffer.cpp.i
-
-src/rendering/raytracing/ComputeBuffer.s: src/rendering/raytracing/ComputeBuffer.cpp.s
-.PHONY : src/rendering/raytracing/ComputeBuffer.s
-
-# target to generate assembly for a file
-src/rendering/raytracing/ComputeBuffer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.s
-.PHONY : src/rendering/raytracing/ComputeBuffer.cpp.s
-
-src/rendering/raytracing/ComputeShader.obj: src/rendering/raytracing/ComputeShader.cpp.obj
-.PHONY : src/rendering/raytracing/ComputeShader.obj
-
-# target to build an object file
-src/rendering/raytracing/ComputeShader.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.obj
-.PHONY : src/rendering/raytracing/ComputeShader.cpp.obj
-
-src/rendering/raytracing/ComputeShader.i: src/rendering/raytracing/ComputeShader.cpp.i
-.PHONY : src/rendering/raytracing/ComputeShader.i
-
-# target to preprocess a source file
-src/rendering/raytracing/ComputeShader.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.i
-.PHONY : src/rendering/raytracing/ComputeShader.cpp.i
-
-src/rendering/raytracing/ComputeShader.s: src/rendering/raytracing/ComputeShader.cpp.s
-.PHONY : src/rendering/raytracing/ComputeShader.s
-
-# target to generate assembly for a file
-src/rendering/raytracing/ComputeShader.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeShader.cpp.s
-.PHONY : src/rendering/raytracing/ComputeShader.cpp.s
-
-src/rendering/raytracing/Denoiser.obj: src/rendering/raytracing/Denoiser.cpp.obj
-.PHONY : src/rendering/raytracing/Denoiser.obj
-
-# target to build an object file
-src/rendering/raytracing/Denoiser.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Denoiser.cpp.obj
-.PHONY : src/rendering/raytracing/Denoiser.cpp.obj
-
-src/rendering/raytracing/Denoiser.i: src/rendering/raytracing/Denoiser.cpp.i
-.PHONY : src/rendering/raytracing/Denoiser.i
-
-# target to preprocess a source file
-src/rendering/raytracing/Denoiser.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Denoiser.cpp.i
-.PHONY : src/rendering/raytracing/Denoiser.cpp.i
-
-src/rendering/raytracing/Denoiser.s: src/rendering/raytracing/Denoiser.cpp.s
-.PHONY : src/rendering/raytracing/Denoiser.s
-
-# target to generate assembly for a file
-src/rendering/raytracing/Denoiser.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/Denoiser.cpp.s
-.PHONY : src/rendering/raytracing/Denoiser.cpp.s
-
-src/rendering/raytracing/RayTracer.obj: src/rendering/raytracing/RayTracer.cpp.obj
-.PHONY : src/rendering/raytracing/RayTracer.obj
-
-# target to build an object file
-src/rendering/raytracing/RayTracer.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/RayTracer.cpp.obj
-.PHONY : src/rendering/raytracing/RayTracer.cpp.obj
-
-src/rendering/raytracing/RayTracer.i: src/rendering/raytracing/RayTracer.cpp.i
-.PHONY : src/rendering/raytracing/RayTracer.i
-
-# target to preprocess a source file
-src/rendering/raytracing/RayTracer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/RayTracer.cpp.i
-.PHONY : src/rendering/raytracing/RayTracer.cpp.i
-
-src/rendering/raytracing/RayTracer.s: src/rendering/raytracing/RayTracer.cpp.s
-.PHONY : src/rendering/raytracing/RayTracer.s
-
-# target to generate assembly for a file
-src/rendering/raytracing/RayTracer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/raytracing/RayTracer.cpp.s
-.PHONY : src/rendering/raytracing/RayTracer.cpp.s
+src/resources/Mesh.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/resources/Mesh.cpp.s
+.PHONY : src/resources/Mesh.cpp.s
 
 src/resources/ModelLoader.obj: src/resources/ModelLoader.cpp.obj
 .PHONY : src/resources/ModelLoader.obj
@@ -1696,6 +1456,54 @@ src/resources/ResourceManager.s: src/resources/ResourceManager.cpp.s
 src/resources/ResourceManager.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/resources/ResourceManager.cpp.s
 .PHONY : src/resources/ResourceManager.cpp.s
+
+src/rhi/opengl/GL_CommandList.obj: src/rhi/opengl/GL_CommandList.cpp.obj
+.PHONY : src/rhi/opengl/GL_CommandList.obj
+
+# target to build an object file
+src/rhi/opengl/GL_CommandList.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_CommandList.cpp.obj
+.PHONY : src/rhi/opengl/GL_CommandList.cpp.obj
+
+src/rhi/opengl/GL_CommandList.i: src/rhi/opengl/GL_CommandList.cpp.i
+.PHONY : src/rhi/opengl/GL_CommandList.i
+
+# target to preprocess a source file
+src/rhi/opengl/GL_CommandList.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_CommandList.cpp.i
+.PHONY : src/rhi/opengl/GL_CommandList.cpp.i
+
+src/rhi/opengl/GL_CommandList.s: src/rhi/opengl/GL_CommandList.cpp.s
+.PHONY : src/rhi/opengl/GL_CommandList.s
+
+# target to generate assembly for a file
+src/rhi/opengl/GL_CommandList.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_CommandList.cpp.s
+.PHONY : src/rhi/opengl/GL_CommandList.cpp.s
+
+src/rhi/opengl/GL_Device.obj: src/rhi/opengl/GL_Device.cpp.obj
+.PHONY : src/rhi/opengl/GL_Device.obj
+
+# target to build an object file
+src/rhi/opengl/GL_Device.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_Device.cpp.obj
+.PHONY : src/rhi/opengl/GL_Device.cpp.obj
+
+src/rhi/opengl/GL_Device.i: src/rhi/opengl/GL_Device.cpp.i
+.PHONY : src/rhi/opengl/GL_Device.i
+
+# target to preprocess a source file
+src/rhi/opengl/GL_Device.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_Device.cpp.i
+.PHONY : src/rhi/opengl/GL_Device.cpp.i
+
+src/rhi/opengl/GL_Device.s: src/rhi/opengl/GL_Device.cpp.s
+.PHONY : src/rhi/opengl/GL_Device.s
+
+# target to generate assembly for a file
+src/rhi/opengl/GL_Device.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rhi/opengl/GL_Device.cpp.s
+.PHONY : src/rhi/opengl/GL_Device.cpp.s
 
 src/scene/Scene.obj: src/scene/Scene.cpp.obj
 .PHONY : src/scene/Scene.obj
@@ -1938,12 +1746,12 @@ help:
 	@echo ... src/pbr/BRDF.obj
 	@echo ... src/pbr/BRDF.i
 	@echo ... src/pbr/BRDF.s
-	@echo ... src/pbr/IBL.obj
-	@echo ... src/pbr/IBL.i
-	@echo ... src/pbr/IBL.s
 	@echo ... src/pbr/PBRMaterial.obj
 	@echo ... src/pbr/PBRMaterial.i
 	@echo ... src/pbr/PBRMaterial.s
+	@echo ... src/rendering/GpuMesh.obj
+	@echo ... src/rendering/GpuMesh.i
+	@echo ... src/rendering/GpuMesh.s
 	@echo ... src/rendering/HybridRenderer.obj
 	@echo ... src/rendering/HybridRenderer.i
 	@echo ... src/rendering/HybridRenderer.s
@@ -1974,54 +1782,30 @@ help:
 	@echo ... src/rendering/common/Texture.obj
 	@echo ... src/rendering/common/Texture.i
 	@echo ... src/rendering/common/Texture.s
-	@echo ... src/rendering/common/UniformBuffer.obj
-	@echo ... src/rendering/common/UniformBuffer.i
-	@echo ... src/rendering/common/UniformBuffer.s
-	@echo ... src/rendering/deferred/DeferredRenderer.obj
-	@echo ... src/rendering/deferred/DeferredRenderer.i
-	@echo ... src/rendering/deferred/DeferredRenderer.s
-	@echo ... src/rendering/deferred/GBuffer.obj
-	@echo ... src/rendering/deferred/GBuffer.i
-	@echo ... src/rendering/deferred/GBuffer.s
-	@echo ... src/rendering/postprocess/SSAO.obj
-	@echo ... src/rendering/postprocess/SSAO.i
-	@echo ... src/rendering/postprocess/SSAO.s
+	@echo ... src/rendering/passes/GeometryPass.obj
+	@echo ... src/rendering/passes/GeometryPass.i
+	@echo ... src/rendering/passes/GeometryPass.s
 	@echo ... src/rendering/rasterization/Camera.obj
 	@echo ... src/rendering/rasterization/Camera.i
 	@echo ... src/rendering/rasterization/Camera.s
 	@echo ... src/rendering/rasterization/CameraController.obj
 	@echo ... src/rendering/rasterization/CameraController.i
 	@echo ... src/rendering/rasterization/CameraController.s
-	@echo ... src/rendering/rasterization/Mesh.obj
-	@echo ... src/rendering/rasterization/Mesh.i
-	@echo ... src/rendering/rasterization/Mesh.s
-	@echo ... src/rendering/rasterization/Rasterizer.obj
-	@echo ... src/rendering/rasterization/Rasterizer.i
-	@echo ... src/rendering/rasterization/Rasterizer.s
-	@echo ... src/rendering/rasterization/RenderPass.obj
-	@echo ... src/rendering/rasterization/RenderPass.i
-	@echo ... src/rendering/rasterization/RenderPass.s
-	@echo ... src/rendering/raytracing/BVH.obj
-	@echo ... src/rendering/raytracing/BVH.i
-	@echo ... src/rendering/raytracing/BVH.s
-	@echo ... src/rendering/raytracing/ComputeBuffer.obj
-	@echo ... src/rendering/raytracing/ComputeBuffer.i
-	@echo ... src/rendering/raytracing/ComputeBuffer.s
-	@echo ... src/rendering/raytracing/ComputeShader.obj
-	@echo ... src/rendering/raytracing/ComputeShader.i
-	@echo ... src/rendering/raytracing/ComputeShader.s
-	@echo ... src/rendering/raytracing/Denoiser.obj
-	@echo ... src/rendering/raytracing/Denoiser.i
-	@echo ... src/rendering/raytracing/Denoiser.s
-	@echo ... src/rendering/raytracing/RayTracer.obj
-	@echo ... src/rendering/raytracing/RayTracer.i
-	@echo ... src/rendering/raytracing/RayTracer.s
+	@echo ... src/resources/Mesh.obj
+	@echo ... src/resources/Mesh.i
+	@echo ... src/resources/Mesh.s
 	@echo ... src/resources/ModelLoader.obj
 	@echo ... src/resources/ModelLoader.i
 	@echo ... src/resources/ModelLoader.s
 	@echo ... src/resources/ResourceManager.obj
 	@echo ... src/resources/ResourceManager.i
 	@echo ... src/resources/ResourceManager.s
+	@echo ... src/rhi/opengl/GL_CommandList.obj
+	@echo ... src/rhi/opengl/GL_CommandList.i
+	@echo ... src/rhi/opengl/GL_CommandList.s
+	@echo ... src/rhi/opengl/GL_Device.obj
+	@echo ... src/rhi/opengl/GL_Device.i
+	@echo ... src/rhi/opengl/GL_Device.s
 	@echo ... src/scene/Scene.obj
 	@echo ... src/scene/Scene.i
 	@echo ... src/scene/Scene.s

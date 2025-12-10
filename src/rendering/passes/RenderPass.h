@@ -1,0 +1,58 @@
+#pragma once
+#include "rhi/RHI_CommandList.h"
+#include "rhi/RHI_Device.h"
+#include "scene/Scene.h" 
+
+namespace HybridPBR {
+
+    // 必须与 Shader 中的 layout(std140) uniform CameraData 严格一致
+    struct CameraBlock {
+        glm::mat4 view;       // 64 bytes
+        glm::mat4 projection; // 64 bytes
+        glm::vec3 viewPos;    // 12 bytes
+        float padding;        // 4 bytes (补齐 16 字节对齐)
+    };
+
+    struct GPULight {
+        glm::vec3 position;  float pad0;
+        glm::vec3 direction; float pad1;
+        glm::vec3 color;     float intensity;
+        float range;
+        float constant;
+        float linear;
+        float quadratic;
+        float innerCutoff;
+        float outerCutoff;
+        int type;
+        float pad2, pad3, pad4; // 补齐到 16 字节边界
+    };
+
+    struct LightBlock {
+        int lightCount;
+        int pad0, pad1, pad2; // 补齐
+        GPULight lights[16];
+    };
+
+    // 渲染上下文：传递每一帧所需的全局数据
+    struct RenderContext {
+        RHI_Device* device;
+        std::shared_ptr<RHI_CommandList> cmdList;
+        const Scene* scene;
+        
+        // 全局资源映射 (临时方案：用于通过 Mesh 找 GpuMesh)
+        // 在 ECS 架构中，这通常是 Component
+        void* resourceCache = nullptr; 
+    };
+
+    class RenderPass {
+    public:
+        virtual ~RenderPass() = default;
+
+        virtual void Initialize(RHI_Device* device) = 0;
+        virtual void Execute(const RenderContext& context) = 0;
+        virtual void Cleanup() = 0;
+        
+        virtual std::string GetName() const = 0;
+    };
+
+} // namespace HybridPBR

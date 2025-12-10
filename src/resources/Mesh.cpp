@@ -1,39 +1,23 @@
 #include "Mesh.h"
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <cfloat>
-#include "utils/Logger.h"
-
+#include <algorithm> // for std::min, std::max
+#include <cmath>     // for sin, cos
 namespace HybridPBR {
 
     Mesh::Mesh(const std::string& meshName)
-        : name(meshName), VAO(0), VBO(0), EBO(0), buffersInitialized(false) {
+        : name(meshName){
         minBounds = glm::vec3(FLT_MAX);
         maxBounds = glm::vec3(-FLT_MAX);
     }
 
-    Mesh::~Mesh() {
-        if (VAO) {
-            glDeleteVertexArrays(1, &VAO);
-        }
-        if (VBO) {
-            glDeleteBuffers(1, &VBO);
-        }
-        if (EBO) {
-            glDeleteBuffers(1, &EBO);
-        }
-    }
 
     void Mesh::SetVertices(const std::vector<Vertex>& newVertices) {
         vertices = newVertices;
         UpdateBounds();
-        buffersInitialized = false;
     }
 
     void Mesh::SetIndices(const std::vector<uint32_t>& newIndices) {
         indices = newIndices;
-        buffersInitialized = false;
     }
 
     void Mesh::CalculateNormals() {
@@ -58,7 +42,6 @@ namespace HybridPBR {
             vertex.normal = glm::normalize(vertex.normal);
         }
 
-        buffersInitialized = false;
     }
 
     void Mesh::CalculateTangents() {
@@ -126,7 +109,6 @@ namespace HybridPBR {
             vertex.bitangent = glm::normalize(glm::cross(vertex.normal, vertex.tangent));
         }
 
-        buffersInitialized = false;
     }
 
     void Mesh::GeneratePlane(float width, float height, uint32_t subdivisions) {
@@ -181,7 +163,6 @@ namespace HybridPBR {
 
         CalculateTangents();
         UpdateBounds();
-        buffersInitialized = false;
     }
 
     void Mesh::GenerateCube(float size) {
@@ -251,7 +232,6 @@ namespace HybridPBR {
 
         CalculateTangents();
         UpdateBounds();
-        buffersInitialized = false;
     }
 
     void Mesh::GenerateSphere(float radius, uint32_t segments) {
@@ -300,106 +280,7 @@ namespace HybridPBR {
         //CalculateNormals();
         CalculateTangents();
         UpdateBounds();
-        buffersInitialized = false;
-    }
 
-    void Mesh::Render() const {
-        if (!IsValid()) return;
-
-        if (!buffersInitialized) {
-            const_cast<Mesh*>(this)->SetupBuffers();
-        }
-
-        glBindVertexArray(VAO);
-        
-        if (HasIndices()) {
-            glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0);
-        } else {
-            glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
-        }
-        
-        glBindVertexArray(0);
-    }
-
-    void Mesh::RenderInstanced(uint32_t instanceCount) const {
-        if (!IsValid() || instanceCount == 0) return;
-
-        if (!buffersInitialized) {
-            const_cast<Mesh*>(this)->SetupBuffers();
-        }
-
-        glBindVertexArray(VAO);
-        
-        if (HasIndices()) {
-            glDrawElementsInstanced(GL_TRIANGLES, static_cast<GLsizei>(indices.size()), GL_UNSIGNED_INT, 0, instanceCount);
-        } else {
-            glDrawArraysInstanced(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()), instanceCount);
-        }
-        
-        glBindVertexArray(0);
-    }
-
-    bool Mesh::IsValid() const {
-        return !vertices.empty();
-    }
-
-    float Mesh::GetBoundingRadius() const {
-        glm::vec3 extent = (maxBounds - minBounds) * 0.5f;
-        return glm::length(extent);
-    }
-
-    void Mesh::SetupBuffers() {
-        if (VAO) {
-            glDeleteVertexArrays(1, &VAO);
-        }
-        if (VBO) {
-            glDeleteBuffers(1, &VBO);
-        }
-        if (EBO) {
-            glDeleteBuffers(1, &EBO);
-        }
-
-        glCreateVertexArrays(1, &VAO);
-        glCreateBuffers(1, &VBO);
-        
-        // 上传顶点数据
-        glNamedBufferStorage(VBO, vertices.size() * sizeof(Vertex), vertices.data(), 0);
-        
-        // 位置属性
-        glEnableVertexArrayAttrib(VAO, 0);
-        glVertexArrayAttribFormat(VAO, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
-        glVertexArrayAttribBinding(VAO, 0, 0);
-        
-        // 法线属性
-        glEnableVertexArrayAttrib(VAO, 1);
-        glVertexArrayAttribFormat(VAO, 1, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
-        glVertexArrayAttribBinding(VAO, 1, 0);
-        
-        // 纹理坐标属性
-        glEnableVertexArrayAttrib(VAO, 2);
-        glVertexArrayAttribFormat(VAO, 2, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texcoord));
-        glVertexArrayAttribBinding(VAO, 2, 0);
-        
-        // 切线属性
-        glEnableVertexArrayAttrib(VAO, 3);
-        glVertexArrayAttribFormat(VAO, 3, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, tangent));
-        glVertexArrayAttribBinding(VAO, 3, 0);
-        
-        // 副切线属性
-        glEnableVertexArrayAttrib(VAO, 4);
-        glVertexArrayAttribFormat(VAO, 4, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, bitangent));
-        glVertexArrayAttribBinding(VAO, 4, 0);
-        
-        // 将VBO绑定到VAO的0号绑定点
-        glVertexArrayVertexBuffer(VAO, 0, VBO, 0, sizeof(Vertex));
-
-        if (!indices.empty()) {
-            glCreateBuffers(1, &EBO);
-            glNamedBufferStorage(EBO, indices.size() * sizeof(uint32_t), indices.data(), 0);
-            glVertexArrayElementBuffer(VAO, EBO);
-        }
-
-        buffersInitialized = true;
     }
 
     void Mesh::UpdateBounds() {

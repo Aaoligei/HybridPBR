@@ -1,9 +1,11 @@
 #pragma once
 #include "Ray.h"
-#include "../rasterization/Mesh.h"
+#include "resources/Mesh.h"
+#include "../common/Material.h"
 #include <vector>
 #include <memory>
 #include <algorithm>
+#include <cfloat>
 
 namespace HybridPBR {
 

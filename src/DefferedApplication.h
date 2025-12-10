@@ -8,7 +8,7 @@
 #include "rendering/ShaderManager.h"
 #include "utils/FileIO.h"
 #include "rendering/rasterization/Rasterizer.h"
-#include "rendering/rasterization/RenderPass.h"
+#include "rendering/passes/GeometryPass.h"
 #include "rendering/HybridRenderer.h"
 #include "scene/Scene.h"
 #include "resources/ResourceManager.h"
@@ -18,7 +18,6 @@
 #include "rendering/ImGuiComponentManager.h"
 #include "pbr/IBL.h"
 #include "pbr/PBRMaterial.h"
-#include "rendering/deferred/DeferredRenderer.h"
 #include "rendering/raytracing/RayTracer.h"
 
 class ThreeDApp : public HybridPBR::Application {
@@ -253,16 +252,6 @@ public:
             iblSystem->BindIBLTextures(shader);
         }
 
-        // 创建延迟渲染器
-        deferredRenderer = std::make_unique<HybridPBR::DeferredRenderer>();
-        if (!deferredRenderer->Initialize(GetWindow().GetWidth(), GetWindow().GetHeight())) {
-            return HybridPBR::Result<void>::Failure(
-                HybridPBR::Error(HybridPBR::ErrorType::Initialization, "Failed to initialize deferred renderer"));
-        }
-        deferredRenderer->SetIBLSystem(iblSystem);
-        deferredRenderer->SetSSAOEnabled(false);
-        useDeferredRendering = false;
-
         // 创建光线追踪渲染器
         HybridPBR::RayTracerConfig rtConfig;
         rtConfig.width = GetWindow().GetWidth();
@@ -283,15 +272,15 @@ public:
         iblSystem->BindIBLTexturesRT(rayTracer->GetPathTracingShader());
 
         // 添加天空盒通道 - 确保在最后添加
-        auto skyboxPass = std::make_shared<HybridPBR::SkyboxPass>();
-        auto envMap = iblSystem->GetEnvironmentMap();
-        if (envMap) {
-            skyboxPass->SetSkyboxTexture(envMap);
-            rasterizer->AddRenderPass(skyboxPass);
-            LOG_INFO("Added skybox pass with environment map ID: " + std::to_string(envMap->GetID()));
-        } else {
-            LOG_ERROR("Failed to get environment map from IBL system");
-        }
+        // auto skyboxPass = std::make_shared<HybridPBR::SkyboxPass>();
+        // auto envMap = iblSystem->GetEnvironmentMap();
+        // if (envMap) {
+        //     skyboxPass->SetSkyboxTexture(envMap);
+        //     rasterizer->AddRenderPass(skyboxPass);
+        //     LOG_INFO("Added skybox pass with environment map ID: " + std::to_string(envMap->GetID()));
+        // } else {
+        //     LOG_ERROR("Failed to get environment map from IBL system");
+        // }
         
         // 创建场景
         scene = std::make_unique<HybridPBR::Scene>();
@@ -393,7 +382,7 @@ public:
         } else if (useHybridRendering) {
             // 混合渲染模式
             if (useDeferredRendering) {
-                deferredRenderer->Render(*scene);
+
                 // 可以在这里组合光线追踪结果
             } else {
                 auto renderResult = rasterizer->Render(*scene);
@@ -409,7 +398,7 @@ public:
         } else {
             // 传统渲染模式
             if (useDeferredRendering) {
-                deferredRenderer->Render(*scene);
+
             } else {
                 rasterizer->SetViewport(GetWindow().GetWidth(), GetWindow().GetHeight());
                 auto renderResult = rasterizer->Render(*scene);
@@ -485,7 +474,6 @@ public:
             rayTracer->Shutdown();
         }
         if (useDeferredRendering) {
-            deferredRenderer->Shutdown();
         } else {
             rasterizer->Shutdown();
         }
@@ -495,7 +483,6 @@ private:
     // 渲染器
     std::unique_ptr<HybridPBR::HybridRenderer> hybridRenderer;
     std::unique_ptr<HybridPBR::Rasterizer> rasterizer;
-    std::unique_ptr<HybridPBR::DeferredRenderer> deferredRenderer;
     std::unique_ptr<HybridPBR::RayTracer> rayTracer;
 
     // 场景和相机

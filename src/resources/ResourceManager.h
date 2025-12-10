@@ -7,7 +7,7 @@
 #include <mutex>
 #include "../rendering/common/Texture.h"
 #include "../rendering/common/Material.h"
-#include "../rendering/rasterization/Mesh.h"
+#include "Mesh.h"
 #include "../rendering/Shader.h"
 #include "../core/Result.h"
 #include "../core/ServiceLocator.h"

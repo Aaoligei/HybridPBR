@@ -7,7 +7,6 @@
 #include <memory>
 #include "rendering/common/UniformBuffer.h"
 #include "rendering/interfaces/IRenderer.h"
-#include "rendering/deferred/GBuffer.h"
 #include "pbr/IBL.h"
 
 namespace HybridPBR {
@@ -34,8 +33,6 @@ namespace HybridPBR {
 
         // 混合渲染专用方法
         bool InitializeHybrid();
-        void RenderShadows(std::shared_ptr<GBuffer> gbuffer, const Scene& scene);
-        void RenderReflections(std::shared_ptr<GBuffer> gbuffer, const Scene& scene);
         std::shared_ptr<Texture> GetShadowTexture() const { return rtShadowTexture; }
         std::shared_ptr<Texture> GetReflectionTexture() const { return rtReflectionTexture; }
         

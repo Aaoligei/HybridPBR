@@ -325,8 +325,7 @@ vec3 GetShadingNormal(GPUMaterial mat, HitRecord rec) {
     return normalize(TBN * mapNormal);
 }
 
-// === 核心优化：随机光源采样 (Stochastic Light Sampling) ===
-// 现在只采样一个光源，而不是全部
+
 vec3 CalculateDirectLightStochastic(HitRecord rec, vec3 shadingNormal, vec3 viewDir, SurfaceMaterial surf, inout uint seed) {
     if (lightCount == 0) return vec3(0.0);
     vec3 Lo = vec3(0.0);
@@ -386,9 +385,6 @@ vec3 CalculateDirectLightStochastic(HitRecord rec, vec3 shadingNormal, vec3 view
         vec3 radiance = light.color * light.intensity * attenuation;
         Lo += (kD * surf.albedo * INV_PI + specular) * radiance * NdotL;
 
-        // === 关键：权重补偿 ===
-        // 因为我们只采样了 1/N 个光源，所以结果要乘以 N (即 lightCount)
-        // 蒙特卡洛积分公式：Result = Sample / PDF. 这里 PDF = 1/lightCount.
     }
     return Lo;
 }

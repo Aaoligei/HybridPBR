@@ -3,7 +3,7 @@
 #include <string>
 #include <memory>
 #include <glm/glm.hpp>
-#include "../rendering/rasterization/Mesh.h"
+#include "../resources/Mesh.h"
 #include "../rendering/common/Material.h"
 #include "../rendering/common/Texture.h"  // 新增Texture头文件
 #include "utils/Logger.h"

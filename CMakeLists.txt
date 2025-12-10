@@ -105,6 +105,9 @@ endif()
 
 # 可执行文件
 add_executable(HybridPBR
+src/main.cpp
+    
+    # Core
     src/core/Application.cpp
     src/core/Window.cpp
     src/core/Input.cpp
@@ -112,42 +115,50 @@ add_executable(HybridPBR
     src/core/ServiceLocator.cpp
     src/core/Services.cpp
     src/core/Events.cpp
-    src/pbr/BRDF.cpp
-    src/pbr/IBL.cpp
-    src/pbr/PBRMaterial.cpp
-    src/rendering/Shader.cpp
-    src/rendering/ImGuiManager.cpp
-    src/rendering/ImGuiComponentManager.cpp
-    src/rendering/ShaderManager.cpp
-    src/rendering/common/Light.cpp
-    src/rendering/common/Material.cpp
-    src/rendering/common/Texture.cpp
-    src/rendering/common/UniformBuffer.cpp
-    src/rendering/OpenGLRenderDevice.cpp
-    src/rendering/HybridRenderer.cpp
-    src/rendering/RenderPipelineManager.cpp
-    src/rendering/deferred/GBuffer.cpp
-    src/rendering/deferred/DeferredRenderer.cpp
-    src/rendering/postprocess/SSAO.cpp
-    src/rendering/rasterization/Camera.cpp
-    src/rendering/rasterization/CameraController.cpp
-    src/rendering/rasterization/Mesh.cpp
-    src/rendering/rasterization/Rasterizer.cpp
-    src/rendering/rasterization/RenderPass.cpp
-    src/rendering/raytracing/RayTracer.cpp
-    src/rendering/raytracing/BVH.cpp
-    src/rendering/raytracing/Denoiser.cpp
-    src/rendering/raytracing/ComputeShader.cpp
-    src/rendering/raytracing/ComputeBuffer.cpp
+    
+    # --- RHI (这是缺失的部分！) ---
+    src/rhi/opengl/GL_Device.cpp
+    src/rhi/opengl/GL_CommandList.cpp
+    
+    # --- Resources (这也是缺失的部分！) ---
+    src/resources/Mesh.cpp
     src/resources/ModelLoader.cpp
     src/resources/ResourceManager.cpp
+    
+    # --- Rendering (新架构) ---
+    src/rendering/HybridRenderer.cpp
+    src/rendering/GpuMesh.cpp          # <--- 必须加上这个！
+    src/rendering/passes/GeometryPass.cpp
+    
+    # Scene
     src/scene/Scene.cpp
     src/scene/SceneNode.cpp
     src/scene/Transform.cpp
+    
+    # Components / Common
+    src/rendering/rasterization/Camera.cpp
+    src/rendering/rasterization/CameraController.cpp
+    src/rendering/common/Material.cpp
+    src/rendering/common/Texture.cpp
+    src/rendering/common/Light.cpp
+    src/rendering/Shader.cpp
+    src/rendering/ShaderManager.cpp
+    
+    # ImGui
+    src/rendering/ImGuiManager.cpp
+    src/rendering/ImGuiComponentManager.cpp
+    
+    # PBR Logic
+    src/pbr/PBRMaterial.cpp
+    src/pbr/BRDF.cpp
+    
+    # Utils
     src/utils/Logger.cpp
     src/utils/FileIO.cpp
     src/utils/MathUtils.cpp
-    src/main.cpp
+
+    src/rendering/OpenGLRenderDevice.cpp
+    src/rendering/RenderPipelineManager.cpp
     # ImGui源文件
     ${imgui_SOURCE_DIR}/imgui.cpp
     ${imgui_SOURCE_DIR}/imgui_demo.cpp

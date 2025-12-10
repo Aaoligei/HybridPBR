@@ -1,5 +1,6 @@
 #version 460 core
 out vec4 FragColor;
+
 in VS_OUT {
     vec3 FragPos;
     vec3 Normal;
@@ -8,166 +9,92 @@ in VS_OUT {
     vec3 WorldPos;
 } fs_in;
 
-uniform vec3 albedo;
-uniform float metallic;
-uniform float roughness;
-uniform float ao;
-
-// IBL
-uniform samplerCube irradianceMap;
-uniform samplerCube prefilterMap;
-uniform sampler2D brdfLUT;
-
-// 光源
-// 对应 C++ 的 GPULight
 struct Light {
-    vec3 position;  
-    // padding ...
-    vec3 direction; 
-    // padding ...
-    vec3 color;     
-    float intensity;
-
-    float range;
-    float constant;
-    float linear;
-    float quadratic;
-
-    float innerCutoff;
-    float outerCutoff;
-    int type;
-    // padding ...
+    vec3 position;  float pad0;
+    vec3 direction; float pad1;
+    vec3 color;     float intensity;
+    float range;    float constant;
+    float linear;   float quadratic;
+    float innerCutoff; float outerCutoff;
+    int type;       // 0=Directional, 1=Point, 2=Spot
+    float pad2; float pad3; float pad4;
 };
 
-// 对应 binding point 1
 layout (std140, binding = 1) uniform LightData {
     int lightCount;
+    int pad0, pad1, pad2;
     Light lights[16];
 };
 
 const float PI = 3.14159265359;
-// ----------------------------------------------------------------------------
-// Easy trick to get tangent-normals to world-space to keep PBR code simplified.
-// Don't worry if you don't get what's going on; you generally want to do normal 
-// mapping the usual way for performance anyways; I do plan make a note of this 
-// technique somewhere later in the normal mapping tutorial.
-float DistributionGGX(vec3 N, vec3 H, float roughness)
-{
-    float a = roughness*roughness;
-    float a2 = a*a;
-    float NdotH = max(dot(N, H), 0.0);
-    float NdotH2 = NdotH*NdotH;
 
-    float nom   = a2;
-    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
-    denom = PI * denom * denom;
-
-    return nom / denom;
-}
-// ----------------------------------------------------------------------------
-float GeometrySchlickGGX(float NdotV, float roughness)
-{
-    float r = (roughness + 1.0);
-    float k = (r*r) / 8.0;
-
-    float nom   = NdotV;
-    float denom = NdotV * (1.0 - k) + k;
-
-    return nom / denom;
-}
-// ----------------------------------------------------------------------------
-float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
-{
-    float NdotV = max(dot(N, V), 0.0);
-    float NdotL = max(dot(N, L), 0.0);
-    float ggx2 = GeometrySchlickGGX(NdotV, roughness);
-    float ggx1 = GeometrySchlickGGX(NdotL, roughness);
-
-    return ggx1 * ggx2;
-}
-// ----------------------------------------------------------------------------
-vec3 fresnelSchlick(float cosTheta, vec3 F0)
-{
-    return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
-}
-vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
-{
-    return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
-}   
-// ----------------------------------------------------------------------------
 void main()
-{		
-    vec3 WorldPos = fs_in.WorldPos;
-    vec3 N =fs_in.Normal;
-    vec3 V = normalize(fs_in.ViewPos - WorldPos);
-    vec3 R = reflect(-V, N); 
+{       
+    vec3 N = normalize(fs_in.Normal);
+    vec3 V = normalize(fs_in.ViewPos - fs_in.WorldPos);
+    
+    // 默认材质参数 (银灰色金属)
+    vec3 albedo = vec3(0.8, 0.8, 0.8); 
+    float roughness = 0.4;
+    float metallic = 0.0; // 先设为非金属，更容易看清光照
 
-    // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
-    // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
-    vec3 F0 = vec3(0.04); 
-    F0 = mix(F0, albedo, metallic);
-
-    // reflectance equation
     vec3 Lo = vec3(0.0);
+
+    // 调试：如果没有光源，显示红色警告
+    if (lightCount == 0) {
+        FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+        return;
+    }
+
     for(int i = 0; i < lightCount; ++i) 
     {
-        // calculate per-light radiance
-        vec3 L = normalize(lights[i].position - WorldPos);
+        vec3 L;
+        float attenuation = 1.0;
+
+        // --- 核心修复：正确处理光照类型 ---
+        if (lights[i].type == 0) { 
+            // 0 = Directional Light (方向光)
+            // 方向光的方向是从光源发出的，计算 L (指向光源) 需要取反
+            L = normalize(-lights[i].direction);
+        } 
+        else { 
+            // 1 = Point Light (点光源)
+            vec3 distVec = lights[i].position - fs_in.WorldPos;
+            float distance = length(distVec);
+            L = normalize(distVec);
+            
+            // 简单衰减
+            if (lights[i].range > 0.0) {
+                attenuation = 1.0 / (distance * distance);
+            }
+        }
+
         vec3 H = normalize(V + L);
-        float distance = length(lights[i].position - WorldPos);
-        float attenuation = 1.0 / (distance * distance);
-        vec3 radiance = lights[i].color * lights[i].intensity * attenuation;
-
-        // Cook-Torrance BRDF
-        float NDF = DistributionGGX(N, H, roughness);   
-        float G   = GeometrySmith(N, V, L, roughness);      
-        vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
-           
-        vec3 numerator    = NDF * G * F; 
-        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
-        vec3 specular = numerator / denominator;
+        float NdotL = max(dot(N, L), 0.0);
         
-        // kS is equal to Fresnel
-        vec3 kS = F;
-        // for energy conservation, the diffuse and specular light can't
-        // be above 1.0 (unless the surface emits light); to preserve this
-        // relationship the diffuse component (kD) should equal 1.0 - kS.
-        vec3 kD = vec3(1.0) - kS;
-        // multiply kD by the inverse metalness such that only non-metals 
-        // have diffuse lighting, or a linear blend if partly metal (pure metals
-        // have no diffuse light).
-        kD *= 1.0 - metallic;	  
-
-        // scale light by NdotL
-        float NdotL = max(dot(N, L), 0.0);        
-
-        // add to outgoing radiance Lo
-        Lo += (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+        // 简单 Blinn-Phong 用于测试 (确保不是 PBR 公式的问题)
+        // 只要 NdotL > 0，这里就必须亮！
+        vec3 radiance = lights[i].color * lights[i].intensity * attenuation;
+        
+        // 简单的漫反射 + 高光
+        vec3 diffuse = albedo / PI;
+        float spec = pow(max(dot(N, H), 0.0), 32.0); // 硬编码高光
+        
+        Lo += (diffuse + vec3(spec)) * radiance * NdotL; 
     }   
-    // ambient lighting (we now use IBL as the ambient term)
-    vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
     
-    vec3 kS = F;
-    vec3 kD = 1.0 - kS;
-    kD *= 1.0 - metallic;	  
-    
-    vec3 irradiance = texture(irradianceMap, N).rgb;
-    vec3 diffuse      = irradiance * albedo;
-    
-    // sample both the pre-filter map and the BRDF lut and combine them together as per the Split-Sum approximation to get the IBL specular part.
-    const float MAX_REFLECTION_LOD = 4.0;
-    vec3 prefilteredColor = textureLod(prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;    
-    vec2 brdf  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
-    vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
-
-    vec3 ambient = (kD * diffuse + specular) * ao;
-    
+    // 环境光 (防止死黑)
+    vec3 ambient = vec3(0.05) * albedo;
     vec3 color = ambient + Lo;
-
-    // HDR tonemapping
-    color = color / (color + vec3(1.0));
-    // gamma correct
+    
+    // Tone mapping (Reinhard)
+    // 注意：ToneMapping 会把超亮的颜色压回 1.0 (白色)
+    // 如果你想看到 "调节强度" 的效果，可以暂时注释掉下面这行
+    //color = color / (color + vec3(1.0));
+    
+    // Gamma correction
     color = pow(color, vec3(1.0/2.2)); 
 
-    FragColor = vec4(color , 1.0);
+    FragColor = vec4(color, 1.0);
+    //FragColor = vec4(fs_in.Normal, 1.0); // 用法线调试
 }

@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 #include "Transform.h"
-#include "../rendering/rasterization/Mesh.h"
+#include "../resources/Mesh.h"
 #include "../rendering/common/Material.h"
 
 namespace HybridPBR {

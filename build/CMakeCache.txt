@@ -73,10 +73,6 @@ ASSIMP_COVERALLS:BOOL=OFF
 //Set to ON to enable double precision processing
 ASSIMP_DOUBLE_PRECISION:BOOL=OFF
 
-//adds the target headercheck which compiles every header file,
-// default disabled because it adds many targets
-ASSIMP_HEADERCHECK:BOOL=OFF
-
 //Enable Hunter package manager support
 ASSIMP_HUNTER_ENABLED:BOOL=OFF
 
@@ -614,9 +610,6 @@ PKG_CONFIG_ARGN:STRING=
 
 //pkg-config executable
 PKG_CONFIG_EXECUTABLE:FILEPATH=PKG_CONFIG_EXECUTABLE-NOTFOUND
-
-//Skip FetchContent downloads for third-party libraries
-SKIP_FETCHCONTENT:BOOL=OFF
 
 //Path to a file.
 ZLIB_INCLUDE_DIR:PATH=ZLIB_INCLUDE_DIR-NOTFOUND

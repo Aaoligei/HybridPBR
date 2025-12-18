@@ -29,7 +29,10 @@ namespace HybridPBR {
         
         // 调试
         void SetDebugView(int debugView) { this->debugView = debugView; }
-
+        static RenderStats& GetStats() { return stats; }
+        std::vector<std::string> GetRenderPassNames(){
+            return {"GBufferPass","LightingPass","SSAOPass"};
+        };
     private:
         std::unique_ptr<GBufferPass> gBufferPass;
         std::unique_ptr<LightingPass> lightingPass;
@@ -44,6 +47,7 @@ namespace HybridPBR {
         // 输出FBO
         uint32_t outputFBO = 0;
         std::shared_ptr<Texture> outputTexture;
+        static RenderStats stats;
         
         bool CreateOutputFramebuffer(int width, int height);
 

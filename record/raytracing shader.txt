@@ -1,1 +1,502 @@
-texture->textureLod fps 5->7
+#version 460 core
+
+layout(local_size_x = 32, local_size_y = 32) in;
+
+const float PI = 3.14159265359;
+const float INV_PI = 0.31830988618;
+
+// ... (Ray, HitRecord, Triangle 等结构体保持不变，请确保 BVHNode 还是 vec4 版本) ...
+struct Ray {
+    vec3 origin;
+    vec3 direction;
+    float tMin;
+    float tMax;
+};
+
+struct HitRecord {
+    vec3 position;
+    vec3 normal;
+    vec3 tangent;
+    vec2 texcoord;
+    float pad0, pad1;
+    float t;
+    uint materialIndex;
+    uint triangleIndex;
+    bool frontFace;
+};
+
+struct Triangle {
+    vec3 v0; float pad0;
+    vec3 v1; float pad1;
+    vec3 v2; float pad2;
+    vec3 n0; float pad3;
+    vec3 n1; float pad4;
+    vec3 n2; float pad5;
+    vec3 t0; float padTangent0;
+    vec3 t1; float padTangent1;
+    vec3 t2; float padTangent2;
+    vec2 uv0; vec2 pad6;
+    vec2 uv1; vec2 pad7;
+    vec2 uv2; vec2 pad8;
+    uint materialIndex;
+    uint pad9; uint pad10; uint pad11;
+};
+
+// 保持 vec4 对齐修复
+struct BVHNode {
+    vec4 min;
+    vec4 max;
+    int leftChild;
+    int firstPrim;
+    int primCount;
+    int pad2;
+};
+
+struct GPUMaterial {
+    vec4 albedo;
+    vec4 emissive;
+    float metallic;
+    float roughness;
+    float ao;
+    uint albedoTexture;
+    uint normalTexture;
+    uint metallicTexture;
+    uint roughnessTexture;
+    uint aoTexture;
+    uint emissiveTexture;
+    uint pad0; uint pad1; uint pad2; 
+};
+
+struct Light {
+    vec3 position;  float pad0;
+    vec3 direction; float pad1;
+    vec3 color;     float intensity;
+    float range;
+    float constant;
+    float linear;
+    float quadratic;
+    float innerCutoff;
+    float outerCutoff;
+    int type;       
+    float pad2, pad3, pad4;
+};
+
+struct SurfaceMaterial {
+    vec3 albedo;
+    float metallic;
+    float roughness;
+    float ao;
+    vec3 emissive;
+};
+
+struct HitInfo {
+    float t;
+    float u;
+    float v;
+    int triIndex;
+};
+
+// ... (Buffer layout 保持不变) ...
+layout(std140, binding = 9) uniform LightData {
+    int lightCount;
+    Light lights[16];
+};
+
+layout(std430, binding = 0) buffer RayBuffer { Ray rays[]; };
+layout(std430, binding = 1) buffer HitBuffer { HitRecord hits[]; };
+layout(std430, binding = 2) buffer OutputBuffer { vec4 outputPixels[]; };
+layout(std430, binding = 3) buffer AccumulationBuffer { vec4 accumulationPixels[]; };
+layout(std430, binding = 4) buffer BVHNodesBuffer { BVHNode bvhNodes[]; };
+layout(std430, binding = 5) buffer TrianglesBuffer { Triangle triangles[]; };
+layout(std430, binding = 6) buffer MaterialsBuffer { GPUMaterial materials[]; };
+
+// IBL纹理
+uniform samplerCube irradianceMap;
+uniform samplerCube prefilterMap;
+uniform sampler2D brdfLUT;
+
+// 天空盒 HDR 纹理
+uniform samplerCube environmentMap;
+
+uniform uint width;
+uniform uint height;
+uniform uint maxBounces;
+uniform uint samplesPerPixel;
+uniform uint frameNumber;
+uniform sampler2D textureMaps[32];
+
+
+// --- 随机数生成器 (保持不变) ---
+uint WangHash(uint seed) {
+    seed = (seed ^ 61) ^ (seed >> 16);
+    seed *= 9;
+    seed = seed ^ (seed >> 4);
+    seed *= 0x27d4eb2d;
+    seed = seed ^ (seed >> 15);
+    return seed;
+}
+float RandomFloat(inout uint seed) {
+    seed = WangHash(seed);
+    return float(seed) * (1.0 / 4294967296.0);
+}
+vec3 RandomInUnitSphere(inout uint seed) {
+    float z = RandomFloat(seed) * 2.0 - 1.0;
+    float a = RandomFloat(seed) * 2.0 * PI;
+    float r = sqrt(1.0 - z * z);
+    return vec3(r * cos(a), r * sin(a), z);
+}
+
+// --- PBR 工具函数 (优化：减少除法) ---
+float DistributionGGX(vec3 N, vec3 H, float roughness) {
+    float a = roughness * roughness;
+    float a2 = a * a;
+    float NdotH = max(dot(N, H), 0.0);
+    float NdotH2 = NdotH * NdotH;
+    float num = a2;
+    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+    return num / (PI * denom * denom + 1e-6);
+}
+float GeometrySchlickGGX(float NdotV, float roughness) {
+    float r = (roughness + 1.0);
+    float k = (r * r) * 0.125; // / 8.0
+    float num = NdotV;
+    float denom = NdotV * (1.0 - k) + k;
+    return num / (denom + 1e-6);
+}
+float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
+    float NdotV = max(dot(N, V), 0.0);
+    float NdotL = max(dot(N, L), 0.0);
+    return GeometrySchlickGGX(NdotV, roughness) * GeometrySchlickGGX(NdotL, roughness);
+}
+vec3 FresnelSchlick(float cosTheta, vec3 F0) {
+    return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}
+
+// --- 几何函数 ---
+bool TriangleIntersectGeometry(Triangle tri, Ray ray, float tMax, out float t, out float u, out float v) {
+    vec3 edge1 = tri.v1 - tri.v0;
+    vec3 edge2 = tri.v2 - tri.v0;
+    vec3 h = cross(ray.direction, edge2);
+    float a = dot(edge1, h);
+    if (abs(a) < 1e-6) return false;
+    float f = 1.0 / a;
+    vec3 s = ray.origin - tri.v0;
+    u = f * dot(s, h);
+    if (u < 0.0 || u > 1.0) return false;
+    vec3 q = cross(s, edge1);
+    v = f * dot(ray.direction, q);
+    if (v < 0.0 || u + v > 1.0) return false;
+    t = f * dot(edge2, q);
+    return (t > 0.001 && t < tMax);
+}
+
+// 优化的 AnyHit
+bool BVHIntersectAnyHit(Ray ray, float tMax) {
+    vec3 invDir = 1.0 / ray.direction;
+    int stack[32];
+    int stackPtr = 0;
+    stack[stackPtr++] = 0;
+
+    while (stackPtr > 0) {
+        int nodeIndex = stack[--stackPtr];
+        // 移除边界检查以提升速度，前提是BVH构建正确
+        BVHNode node = bvhNodes[nodeIndex];
+
+        float t0x = (node.min.x - ray.origin.x) * invDir.x;
+        float t1x = (node.max.x - ray.origin.x) * invDir.x;
+        float t0y = (node.min.y - ray.origin.y) * invDir.y;
+        float t1y = (node.max.y - ray.origin.y) * invDir.y;
+        float t0z = (node.min.z - ray.origin.z) * invDir.z;
+        float t1z = (node.max.z - ray.origin.z) * invDir.z;
+
+        float tmin = max(max(min(t0x, t1x), min(t0y, t1y)), min(t0z, t1z));
+        float tmax = min(min(max(t0x, t1x), max(t0y, t1y)), max(t0z, t1z));
+
+        if (tmax < max(tmin, 0.0) || tmin > tMax) continue;
+
+        if (node.primCount > 0) {
+            for (int i = 0; i < node.primCount; i++) {
+                Triangle tri = triangles[node.firstPrim + i];
+                float tempT, tempU, tempV;
+                if (TriangleIntersectGeometry(tri, ray, tMax, tempT, tempU, tempV)) return true;
+            }
+        } else {
+            stack[stackPtr++] = node.leftChild;
+            stack[stackPtr++] = node.firstPrim; 
+        }
+    }
+    return false;
+}
+
+// 优化的 Nearest Hit
+bool BVHIntersect(Ray ray, float tMin, float tMax, inout HitInfo info) {
+    vec3 invDir = 1.0 / ray.direction;
+    int stack[32];
+    int stackPtr = 0;
+    stack[stackPtr++] = 0;
+    
+    bool hit = false;
+    info.t = tMax;
+    info.triIndex = -1;
+    
+    while (stackPtr > 0) {
+        int nodeIndex = stack[--stackPtr];
+        BVHNode node = bvhNodes[nodeIndex];
+        
+        float currentMaxDist = info.t; 
+
+        float t0x = (node.min.x - ray.origin.x) * invDir.x;
+        float t1x = (node.max.x - ray.origin.x) * invDir.x;
+        float t0y = (node.min.y - ray.origin.y) * invDir.y;
+        float t1y = (node.max.y - ray.origin.y) * invDir.y;
+        float t0z = (node.min.z - ray.origin.z) * invDir.z;
+        float t1z = (node.max.z - ray.origin.z) * invDir.z;
+
+        float tmin = max(max(min(t0x, t1x), min(t0y, t1y)), min(t0z, t1z));
+        float tmax = min(min(max(t0x, t1x), max(t0y, t1y)), max(t0z, t1z));
+
+        if (tmax < max(tmin, tMin) || tmin > currentMaxDist) continue;
+        
+        if (node.primCount > 0) {
+            for (int i = 0; i < node.primCount; i++) {
+                Triangle tri = triangles[node.firstPrim + i];
+                float t, u, v;
+                if (TriangleIntersectGeometry(tri, ray, info.t, t, u, v)) {
+                    info.t = t;
+                    info.u = u;
+                    info.v = v;
+                    info.triIndex = node.firstPrim + i;
+                    hit = true;
+                }
+            }
+        } else {
+            // 简单的压栈顺序优化
+            if (stackPtr < 30) {
+                stack[stackPtr++] = node.leftChild;
+                stack[stackPtr++] = node.firstPrim;
+            }
+        }
+    }
+    return hit;
+}
+
+vec3 sRGBToLinear(vec3 color) { return pow(color, vec3(2.2)); }
+
+SurfaceMaterial ResolveMaterial(GPUMaterial mat, vec2 uv) {
+    SurfaceMaterial surf;
+    // 简化纹理采样逻辑，减少分支
+    vec3 albedoColor = mat.albedo.rgb;
+    if (mat.albedoTexture > 0 && mat.albedoTexture < 32) {
+        albedoColor *= sRGBToLinear(textureLod(textureMaps[mat.albedoTexture], uv,0).rgb);
+    }
+    surf.albedo = albedoColor;
+
+    float met = mat.metallic;
+    if (mat.metallicTexture > 0 && mat.metallicTexture < 32) {
+        met *= textureLod(textureMaps[mat.metallicTexture], uv,0).r;
+    }
+    surf.metallic = met;
+
+    float rough = mat.roughness;
+    if (mat.roughnessTexture > 0 && mat.roughnessTexture < 32) {
+        rough *= textureLod(textureMaps[mat.roughnessTexture], uv,0).r;
+    }
+    surf.roughness = rough;
+
+    float ao = mat.ao;
+    if (mat.aoTexture > 0 && mat.aoTexture < 32) {
+        ao *= textureLod(textureMaps[mat.aoTexture], uv,0).r;
+    }
+    surf.ao = ao;
+
+    vec3 emit = mat.emissive.rgb;
+    if (mat.emissiveTexture > 0 && mat.emissiveTexture < 32) {
+        emit *= sRGBToLinear(textureLod(textureMaps[mat.emissiveTexture], uv,0).rgb) * 10.0;
+    }
+    surf.emissive = emit;
+    return surf;
+}
+
+vec3 GetShadingNormal(GPUMaterial mat, HitRecord rec) {
+    if (mat.normalTexture == 0 || mat.normalTexture >= 32) return rec.normal;
+    vec3 mapNormal = textureLod(textureMaps[mat.normalTexture], rec.texcoord,0).rgb * 2.0 - 1.0;
+    vec3 B = normalize(cross(rec.normal, rec.tangent));
+    mat3 TBN = mat3(rec.tangent, B, rec.normal);
+    return normalize(TBN * mapNormal);
+}
+
+// === 核心优化：随机光源采样 (Stochastic Light Sampling) ===
+// 现在只采样一个光源，而不是全部
+vec3 CalculateDirectLightStochastic(HitRecord rec, vec3 shadingNormal, vec3 viewDir, SurfaceMaterial surf, inout uint seed) {
+    if (lightCount == 0) return vec3(0.0);
+
+    // 1. 随机选择一个光源索引
+    int lightIndex = int(RandomFloat(seed) * float(lightCount));
+    if (lightIndex >= lightCount) lightIndex = lightCount - 1;
+    
+    Light light = lights[lightIndex];
+    
+    vec3 L;
+    float attenuation = 1.0;
+    float distanceToLight;
+
+    if(light.type == 0) { // Directional
+        L = normalize(-light.direction);
+        distanceToLight = 10000.0;
+    } else { // Point or Spot
+        vec3 lightToPos = light.position - rec.position;
+        distanceToLight = length(lightToPos);
+        L = normalize(lightToPos);
+        attenuation = 1.0 / (light.constant + light.linear * distanceToLight + light.quadratic * distanceToLight * distanceToLight);
+        
+        if(light.type == 2) { // Spot
+             float theta = dot(L, normalize(-light.direction));
+             float epsilon = light.innerCutoff - light.outerCutoff;
+             float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
+             attenuation *= intensity;
+        }
+    }
+
+    float NdotL = dot(shadingNormal, L);
+    if (NdotL <= 0.0 || attenuation < 0.0001) return vec3(0.0);
+
+    // 阴影射线
+    Ray shadowRay;
+    float bias = 0.01;
+    shadowRay.origin = rec.position + rec.normal * bias;
+    shadowRay.direction = L;
+    
+    // 如果被遮挡，直接返回
+    if (BVHIntersectAnyHit(shadowRay, distanceToLight - 0.05)) {
+        return vec3(0.0);
+    }
+
+    // PBR 计算
+    vec3 H = normalize(viewDir + L);
+    vec3 F0 = mix(vec3(0.04), surf.albedo, surf.metallic);
+    
+    float NDF = DistributionGGX(shadingNormal, H, surf.roughness);
+    float G = GeometrySmith(shadingNormal, viewDir, L, surf.roughness);
+    vec3 F = FresnelSchlick(max(dot(H, viewDir), 0.0), F0);
+    
+    vec3 num = NDF * G * F;
+    float den = 4.0 * max(dot(shadingNormal, viewDir), 0.0) * NdotL + 0.001;
+    vec3 specular = num / den;
+    
+    vec3 kS = F;
+    vec3 kD = (vec3(1.0) - kS) * (1.0 - surf.metallic);
+    
+    vec3 radiance = light.color * light.intensity * attenuation;
+    vec3 Lo = (kD * surf.albedo * INV_PI + specular) * radiance * NdotL;
+
+    // === 关键：权重补偿 ===
+    // 因为我们只采样了 1/N 个光源，所以结果要乘以 N (即 lightCount)
+    // 蒙特卡洛积分公式：Result = Sample / PDF. 这里 PDF = 1/lightCount.
+    return Lo * float(lightCount);
+}
+
+vec3 TracePath(Ray ray, inout uint seed) {
+    vec3 throughput = vec3(1.0);
+    vec3 totalRadiance = vec3(0.0);
+    
+    for (int bounce = 0; bounce < maxBounces; bounce++) {
+        HitInfo info;
+        if (!BVHIntersect(ray, 0.001, 10000.0, info)) {
+            vec3 skyColor = textureLod(environmentMap, ray.direction, 0.0).rgb;
+            totalRadiance += throughput * skyColor;
+            break;
+        }
+
+        Triangle tri = triangles[info.triIndex];
+        HitRecord rec;
+        rec.t = info.t;
+        rec.position = ray.origin + ray.direction * info.t;
+        
+        float w = 1.0 - info.u - info.v;
+        rec.normal = normalize(tri.n0 * w + tri.n1 * info.u + tri.n2 * info.v);
+        rec.tangent = normalize(tri.t0 * w + tri.t1 * info.u + tri.t2 * info.v);
+        rec.tangent = normalize(rec.tangent - dot(rec.tangent, rec.normal) * rec.normal);
+        rec.texcoord = tri.uv0 * w + tri.uv1 * info.u + tri.uv2 * info.v;
+        rec.materialIndex = tri.materialIndex;
+        rec.frontFace = dot(ray.direction, rec.normal) < 0.0;
+        if (!rec.frontFace) rec.normal = -rec.normal;
+
+        GPUMaterial rawMat = materials[rec.materialIndex];
+        SurfaceMaterial surf = ResolveMaterial(rawMat, rec.texcoord);
+        vec3 shadingNormal = GetShadingNormal(rawMat, rec);
+
+        if (bounce == 0) totalRadiance += throughput * surf.emissive;
+
+        // 直接光照优化：随机采样
+        if (surf.roughness > 0.05) { 
+            vec3 viewDir = -ray.direction;
+            totalRadiance += throughput * CalculateDirectLightStochastic(rec, shadingNormal, viewDir, surf, seed);
+        }
+
+        // 俄罗斯轮盘赌
+        float p = max(max(throughput.r, throughput.g), throughput.b);
+        if (RandomFloat(seed) > p) break;
+        throughput /= p;
+        
+        vec3 V = -ray.direction;
+        vec3 F0 = mix(vec3(0.04), surf.albedo, surf.metallic);
+        vec3 F = FresnelSchlick(max(dot(shadingNormal, V), 0.0), F0);
+        
+        // 简化：使用 F 的平均值作为镜面反射概率
+        float specProb = (F.r + F.g + F.b) * 0.333;
+        specProb = mix(specProb, 1.0, surf.metallic);
+        
+        vec3 nextDir;
+        if (RandomFloat(seed) < specProb) {
+            vec3 reflectDir = reflect(-V, shadingNormal);
+            nextDir = normalize(reflectDir + RandomInUnitSphere(seed) * surf.roughness);
+            if(dot(nextDir, shadingNormal) < 0.0) nextDir = -nextDir; 
+            throughput *= F; 
+        } else {
+            nextDir = normalize(shadingNormal + RandomInUnitSphere(seed));
+            if (dot(nextDir, shadingNormal) < 0.0) nextDir = -nextDir; 
+            throughput *= surf.albedo;
+        }
+
+        //ray.origin = rec.position + rec.normal * 0.001 * (dot(nextDir, rec.normal) > 0.0 ? 1.0 : -1.0);
+        ray.origin = rec.position+rec.normal * 0.001;
+        if(dot(nextDir, rec.normal) < 0.0)  break;
+        ray.direction = nextDir;
+    }
+    return totalRadiance;
+}
+
+void main() {
+    uint x = gl_GlobalInvocationID.x;
+    uint y = gl_GlobalInvocationID.y;
+    if (x >= width || y >= height) return;
+    
+    uint pixelIndex = y * width + x;
+    uint seed = pixelIndex * 1973 + frameNumber * 26699;
+    
+    Ray ray = rays[pixelIndex];
+    vec3 accumulatedColor = vec3(0.0);
+    
+    // 假设 samplesPerPixel 在实时渲染中通常为 1
+    // 如果 > 1，这里的 light loop 优化效果会倍增
+    for (uint i = 0; i < samplesPerPixel; i++) {
+        vec3 pathColor = TracePath(ray, seed);
+        
+        // 移除了 isnan 检查，这在 release build 中会拖慢速度
+        // 只要逻辑正确，通常不需要检查。如果出现黑点再加回来。
+        pathColor = clamp(pathColor, 0.0, 10.0);
+        accumulatedColor += pathColor;
+    }
+    
+    vec3 currentColor = accumulatedColor / float(samplesPerPixel);
+
+    if (frameNumber == 0) {
+        outputPixels[pixelIndex] = vec4(currentColor, 1.0);
+        accumulationPixels[pixelIndex] = vec4(currentColor, 1.0);
+    } else {
+        vec3 history = accumulationPixels[pixelIndex].rgb;
+        vec3 newColor = mix(history, currentColor, 1.0 / float(frameNumber + 1));
+        outputPixels[pixelIndex] = vec4(newColor, 1.0);
+        accumulationPixels[pixelIndex] = vec4(newColor, 1.0);
+    }
+}

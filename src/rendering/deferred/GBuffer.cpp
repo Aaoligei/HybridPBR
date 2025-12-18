@@ -80,7 +80,7 @@ namespace HybridPBR {
     void GBuffer::BindForLightingPass() {
         if (!initialized) return;
         
-        glBindFramebuffer(GL_FRAMEBUFFER, 0); // 绑定到默认FBO
+        //glBindFramebuffer(GL_FRAMEBUFFER, 0); // 绑定到默认FBO
         
         // 绑定所有G-Buffer纹理用于读取
         for (int i = 0; i < static_cast<int>(GBufferTextureType::Count) - 1; ++i) { // 排除深度
@@ -93,7 +93,7 @@ namespace HybridPBR {
         
         auto texture = textures[static_cast<size_t>(type)];
         if (texture) {
-            texture->Bind(unit);
+            texture->Bind(unit+20);
         }
     }
 

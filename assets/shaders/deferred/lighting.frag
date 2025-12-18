@@ -24,7 +24,7 @@ uniform bool useRTReflections;
 
 // Uniform Buffers
 // Binding 0: Camera
-layout (std140, binding = 0) uniform CameraData {
+layout (std140, binding = 2) uniform CameraData {
     mat4 view;
     mat4 projection;
     vec3 viewPos;
@@ -33,13 +33,11 @@ layout (std140, binding = 0) uniform CameraData {
 // 光源结构体定义 (必须与 C++ 的 LightData 内存布局严格一致)
 // C++ vec3 通常是 12 字节，但在 std140 中 vec3 是 16 字节对齐
 struct Light {
-    vec3 position;
-    float padding1; // std140 alignment
-    
-    vec3 direction;
-    float padding2;
-
-    vec3 color;
+    vec3 position;  
+    // padding ...
+    vec3 direction; 
+    // padding ...
+    vec3 color;     
     float intensity;
 
     float range;
@@ -49,14 +47,14 @@ struct Light {
 
     float innerCutoff;
     float outerCutoff;
-    int type; // 0=Directional, 1=Point, 2=Spot
-    float padding3;
+    int type;
+    // padding ...
 };
 
-layout (std140, binding = 1) uniform LightData {
+
+layout (std140, binding = 3) uniform LightData {
     int lightCount;
-    int padding_arr[3]; // 对齐到 16 字节
-    Light lights[16];   // 假设最大 16 个光源
+    Light lights[16];
 };
 
 const float PI = 3.14159265359;
@@ -99,6 +97,7 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness) {
 }
 
 void main() {
+
     // 1. 从 G-Buffer 采样数据
     vec3 WorldPos = texture(gPosition, TexCoords).rgb;
     // 如果 WorldPos 是 0 (例如背景)，则丢弃或仅渲染天空盒
@@ -218,4 +217,5 @@ void main() {
     // color = pow(color, vec3(1.0/2.2));
 
     FragColor = vec4(color, 1.0);
+    //FragColor = vec4(N, 1.0); // 用于调试法线
 }

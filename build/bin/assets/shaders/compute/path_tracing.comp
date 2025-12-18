@@ -2,6 +2,9 @@
 
 layout(local_size_x = 32, local_size_y = 32) in;
 
+const float PI = 3.14159265359;
+const float INV_PI = 0.31830988618;
+
 // ... (Ray, HitRecord, Triangle 等结构体保持不变，请确保 BVHNode 还是 vec4 版本) ...
 struct Ray {
     vec3 origin;
@@ -107,6 +110,14 @@ layout(std430, binding = 4) buffer BVHNodesBuffer { BVHNode bvhNodes[]; };
 layout(std430, binding = 5) buffer TrianglesBuffer { Triangle triangles[]; };
 layout(std430, binding = 6) buffer MaterialsBuffer { GPUMaterial materials[]; };
 
+// IBL纹理
+uniform samplerCube irradianceMap;
+uniform samplerCube prefilterMap;
+uniform sampler2D brdfLUT;
+
+// 天空盒 HDR 纹理
+uniform samplerCube environmentMap;
+
 uniform uint width;
 uniform uint height;
 uniform uint maxBounces;
@@ -114,8 +125,6 @@ uniform uint samplesPerPixel;
 uniform uint frameNumber;
 uniform sampler2D textureMaps[32];
 
-const float PI = 3.14159265359;
-const float INV_PI = 0.31830988618;
 
 // --- 随机数生成器 (保持不变) ---
 uint WangHash(uint seed) {
@@ -393,7 +402,7 @@ vec3 TracePath(Ray ray, inout uint seed) {
     for (int bounce = 0; bounce < maxBounces; bounce++) {
         HitInfo info;
         if (!BVHIntersect(ray, 0.001, 10000.0, info)) {
-            vec3 skyColor = vec3(0.1, 0.2, 0.3); 
+            vec3 skyColor = textureLod(environmentMap, ray.direction, 0.0).rgb;
             totalRadiance += throughput * skyColor;
             break;
         }

@@ -262,18 +262,6 @@
 			"value" : "OFF"
 		},
 		{
-			"name" : "ASSIMP_HEADERCHECK",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "adds the target headercheck which compiles every header file, default disabled because it adds many targets"
-				}
-			],
-			"type" : "BOOL",
-			"value" : "OFF"
-		},
-		{
 			"name" : "ASSIMP_HUNTER_ENABLED",
 			"properties" : 
 			[
@@ -2992,18 +2980,6 @@
 			],
 			"type" : "FILEPATH",
 			"value" : "PKG_CONFIG_EXECUTABLE-NOTFOUND"
-		},
-		{
-			"name" : "SKIP_FETCHCONTENT",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Skip FetchContent downloads for third-party libraries"
-				}
-			],
-			"type" : "BOOL",
-			"value" : "OFF"
 		},
 		{
 			"name" : "XINPUT_H_FOUND",

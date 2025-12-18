@@ -13,7 +13,7 @@ out VS_OUT {
 } vs_out;
 
 // Binding 0: Camera Data (对应 C++ CameraUBO)
-layout (std140, binding = 0) uniform CameraData {
+layout (std140, binding = 2) uniform CameraData {
     mat4 view;
     mat4 projection;
     vec3 viewPos;

@@ -203,7 +203,7 @@ public:
         }
         deferredRenderer->SetIBLSystem(iblSystem);
         deferredRenderer->SetSSAOEnabled(false);
-        useDeferredRendering = false;
+        useDeferredRendering = true;
 
         //创建光线追踪渲染器
         HybridPBR::RayTracerConfig rtConfig;
@@ -359,15 +359,16 @@ public:
     void OnImGuiRender() override {
         ImGui::SetWindowFontScale(1.5f);
         // 显示渲染统计
-        auto stats = rasterizer->GetStats();
+        auto stats = deferredRenderer->GetStats();
         ImGui::Begin("Renderer Stats");
         ImGui::Text("Renderer Stats");
         ImGui::Checkbox("Use ray tracing",&useRayTracing);
+        ImGui::Checkbox("Use deferred rendering",&useDeferredRendering);
         ImGui::Text("Draw calls: %d", stats.drawCalls);
         ImGui::Text("Triangles: %d", stats.triangleCount);
         ImGui::Text("Vertices: %d", stats.vertexCount);
         if(ImGui::CollapsingHeader("Render Passes")){
-            for(auto passName : rasterizer->GetRenderPassNames()){
+            for(auto passName : deferredRenderer->GetRenderPassNames()){
                 ImGui::Text("%s", passName.c_str());
             }
         }
@@ -410,5 +411,6 @@ private:
     bool useDeferredRendering = false;
     bool useRayTracing = false;
     bool useHybridRendering = false;
+
 
 };

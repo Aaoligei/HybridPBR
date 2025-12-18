@@ -62,7 +62,7 @@ namespace HybridPBR {
         shader->SetFloat("metallic", properties.metallic);
         shader->SetFloat("roughness", properties.roughness);
         shader->SetFloat("ao", properties.ambientOcclusion);
-        // shader->SetFloat("material.normalScale", properties.normalScale);
+        shader->SetFloat("material.normalScale", properties.normalScale);
         // shader->SetVec3("material.emissive", properties.emissiveColor);
         // shader->SetFloat("material.emissiveIntensity", properties.emissiveIntensity);
         

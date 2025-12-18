@@ -1,5 +1,6 @@
 #include "RenderPass.h"
 #include "Rasterizer.h"
+#include "rendering/deferred/DeferredRenderer.h"
 #include "utils/Logger.h"
 #include "utils/GLCheck.h"
 #include "GLFW/glfw3.h"
@@ -323,7 +324,7 @@ namespace HybridPBR {
         mesh.Render();
         
         // 更新统计信息
-        auto& stats = Rasterizer::GetStats();
+        auto& stats = DeferredRenderer::GetStats();
         stats.drawCalls++;
         stats.triangleCount += mesh.GetTriangleCount();
         stats.vertexCount += mesh.GetVertexCount();
@@ -341,9 +342,11 @@ namespace HybridPBR {
     }
 
     void GBufferPass::ApplyRenderState() {
+        glDisable(GL_BLEND);
         // 几何通道需要深度测试和背面剔除
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
+        //glDepthMask(GL_TRUE);
         glCullFace(GL_BACK);
         
         if (wireframe) {
@@ -384,19 +387,19 @@ namespace HybridPBR {
         
         // 加载光照通道着色器
         auto& shaderManager = ShaderManager::GetInstance();
-        lightingShader = shaderManager.GetShader("LightingPass");
-        if (!lightingShader) {
-            if (!shaderManager.LoadShader("LightingPass", 
-                FileIO::GetAssetsPath()+"shaders/deferred/lighting.vert", 
-                FileIO::GetAssetsPath()+"shaders/deferred/lighting.frag")) {
-                LOG_ERROR("Failed to load lighting pass shader");
-                return;
-            }
-            lightingShader = shaderManager.GetShader("LightingPass");
+         
+        if (!shaderManager.LoadShader("LightingPass", 
+            FileIO::GetAssetsPath()+"shaders/deferred/lighting.vert", 
+            FileIO::GetAssetsPath()+"shaders/deferred/lighting.frag")) {
+            LOG_ERROR("Failed to load lighting pass shader");
+            return;
+            
         }
+        lightingShader = shaderManager.GetShader("LightingPass");
     }
 
     void LightingPass::Execute(const Scene& scene) {
+
         if (!gbuffer || !lightingShader) return;
         
         auto camera = scene.GetMainCamera();
@@ -413,7 +416,7 @@ namespace HybridPBR {
         shaderManager.SetCurrentShader(lightingShader);
         
         // 绑定 Hybrid RT Maps
-        if (rtShadowMap) {
+        if (false) {
             lightingShader->SetBool("useRTShadows", true);
             lightingShader->SetInt("rtShadowMap", 5); // Slot 5
             rtShadowMap->Bind(5);
@@ -424,7 +427,7 @@ namespace HybridPBR {
         // 绑定G-Buffer进行读取
         gbuffer->BindForLightingPass();
 
-        if (rtReflectionMap) {
+        if (false) {
             lightingShader->SetBool("useRTReflections", true);
             lightingShader->SetInt("rtReflectionMap", 6); // Slot 6
             rtReflectionMap->Bind(6);
@@ -436,14 +439,14 @@ namespace HybridPBR {
         SetupGBufferUniforms();
         
         // 设置相机统一变量
-        lightingShader->SetVec3("viewPos", camera->GetPosition());
+        //lightingShader->SetVec3("viewPos", camera->GetPosition());
         
         // 设置光源
         //SetupLightingUniforms(scene);
         
         // 设置IBL
         SetupIBLUniforms();
-        
+
         // 渲染全屏四边形
         RenderFullscreenQuad();
         
@@ -496,13 +499,14 @@ namespace HybridPBR {
     void LightingPass::SetupGBufferUniforms() {
         if (!lightingShader) return;
         
-        // 绑定G-Buffer纹理
-        lightingShader->SetInt("gPosition", 0);
-        lightingShader->SetInt("gNormal", 1);
-        lightingShader->SetInt("gAlbedo", 2);
-        lightingShader->SetInt("gMRA", 3); // Metallic, Roughness, AO
-        lightingShader->SetInt("gEmissive", 4);
+        // 修改：将 Uniform 设置为 20, 21, 22... 以匹配 GBuffer::BindTexture 的偏移
+        lightingShader->SetInt("gPosition", 20);
+        lightingShader->SetInt("gNormal", 21);
+        lightingShader->SetInt("gAlbedo", 22);
+        lightingShader->SetInt("gMRA", 23);
+        lightingShader->SetInt("gEmissive", 24);
         
+        // 这些调用会将纹理绑定到 0+20, 1+20 ... 即 20-24 号单元
         gbuffer->BindTexture(GBufferTextureType::Position, 0);
         gbuffer->BindTexture(GBufferTextureType::Normal, 1);
         gbuffer->BindTexture(GBufferTextureType::Albedo, 2);
@@ -511,7 +515,7 @@ namespace HybridPBR {
     }
 
     void LightingPass::SetupIBLUniforms() {
-        if (!lightingShader || !iblSystem || !iblSystem->IsReady()) return;
+        if (!lightingShader || !iblSystem) return;
         
         lightingShader->SetBool("useIBL", true);
         iblSystem->BindIBLTextures(lightingShader);

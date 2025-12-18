@@ -1,11 +1,13 @@
 #include "DeferredRenderer.h"
 
 namespace HybridPBR {
+    RenderStats DeferredRenderer::stats;
     // DeferredRenderer 实现
     DeferredRenderer::DeferredRenderer() {
         gBufferPass = std::make_unique<GBufferPass>();
         lightingPass = std::make_unique<LightingPass>();
         ssaoPass = std::make_unique<SSAO>();
+        stats = RenderStats();
     }
 
     DeferredRenderer::~DeferredRenderer() {
@@ -55,6 +57,7 @@ namespace HybridPBR {
     }
 
     void DeferredRenderer::Render(const Scene& scene) {
+        stats.Reset();
         if (!initialized) return;
         
         auto camera = scene.GetMainCamera();
@@ -68,6 +71,7 @@ namespace HybridPBR {
         // 绑定输出FBO
         glBindFramebuffer(GL_FRAMEBUFFER, outputFBO);
         glViewport(0, 0, outputTexture->GetWidth(), outputTexture->GetHeight());
+        glClearColor(0.0f, 1.0f, 0.0f, 1.0f); // 纯绿色
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         // 执行几何通道
@@ -88,6 +92,20 @@ namespace HybridPBR {
         
         // 解除FBO绑定
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        // [新增代码开始] ------------------------------------------------
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, outputFBO); // 源：你的渲染结果
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);         // 目标：屏幕
+        
+        // 这里的 width/height 应该是窗口的大小
+        // 假设 outputTexture 大小和窗口一致
+        glBlitFramebuffer(
+            0, 0, outputTexture->GetWidth(), outputTexture->GetHeight(), // src rect
+            0, 0, outputTexture->GetWidth(), outputTexture->GetHeight(), // dst rect
+            GL_COLOR_BUFFER_BIT, // 只需要拷贝颜色
+            GL_NEAREST           // 1:1 拷贝用 NEAREST 即可
+        );
+        // [新增代码结束] ------------------------------------------------
     }
 
     void DeferredRenderer::Resize(int width, int height) {

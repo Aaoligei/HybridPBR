@@ -6,6 +6,7 @@ namespace HybridPBR {
     DeferredRenderer::DeferredRenderer() {
         gBufferPass = std::make_unique<GBufferPass>();
         lightingPass = std::make_unique<LightingPass>();
+        skyboxPass = std::make_unique<SkyboxPass>();
         ssaoPass = std::make_unique<SSAO>();
         stats = RenderStats();
     }
@@ -24,6 +25,9 @@ namespace HybridPBR {
         // 初始化光照通道
         lightingPass->Initialize();
         lightingPass->SetGBuffer(gBufferPass->GetGBuffer());
+
+        // 初始化skybox通道
+        skyboxPass->Initialize();
         
         // 创建UBO（记得延迟渲染是2和3）
         cameraUBO = std::make_unique<UniformBuffer>(sizeof(CameraData), 2);
@@ -89,6 +93,27 @@ namespace HybridPBR {
         
         // 执行光照通道
         lightingPass->Execute(scene);
+
+        // [新增] === 天空盒渲染逻辑 ===
+        if (skyboxPass) {
+            // 1. 拷贝深度信息：从 G-Buffer FBO 到 Output FBO
+            // 这样天空盒才能通过深度测试（只在没有物体的地方绘制）
+            glBindFramebuffer(GL_READ_FRAMEBUFFER, gBufferPass->GetGBuffer()->GetFBO());
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, outputFBO); 
+            
+            glBlitFramebuffer(
+                0, 0, gBufferPass->GetGBuffer()->GetWidth(), gBufferPass->GetGBuffer()->GetHeight(), // Src Rect
+                0, 0, outputTexture->GetWidth(), outputTexture->GetHeight(),                         // Dst Rect
+                GL_DEPTH_BUFFER_BIT, // 拷贝深度
+                GL_NEAREST           // 过滤模式
+            );
+            
+            // 2. 重新绑定 Output FBO 进行绘制
+            glBindFramebuffer(GL_FRAMEBUFFER, outputFBO);
+            
+            // 3. 渲染天空盒 (SkyboxPass 内部会设置 DepthFunc 为 LEQUAL)
+            skyboxPass->Execute(scene);
+        }
         
         // 解除FBO绑定
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -122,6 +147,7 @@ namespace HybridPBR {
 
     void DeferredRenderer::SetIBLSystem(std::shared_ptr<IBL> ibl) {
         lightingPass->SetIBLSystem(ibl);
+        skyboxPass->SetSkyboxTexture(ibl->GetEnvironmentMap());
     }
 
     void DeferredRenderer::SetWireframe(bool enabled) {
@@ -154,7 +180,7 @@ namespace HybridPBR {
         // 创建深度渲染缓冲区
         uint32_t depthRBO;
         glCreateRenderbuffers(1, &depthRBO);
-        glNamedRenderbufferStorage(depthRBO, GL_DEPTH_COMPONENT, width, height);
+        glNamedRenderbufferStorage(depthRBO, GL_DEPTH_COMPONENT32F, width, height);
         glNamedFramebufferRenderbuffer(outputFBO, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRBO);
         
         if (glCheckNamedFramebufferStatus(outputFBO, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {

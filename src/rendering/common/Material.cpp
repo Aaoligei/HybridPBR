@@ -65,6 +65,7 @@ namespace HybridPBR {
                 uint32_t useSlot = (explicitSlot != -1) ? explicitSlot : slot++;
                 tex->Bind(useSlot);
                 shader->SetInt(name + "Map", useSlot); 
+                
             }
         };
 

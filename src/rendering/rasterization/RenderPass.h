@@ -52,6 +52,7 @@ namespace HybridPBR {
         void Cleanup() override;
         
         std::string GetName() const override { return "LightingPass"; }
+        std::shared_ptr<IBL> GetIBLSystem() const { return iblSystem; }
         
         // 设置G-Buffer输入
         void SetGBuffer(std::shared_ptr<GBuffer> gbuffer) { this->gbuffer = gbuffer; }
@@ -64,6 +65,8 @@ namespace HybridPBR {
         // 光源管理
         void SetMaxPointLights(int count) { maxPointLights = count; }
         void SetMaxSpotLights(int count) { maxSpotLights = count; }
+
+
 
     private:
         std::shared_ptr<GBuffer> gbuffer;

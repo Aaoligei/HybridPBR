@@ -36,6 +36,7 @@ namespace HybridPBR {
     private:
         std::unique_ptr<GBufferPass> gBufferPass;
         std::unique_ptr<LightingPass> lightingPass;
+        std::unique_ptr<SkyboxPass> skyboxPass;
         std::unique_ptr<SSAO> ssaoPass;
         
         bool initialized = false;

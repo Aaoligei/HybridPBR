@@ -217,4 +217,5 @@ void main() {
     // color = pow(color, vec3(1.0/2.2));
 
     FragColor = vec4(color, 1.0);
+    //FragColor = vec4(N, 1.0); // 用于调试法线
 }

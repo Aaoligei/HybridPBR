@@ -125,7 +125,7 @@ namespace HybridPBR {
         auto skyboxShader = shaderManager.GetShader(ShaderType::SKYBOX);
         if (!skyboxShader) return;
         
-        glBindFramebuffer(GL_FRAMEBUFFER,0);
+        //glBindFramebuffer(GL_FRAMEBUFFER,0);
         // 1. 保存旧状态
         GLint oldDepthFunc, oldCullFace;
         GLboolean oldDepthMask;
@@ -342,6 +342,9 @@ namespace HybridPBR {
     }
 
     void GBufferPass::ApplyRenderState() {
+
+        //glEnable(GL_FRAMEBUFFER_SRGB); // 开启sRGB颜色空间
+
         glDisable(GL_BLEND);
         // 几何通道需要深度测试和背面剔除
         glEnable(GL_DEPTH_TEST);

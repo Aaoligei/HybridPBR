@@ -102,13 +102,13 @@ void main() {
         albedo = pow(texture(AlbedoMap, fs_in.TexCoord).rgb, vec3(2.2));
     }
     if (material.useMetallicMap) {
-        metallic = texture(MetallicMap, fs_in.TexCoord).r;
+        metallic = texture(MetallicMap, fs_in.TexCoord).b;
     }
     if (material.useRoughnessMap) {
         roughness = texture(RoughnessMap, fs_in.TexCoord).g;
     }
-    if (material.useAOMap) {
-        ao = texture(MetallicMap, fs_in.TexCoord).b;
+    if (true) {
+        ao = texture(AOMap, fs_in.TexCoord).r;
     }
     
     // 输入数据
@@ -135,7 +135,7 @@ void main() {
             Lo += CalculatePointLight(light, N, V, F0, albedo, metallic, roughness);
         }
     }
-    
+    Lo *=ao;
     // 环境光贡献 (IBL)
     vec3 F = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
     vec3 kS = F;
@@ -168,6 +168,7 @@ void main() {
     color = pow(color, vec3(1.0/2.2));
     
     FragColor = vec4(color, 1.0);
+    //FragColor=vec4(vec3(ao),1.0); 
 }
 
 // BRDF实现
@@ -237,10 +238,7 @@ vec3 CalculateDirectionalLight(Light light, vec3 N, vec3 V, vec3 F0, vec3 albedo
     vec3 L = normalize(-light.direction);
     vec3 H = normalize(V + L);
     
-    // 光线衰减
-    float distance = length(light.direction);
-    float attenuation = 1.0 / (distance * distance);
-    vec3 radiance = light.color * light.intensity * attenuation;
+    vec3 radiance = light.color * light.intensity ;
     
     // Cook-Torrance BRDF
     float NDF = DistributionGGX(N, H, roughness);
@@ -264,6 +262,7 @@ vec3 CalculateDirectionalLight(Light light, vec3 N, vec3 V, vec3 F0, vec3 albedo
 vec3 CalculatePointLight(Light light, vec3 N, vec3 V, vec3 F0, vec3 albedo, float metallic, float roughness) {
     vec3 L = normalize(light.position - fs_in.FragPos);
     vec3 H = normalize(V + L);
+
     float distance = length(light.position - fs_in.FragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
     vec3 radiance = light.color * light.intensity * attenuation;

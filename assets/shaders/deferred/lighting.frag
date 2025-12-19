@@ -134,13 +134,11 @@ void main() {
         } else { // Point or Spot
             L = normalize(light.position - WorldPos);
             float distance = length(light.position - WorldPos);
-            
-            if (distance > light.range) continue; // 简单剔除
 
             // 物理正确的平方反比衰减
-            attenuation = 1.0 / (distance * distance);
+            //attenuation = 1.0 / (distance * distance);
             // 或者使用 constants/linear/quad 参数
-            // attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+            attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
             
             if (light.type == 2) { // Spot
                 float theta = dot(L, normalize(-light.direction));
@@ -171,11 +169,11 @@ void main() {
 
         // 阴影计算 (Hybrid Ray Tracing)
         float shadow = 1.0;
-        if (useRTShadows) {
-            // 假设 rtShadowMap 存储的是可见性 (1=亮, 0=影)
-            // 需要根据屏幕空间坐标采样
-            shadow = texture(rtShadowMap, TexCoords).r;
-        }
+        // if (useRTShadows) {
+        //     // 假设 rtShadowMap 存储的是可见性 (1=亮, 0=影)
+        //     // 需要根据屏幕空间坐标采样
+        //     shadow = texture(rtShadowMap, TexCoords).r;
+        // }
 
         Lo += (kD * Albedo / PI + specular) * radiance * NdotL * shadow; 
     }
@@ -199,12 +197,12 @@ void main() {
         vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
 
         // 如果开启了光追反射，混合 RT 反射和 IBL 反射
-        if (useRTReflections) {
-            vec3 rtReflect = texture(rtReflectionMap, TexCoords).rgb;
-            // 简单的混合策略：越光滑越倾向于使用 RT 结果
-            // 或者 rtReflectionMap 包含 alpha 用于混合
-            specular = mix(specular, rtReflect, 0.5); // 这里仅作示例
-        }
+        // if (useRTReflections) {
+        //     vec3 rtReflect = texture(rtReflectionMap, TexCoords).rgb;
+        //     // 简单的混合策略：越光滑越倾向于使用 RT 结果
+        //     // 或者 rtReflectionMap 包含 alpha 用于混合
+        //     specular = mix(specular, rtReflect, 0.5); // 这里仅作示例
+        // }
 
         ambient = (kD * diffuse + specular) * AO;
     }
@@ -213,8 +211,8 @@ void main() {
     vec3 color = ambient + Lo + Emissive;
 
     // HDR Tonemapping & Gamma Correct (如果你没有单独的 PostProcessPass，可以在这里做)
-    // color = color / (color + vec3(1.0));
-    // color = pow(color, vec3(1.0/2.2));
+    color = color / (color + vec3(1.0));
+    color = pow(color, vec3(1.0/2.2));
 
     FragColor = vec4(color, 1.0);
     //FragColor = vec4(N, 1.0); // 用于调试法线

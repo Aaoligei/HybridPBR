@@ -1385,6 +1385,30 @@ src/rendering/rasterization/RenderPass.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.s
 .PHONY : src/rendering/rasterization/RenderPass.cpp.s
 
+src/rendering/rasterization/ShadowPass.obj: src/rendering/rasterization/ShadowPass.cpp.obj
+.PHONY : src/rendering/rasterization/ShadowPass.obj
+
+# target to build an object file
+src/rendering/rasterization/ShadowPass.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/ShadowPass.cpp.obj
+.PHONY : src/rendering/rasterization/ShadowPass.cpp.obj
+
+src/rendering/rasterization/ShadowPass.i: src/rendering/rasterization/ShadowPass.cpp.i
+.PHONY : src/rendering/rasterization/ShadowPass.i
+
+# target to preprocess a source file
+src/rendering/rasterization/ShadowPass.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/ShadowPass.cpp.i
+.PHONY : src/rendering/rasterization/ShadowPass.cpp.i
+
+src/rendering/rasterization/ShadowPass.s: src/rendering/rasterization/ShadowPass.cpp.s
+.PHONY : src/rendering/rasterization/ShadowPass.s
+
+# target to generate assembly for a file
+src/rendering/rasterization/ShadowPass.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\HybridPBR.dir\build.make CMakeFiles/HybridPBR.dir/src/rendering/rasterization/ShadowPass.cpp.s
+.PHONY : src/rendering/rasterization/ShadowPass.cpp.s
+
 src/rendering/raytracing/BVH.obj: src/rendering/raytracing/BVH.cpp.obj
 .PHONY : src/rendering/raytracing/BVH.obj
 
@@ -1839,6 +1863,9 @@ help:
 	@echo ... src/rendering/rasterization/RenderPass.obj
 	@echo ... src/rendering/rasterization/RenderPass.i
 	@echo ... src/rendering/rasterization/RenderPass.s
+	@echo ... src/rendering/rasterization/ShadowPass.obj
+	@echo ... src/rendering/rasterization/ShadowPass.i
+	@echo ... src/rendering/rasterization/ShadowPass.s
 	@echo ... src/rendering/raytracing/BVH.obj
 	@echo ... src/rendering/raytracing/BVH.i
 	@echo ... src/rendering/raytracing/BVH.s

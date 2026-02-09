@@ -16,6 +16,8 @@
 #include "pbr/PBRMaterial.h"
 #include "rendering/deferred/DeferredRenderer.h"
 #include "rendering/raytracing/RayTracer.h"
+#include "rendering/rasterization/ShadowPass.h"
+
 
 class ThreeDApp : public HybridPBR::Application {
 public:
@@ -78,7 +80,7 @@ public:
             auto pbrMaterial = std::make_shared<HybridPBR::PBRMaterial>("PBR_Sphere_" + std::to_string(i), props);
             // pbrMaterial->SetTexture(HybridPBR::TextureType::DIFFUSE,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_basecolor.png"));
             // pbrMaterial->SetTexture(HybridPBR::TextureType::NORMAL,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_normal.png"));
-            // pbrMaterial->SetTexture(HybridPBR::TextureType::METALLIC,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_metallic.png"));
+            // pbrMaterial->SetTexture(HybridPBR::TextureType::METALLIC,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssets.GetPath() +"textures/rustediron2_metallic.png"));
             // pbrMaterial->SetTexture(HybridPBR::TextureType::ROUGHNESS,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_roughness.png"));
             // pbrMaterial->SetTexture(HybridPBR::TextureType::AMBIENT_OCCLUSION,HybridPBR::ResourceManager::GetInstance().GetTexture(HybridPBR::FileIO::GetAssetsPath() +"textures/rustediron2_ambientocclusion.png"));
 
@@ -174,6 +176,17 @@ public:
         }
     }
     
+    void CreateShadowCastingLight() {
+        auto light = std::make_shared<HybridPBR::Light>(HybridPBR::LightType::DIRECTIONAL, "ShadowCaster");
+        light->SetPosition(glm::vec3(-2.0f, 4.0f, -1.0f));
+        light->SetDirection(glm::normalize(glm::vec3(2.0f, -4.0f, 1.0f)));
+        HybridPBR::LightProperties lightProps;
+        lightProps.color = glm::vec3(1.0f, 1.0f, 1.0f);
+        lightProps.intensity = 10.0f;
+        light->SetProperties(lightProps);
+        scene->AddLight(light);
+    }
+
     void CreateIBLlSystem() { 
         iblSystem = std::make_unique<HybridPBR::IBL>();
         if (!iblSystem->SetupFromHDR(HybridPBR::FileIO::GetAssetsPath() + "textures/HDR/ibl_hdr_radiance.png",512)) {
@@ -223,6 +236,13 @@ public:
         iblSystem->BindIBLTextures(shaderManager.GetShader(HybridPBR::ShaderType::PBR));
         iblSystem->BindIBLTexturesRT(rayTracer->GetPathTracingShader());
 
+        //创建阴影pass
+        //shaderManager.LoadShader("shadow", HybridPBR::FileIO::GetAssetsPath() + "shaders/shadow.vert", HybridPBR::FileIO::GetAssetsPath() + "shaders/shadow.frag");
+        //shadowPass = std::make_shared<HybridPBR::ShadowPass>(scene.get(), *shaderManager.GetShader("shadow"));
+        //shadowPass->Initialize();
+        //rasterizer->AddRenderPass(shadowPass);
+        //deferredRenderer->SetShadowPass(shadowPass);
+
         //添加天空盒通道
         auto skyboxPass = std::make_shared<HybridPBR::SkyboxPass>();
         skyboxPass->SetSkyboxTexture(iblSystem->GetEnvironmentMap());
@@ -252,6 +272,7 @@ public:
         LoadCornellBox();
         // 创建光源
         CreateLights();
+        //CreateShadowCastingLight();
         
         rotationSpeed = 45.0f; // 度/秒
         
@@ -364,6 +385,30 @@ public:
         ImGui::Text("Renderer Stats");
         ImGui::Checkbox("Use ray tracing",&useRayTracing);
         ImGui::Checkbox("Use deferred rendering",&useDeferredRendering);
+
+        if (useRayTracing && rayTracer) {
+            auto config = rayTracer->GetConfig();
+            bool changed = false;
+            
+            ImGui::Separator();
+            ImGui::Text("Ray Tracing Config");
+            if (ImGui::Checkbox("Denoise", &config.denoiseEnabled)) changed = true;
+            if (config.denoiseEnabled) {
+                if (ImGui::SliderFloat("Strength", &config.denoiseStrength, 0.0f, 2.0f)) changed = true;
+            }
+            
+            int bounces = (int)config.maxBounces;
+            if (ImGui::SliderInt("Max Bounces", &bounces, 1, 16)) {
+                config.maxBounces = (uint32_t)bounces;
+                changed = true;
+            }
+
+            if (changed) {
+                rayTracer->SetConfig(config);
+                rayTracer->ResetAccumulation();
+            }
+        }
+
         ImGui::Text("Draw calls: %d", stats.drawCalls);
         ImGui::Text("Triangles: %d", stats.triangleCount);
         ImGui::Text("Vertices: %d", stats.vertexCount);
@@ -403,6 +448,7 @@ private:
     std::unique_ptr<HybridPBR::Rasterizer> rasterizer;
     std::unique_ptr<HybridPBR::DeferredRenderer> deferredRenderer;
     std::unique_ptr<HybridPBR::RayTracer> rayTracer;
+    std::shared_ptr<HybridPBR::ShadowPass> shadowPass;
 
     std::shared_ptr<HybridPBR::IBL> iblSystem;
     std::shared_ptr<HybridPBR::Camera> camera;

@@ -61,6 +61,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/Rasterizer.cpp.obj.d"
   "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.obj"
   "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/RenderPass.cpp.obj.d"
+  "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/ShadowPass.cpp.obj"
+  "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/ShadowPass.cpp.obj.d"
   "CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.obj"
   "CMakeFiles/HybridPBR.dir/src/rendering/raytracing/BVH.cpp.obj.d"
   "CMakeFiles/HybridPBR.dir/src/rendering/raytracing/ComputeBuffer.cpp.obj"

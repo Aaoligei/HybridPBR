@@ -128,6 +128,7 @@ add_executable(HybridPBR
     src/rendering/rasterization/Mesh.cpp
     src/rendering/rasterization/Rasterizer.cpp
     src/rendering/rasterization/RenderPass.cpp
+    src/rendering/rasterization/ShadowPass.cpp
     src/rendering/raytracing/RayTracer.cpp
     src/rendering/raytracing/BVH.cpp
     src/rendering/raytracing/Denoiser.cpp

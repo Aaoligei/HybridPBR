@@ -71,6 +71,11 @@ namespace HybridPBR {
         }
         
         UpdateGlobalUniforms(scene);
+
+        // Execute shadow pass
+        if (m_shadowPass) {
+            m_shadowPass->Execute(scene);
+        }
         
         // 绑定输出FBO
         glBindFramebuffer(GL_FRAMEBUFFER, outputFBO);
@@ -92,6 +97,9 @@ namespace HybridPBR {
         glBindFramebuffer(GL_FRAMEBUFFER, outputFBO);
         
         // 执行光照通道
+        if (m_shadowPass) {
+            //lightingPass->SetShadowMap(m_shadowPass->GetShadowMapTexture());
+        }
         lightingPass->Execute(scene);
 
         // [新增] === 天空盒渲染逻辑 ===
@@ -152,6 +160,11 @@ namespace HybridPBR {
 
     void DeferredRenderer::SetWireframe(bool enabled) {
         gBufferPass->SetWireframe(enabled);
+    }
+
+    void DeferredRenderer::SetShadowPass(std::shared_ptr<ShadowPass> shadowPass)
+    {
+        m_shadowPass = shadowPass;
     }
 
     std::shared_ptr<Texture> DeferredRenderer::GetOutputTexture() const {

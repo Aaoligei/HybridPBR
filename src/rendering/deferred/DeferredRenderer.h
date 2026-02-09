@@ -4,6 +4,7 @@
 #include "rendering/interfaces/IRasterizer.h"
 #include "rendering/postprocess/SSAO.h"
 #include "rendering/common/UniformBuffer.h"
+#include "rendering/rasterization/ShadowPass.h"
 #include <memory>
 
 namespace HybridPBR {
@@ -23,6 +24,7 @@ namespace HybridPBR {
         void SetIBLSystem(std::shared_ptr<IBL> ibl);
         void SetSSAOEnabled(bool enabled) { ssaoEnabled = enabled; }
         void SetWireframe(bool enabled);
+        void SetShadowPass(std::shared_ptr<ShadowPass> shadowPass);
         
         // 获取渲染结果
         std::shared_ptr<Texture> GetOutputTexture() const;
@@ -38,6 +40,7 @@ namespace HybridPBR {
         std::unique_ptr<LightingPass> lightingPass;
         std::unique_ptr<SkyboxPass> skyboxPass;
         std::unique_ptr<SSAO> ssaoPass;
+        std::shared_ptr<ShadowPass> m_shadowPass;
         
         bool initialized = false;
         bool ssaoEnabled = true;

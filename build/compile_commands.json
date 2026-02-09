@@ -139,6 +139,12 @@
 },
 {
   "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
+  "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp  -g -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\rasterization\\ShadowPass.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\rasterization\\ShadowPass.cpp",
+  "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/rasterization/ShadowPass.cpp",
+  "output": "CMakeFiles/HybridPBR.dir/src/rendering/rasterization/ShadowPass.cpp.obj"
+},
+{
+  "directory": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/build",
   "command": "C:\\mingw64\\bin\\g++.exe  @CMakeFiles/HybridPBR.dir/includes_CXX.rsp  -g -g -std=gnu++17 -o CMakeFiles\\HybridPBR.dir\\src\\rendering\\raytracing\\RayTracer.cpp.obj -c C:\\Users\\25342\\OneDrive\\Desktop\\projects\\HybridPBR\\src\\rendering\\raytracing\\RayTracer.cpp",
   "file": "C:/Users/25342/OneDrive/Desktop/projects/HybridPBR/src/rendering/raytracing/RayTracer.cpp",
   "output": "CMakeFiles/HybridPBR.dir/src/rendering/raytracing/RayTracer.cpp.obj"

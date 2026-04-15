@@ -1,32 +1,90 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+# Build directories
+build/
+cmake-build-*/
 
 # Executables
 *.exe
 *.out
 *.app
+
+# Visual Studio Code
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+desktop.ini
+
+# Compiled Object files
+*.o
+*.a
+*.so
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Coverage
+coverage/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+
+# Other build systems
+*.sln
+*.vcxproj
+*.vcproj
+Debug/
+Release/
+x64/
+bin/
+obj/
+
+# Log files
+*.log
+
+# Temporary files
+*~
+*.tmp
+*.bak
+
+# Image configuration
+imgui.ini
+
+# Windows image configuration files
+*.user
+*.sdf
+*.opensdf
+*.userosscache
+*.suo
+
+# Linux
+*~
+.DS_Store
+lost+found/
+.directory
+*.kdev4
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.DS_Store
+*/
+.DS_Store

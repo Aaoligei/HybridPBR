@@ -41,6 +41,7 @@ namespace HybridPBR {
         int GetWidth() const { return width; }
         int GetHeight() const { return height; }
         uint32_t GetFBO() const { return fbo; }
+        std::shared_ptr<Texture> GetTexture(GBufferTextureType type);
         
         // 调试可视化
         void BindForDebugVisualization(GBufferTextureType type, uint32_t unit) const;

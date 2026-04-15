@@ -185,4 +185,8 @@ namespace HybridPBR {
         }
     }
 
+    std::shared_ptr<Texture> GBuffer::GetTexture(GBufferTextureType type){
+        return textures[static_cast<size_t>(type)];
+    }
+
 } // namespace HybridPBR

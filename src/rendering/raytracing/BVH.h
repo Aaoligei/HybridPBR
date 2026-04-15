@@ -136,12 +136,6 @@ namespace HybridPBR {
             int pad0; // 填充字段
         };
         
-        struct BuildNode {
-            AABB bounds;
-            int start, end;
-            int pad0; // 填充字段
-        };
-        
         // 构建方法
         int BuildRecursive(std::vector<BuildPrimitive>& prims, int start, int end, int depth = 0);
         void CalculateNodeBounds(int nodeIndex, const std::vector<BuildPrimitive>& prims);

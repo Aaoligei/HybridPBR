@@ -57,7 +57,6 @@ namespace HybridPBR {
         bool sceneDirty = true;
         
         void BuildNodeMap(SceneNode* node);
-        void CountNodes(SceneNode* node, int& count) const;
     };
 
 } // namespace HybridPBR

@@ -26,6 +26,13 @@ namespace HybridPBR {
         }
         
         config = cfg;
+
+        passes.push_back(std::make_shared<GBufferPass>());
+        passes.push_back(std::make_shared<MotionVectorPass>(config.width,config.height));
+
+        for(auto& pass:passes){
+            pass->Initialize();
+        }
         
         LOG_INFO("Initializing RayTracer: " + std::to_string(config.width) + "x" + 
                 std::to_string(config.height));
@@ -81,6 +88,11 @@ namespace HybridPBR {
         auto startTime = std::chrono::high_resolution_clock::now();
         
         UpdateGlobalUniforms(scene);
+
+        for(auto& pass:passes){
+            pass->Execute(scene);
+        }
+        
 
         // 检查Scene是否为脏或我们自己的脏标记是否设置
         if(sceneDirty){

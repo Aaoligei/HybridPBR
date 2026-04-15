@@ -47,17 +47,11 @@ namespace HybridPBR {
     }
 
     glm::mat4 Transform::GetWorldMatrix() const {
-        if (dirty) {
-            worldMatrix = GetLocalMatrix();
-            
-            if (parent) {
-                // 如果有父对象，将父对象的世界矩阵与本地矩阵相乘
-                worldMatrix = parent->GetWorldMatrix() * worldMatrix;
-            }
-            
+        if(dirty){
+            glm::mat4 parentMatrix = parent ? parent->GetWorldMatrix() : glm::mat4(1.0f);
+            worldMatrix = parentMatrix * GetLocalMatrix();
             dirty = false;
         }
-        
         return worldMatrix;
     }
 

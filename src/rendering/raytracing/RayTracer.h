@@ -9,6 +9,7 @@
 #include "rendering/interfaces/IRenderer.h"
 #include "rendering/deferred/GBuffer.h"
 #include "pbr/IBL.h"
+#include "rendering/raytracing/MotionVector.h"
 
 namespace HybridPBR {
 
@@ -69,7 +70,10 @@ namespace HybridPBR {
         // BVH加速结构
         std::unique_ptr<BVH> bvh;
         bool sceneDirty = true; // 场景是否需要更新
-        
+
+        //pass
+        std::vector<std::shared_ptr<RenderPass>> passes;
+
         // 计算着色器
         std::shared_ptr<ComputeShader> rayGenerationShader;
         std::shared_ptr<ComputeShader> pathTracingShader;

@@ -1,0 +1,12 @@
+#version 460 core
+
+layout(local_size_x = 16, local_size_y = 16) in;
+
+uniform mat4 currentMVP;
+uniform mat4 previousMVP;
+layout(binding=0) uniform sampler2D pos_tex;
+layout(binding=0,rg16f) uniform image2D outputimg;
+
+void main(){
+    
+}

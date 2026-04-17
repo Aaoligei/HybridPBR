@@ -89,9 +89,9 @@ namespace HybridPBR {
         
         UpdateGlobalUniforms(scene);
 
-        for(auto& pass:passes){
-            pass->Execute(scene);
-        }
+        //for(auto& pass:passes){
+        //    pass->Execute(scene);
+        //}
         
 
         // 检查Scene是否为脏或我们自己的脏标记是否设置

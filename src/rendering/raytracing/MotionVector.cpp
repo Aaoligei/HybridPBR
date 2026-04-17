@@ -23,7 +23,7 @@ namespace HybridPBR{
     }
     void MotionVectorPass::Execute(const Scene& scene)
     {
-        auto& cam=scene.GetMainCamera();
+        auto cam=scene.GetMainCamera();
         previousMVP=currentMVP;
         currentMVP=cam->GetViewProjectionMatrix();
         
@@ -40,7 +40,7 @@ namespace HybridPBR{
         
         ComputeShader::ImageAccessBarrier();
     }
-    void MotionVectorPass::CleanUp()
+    void MotionVectorPass::Cleanup()
     {
     }
 }

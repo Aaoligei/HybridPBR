@@ -10,9 +10,10 @@ namespace HybridPBR{
         MotionVectorPass(uint32_t _width,uint32_t _height);
         ~MotionVectorPass();
 
-        void Initialize();
-        void Execute(const Scene& scene);
-        void CleanUp();
+        void Initialize() override;
+        void Execute(const Scene& scene) override;
+        void Cleanup() override;
+        std::string GetName() const override { return "MotionVectorPass"; }
 
     private:
         glm::mat4 currentMVP;

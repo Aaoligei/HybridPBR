@@ -159,21 +159,26 @@ public:
         } 
     }
     void CreateLights() { 
-            glm::vec3 lightPositions[] = {
-            glm::vec3(-10.0f,  10.0f, 10.0f),
-            glm::vec3( 10.0f,  10.0f, 10.0f),
-            glm::vec3(-10.0f, -10.0f, 10.0f),
-            glm::vec3( 10.0f, -10.0f, 10.0f),
-            };
-        for (int i = 0; i < 4; ++i) { 
-            auto light = std::make_shared<HybridPBR::Light>(HybridPBR::LightType::POINT, "Light" + std::to_string(i));
-            light->SetPosition(lightPositions[i]);
-            HybridPBR::LightProperties lightProps;
-            lightProps.color = glm::vec3(1.0f, 1.0f, 1.0f);
-            lightProps.intensity = 300.0f;
-            light->SetProperties(lightProps);
-            scene->AddLight(light);
-        }
+        // 主方向光（模拟太阳）
+        auto dirLight = std::make_shared<HybridPBR::Light>(HybridPBR::LightType::DIRECTIONAL, "DirLight");
+        dirLight->SetDirection(glm::normalize(glm::vec3(0.5f, -1.0f, 0.3f)));
+        HybridPBR::LightProperties dirProps;
+        dirProps.color = glm::vec3(1.0f, 0.95f, 0.85f); // slightly warm
+        dirProps.intensity = 3.0f;
+        dirLight->SetProperties(dirProps);
+        scene->AddLight(dirLight);
+
+        // 补光点光源（填充暗部）
+        auto fillLight = std::make_shared<HybridPBR::Light>(HybridPBR::LightType::POINT, "FillLight");
+        fillLight->SetPosition(glm::vec3(-3.0f, 5.0f, 6.0f));
+        HybridPBR::LightProperties fillProps;
+        fillProps.color = glm::vec3(0.7f, 0.8f, 1.0f); // cool fill
+        fillProps.intensity = 80.0f;
+        fillProps.constant = 1.0f;
+        fillProps.linear = 0.35f;
+        fillProps.quadratic = 0.44f;
+        fillLight->SetProperties(fillProps);
+        scene->AddLight(fillLight);
     }
     
     void CreateShadowCastingLight() {

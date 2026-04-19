@@ -157,14 +157,85 @@ namespace HybridPBR {
                 flags |= ImGuiTreeNodeFlags_Selected;
             }
             
-            std::string label = light->GetName() + "##light" + std::to_string(i);
+            // Show enabled status in label
+            std::string enabledStr = light->IsEnabled() ? "" : " [OFF]";
+            std::string label = light->GetName() + enabledStr + "##light" + std::to_string(i);
             ImGui::TreeNodeEx(label.c_str(), flags);
             
-            // 处理光源选择
-            if (ImGui::IsItemClicked()) {
+            // Left click to select
+            if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
                 selectedLight = light;
-                selectedNode.reset(); // 取消选择节点
+                selectedNode.reset();
             }
+            
+            // Right click context menu on each light
+            if (ImGui::IsItemClicked(ImGuiMouseButton_Right)) {
+                selectedLight = light;
+                selectedNode.reset();
+                ImGui::OpenPopup(("LightCtx##" + std::to_string(i)).c_str());
+            }
+            
+            if (ImGui::BeginPopup(("LightCtx##" + std::to_string(i)).c_str())) {
+                if (ImGui::MenuItem("Delete")) {
+                    scene->RemoveLight(light.get());
+                    if (selectedLight == light) selectedLight.reset();
+                    ImGui::EndPopup();
+                    break; // iterator invalidated
+                }
+                ImGui::EndPopup();
+            }
+        }
+
+        // Right-click on empty area to create lights
+        if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right) && !ImGui::IsAnyItemHovered()) {
+            ImGui::OpenPopup("CreateLightMenu");
+        }
+        
+        if (ImGui::BeginPopup("CreateLightMenu")) {
+            if (ImGui::MenuItem("Directional Light")) {
+                static int dirCount = 0;
+                auto light = std::make_shared<Light>(LightType::DIRECTIONAL, "DirLight_" + std::to_string(dirCount++));
+                light->SetDirection(glm::normalize(glm::vec3(0.5f, -1.0f, 0.3f)));
+                LightProperties props;
+                props.color = glm::vec3(1.0f);
+                props.intensity = 3.0f;
+                light->SetProperties(props);
+                scene->AddLight(light);
+                selectedLight = light;
+                selectedNode.reset();
+            }
+            if (ImGui::MenuItem("Point Light")) {
+                static int pointCount = 0;
+                auto light = std::make_shared<Light>(LightType::POINT, "PointLight_" + std::to_string(pointCount++));
+                light->SetPosition(glm::vec3(0.0f, 2.0f, 0.0f));
+                LightProperties props;
+                props.color = glm::vec3(1.0f);
+                props.intensity = 80.0f;
+                props.range = 25.0f;
+                props.linear = 0.35f;
+                props.quadratic = 0.44f;
+                light->SetProperties(props);
+                scene->AddLight(light);
+                selectedLight = light;
+                selectedNode.reset();
+            }
+            if (ImGui::MenuItem("Spot Light")) {
+                static int spotCount = 0;
+                auto light = std::make_shared<Light>(LightType::SPOT, "SpotLight_" + std::to_string(spotCount++));
+                light->SetPosition(glm::vec3(0.0f, 5.0f, 0.0f));
+                light->SetDirection(glm::normalize(glm::vec3(0.0f, -1.0f, 0.0f)));
+                LightProperties props;
+                props.color = glm::vec3(1.0f);
+                props.intensity = 80.0f;
+                props.range = 30.0f;
+                props.innerCutoff = glm::cos(glm::radians(12.5f));
+                props.outerCutoff = glm::cos(glm::radians(17.5f));
+                light->SetProperties(props);
+                scene->AddLight(light);
+                selectedLight = light;
+                selectedNode.reset();
+            }
+            ImGui::EndPopup();
         }
     }
 

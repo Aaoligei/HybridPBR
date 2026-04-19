@@ -368,59 +368,84 @@ vec3 GetShadingNormal(GPUMaterial mat, HitRecord rec) {
 }
 
 // 直接光照 (Next Event Estimation)
+// 随机选择一个光源并乘以光源数量（MIS权重）
 vec3 CalculateDirectLightStochastic(HitRecord rec, vec3 N, vec3 V, SurfaceMaterial surf, inout uint seed) {
     if (lightCount == 0) return vec3(0.0);
-    vec3 result = vec3(0.0);
+    
+    // 随机选择一个光源
+    int lightIndex = int(RandomFloat(seed) * float(lightCount));
+    lightIndex = min(lightIndex, lightCount - 1); // 防止浮点精度越界
+    Light light = lights[lightIndex];
+    
+    vec3 L;
+    float distanceToLight;
+    float attenuation = 1.0;
+    float spotAttenuation = 1.0;
 
-    for(int lightIndex = 0; lightIndex < lightCount; lightIndex++){
-        Light light = lights[lightIndex];
+    if(light.type == 0) { // Directional
+        L = normalize(-light.direction);
+        distanceToLight = 100000.0; // large but finite
+    } else if(light.type == 1) { // Point
+        vec3 lightToPos = light.position - rec.position;
+        distanceToLight = length(lightToPos);
+        L = lightToPos / max(distanceToLight, 0.001);
         
-        vec3 L;
-        float distanceToLight;
-        float attenuation = 1.0;
-
-        if(light.type == 0) { // Directional
-            L = normalize(-light.direction);
-            distanceToLight = 1e9;
-        } else { // Point
-            vec3 lightToPos = light.position - rec.position;
-            distanceToLight = length(lightToPos);
-            L = lightToPos / distanceToLight; // normalize
-            
-            float d = distanceToLight;
-            attenuation = 1.0 / (light.constant + light.linear * d + light.quadratic * d * d);
-        }
-
-
-        float NdotL = dot(N, L);
-        if (NdotL <= 0.0 || attenuation < 1e-4) continue;
-
-        // 阴影射线
-        Ray shadowRay;
-        shadowRay.origin = rec.position + N * 1e-3;
-        shadowRay.direction = L;
-        if (BVHIntersectAnyHit(shadowRay, distanceToLight - 1e-2, rec.triangleIndex)) {
-            continue;
-        }
-
-        // Cook-Torrance BRDF
-        vec3 H = normalize(V + L);
-        float NDF = DistributionGGX(N, H, surf.roughness);
-        float G = GeometrySmith(N, V, L, surf.roughness);
-        vec3 F = FresnelSchlick(max(dot(H, V), 0.0), surf.F0);
-
-        vec3 kS = F;
-        vec3 kD = (vec3(1.0) - kS) * (1.0 - surf.metallic);
-
-        vec3 numerator = NDF * G * F;
-        float denominator = 4.0 * max(dot(N, V), 0.0) * NdotL + 0.001;
-        vec3 specular = numerator / denominator;
-
-        vec3 radiance = light.color * light.intensity * attenuation;
-        result += (kD * surf.albedo * INV_PI + specular) * radiance * NdotL;
+        float d = max(distanceToLight, 0.001);
+        attenuation = 1.0 / (light.constant + light.linear * d + light.quadratic * d * d);
+    } else { // Spot (type == 2)
+        vec3 lightToPos = light.position - rec.position;
+        distanceToLight = length(lightToPos);
+        L = lightToPos / max(distanceToLight, 0.001);
         
+        float d = max(distanceToLight, 0.001);
+        attenuation = 1.0 / (light.constant + light.linear * d + light.quadratic * d * d);
+        
+        // Spot cone attenuation
+        float theta = dot(L, normalize(-light.direction));
+        float epsilon = light.innerCutoff - light.outerCutoff;
+        spotAttenuation = clamp((theta - light.outerCutoff) / max(epsilon, 0.001), 0.0, 1.0);
+        attenuation *= spotAttenuation;
     }
-    return result;
+
+    float NdotL = dot(N, L);
+    if (NdotL <= 0.0 || attenuation < 1e-4) return vec3(0.0);
+
+    // 阴影射线
+    Ray shadowRay;
+    shadowRay.origin = rec.position + N * 1e-3;
+    shadowRay.direction = L;
+    if (BVHIntersectAnyHit(shadowRay, distanceToLight, rec.triangleIndex)) {
+        return vec3(0.0);
+    }
+
+    // Cook-Torrance BRDF
+    vec3 H = normalize(V + L);
+    float NDF = DistributionGGX(N, H, surf.roughness);
+    float G = GeometrySmith(N, V, L, surf.roughness);
+    vec3 F = FresnelSchlick(max(dot(H, V), 0.0), surf.F0);
+
+    vec3 kS = F;
+    vec3 kD = (vec3(1.0) - kS) * (1.0 - surf.metallic);
+
+    vec3 numerator = NDF * G * F;
+    float denominator = 4.0 * max(dot(N, V), 0.0) * NdotL + 0.001;
+    vec3 specular = numerator / denominator;
+
+    vec3 radiance = light.color * light.intensity * attenuation;
+    // 乘以光源数量（MIS权重：均匀采样一个光源的PDF为1/lightCount）
+    return (kD * surf.albedo * INV_PI + specular) * radiance * NdotL * float(lightCount);
+}
+
+// ================== 色调映射 ==================
+
+// ACES Filmic Tone Mapping (approximation by Stephen Hill)
+vec3 ACESFilm(vec3 x) {
+    float a = 2.51f;
+    float b = 0.03f;
+    float c = 2.43f;
+    float d = 0.59f;
+    float e = 0.14f;
+    return clamp((x * (a * x + b)) / (x * (c * x + d) + e), 0.0, 1.0);
 }
 
 // ================== 核心路径追踪循环 ==================
@@ -519,6 +544,12 @@ void main() {
     
     // NaN / Inf 移除
     if (isnan(color.r) || isinf(color.r)) color = vec3(0.0);
+
+    // 色调映射 (HDR -> LDR)
+    color = ACESFilm(color);
+
+    // Gamma校正
+    color = pow(color, vec3(1.0 / 2.2));
 
     // 混合历史帧 (Temporal Accumulation)
     if (frameNumber > 0) {

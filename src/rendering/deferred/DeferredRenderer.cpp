@@ -214,28 +214,32 @@ namespace HybridPBR {
             cameraUBO->SetData(&camData, sizeof(CameraData));
         }
 
-        // 收集光源数据
+        // 收集光源数据 (only enabled lights)
         LightData lightData;
         const auto& lights = scene.GetLights();
-        lightData.lightCount = std::min((int)lights.size(), 16);
+        lightData.lightCount = 0;
         
-        for(int i=0; i < lightData.lightCount; ++i) {
+        for(int i=0; i < std::min((int)lights.size(), 16); ++i) {
             auto& l = lights[i];
-            auto& props = l->GetProperties();
+            if (!l->IsEnabled()) continue;
             
-            lightData.lights[i].position = l->GetPosition();
-            lightData.lights[i].direction = l->GetDirection();
-            lightData.lights[i].color = props.color;
-            lightData.lights[i].intensity = props.intensity;
+            auto& props = l->GetProperties();
+            int idx = lightData.lightCount;
+            
+            lightData.lights[idx].position = l->GetPosition();
+            lightData.lights[idx].direction = l->GetDirection();
+            lightData.lights[idx].color = props.color;
+            lightData.lights[idx].intensity = props.intensity;
 
-            lightData.lights[i].range = props.range;
-            lightData.lights[i].constant = props.constant;
-            lightData.lights[i].linear = props.linear;
-            lightData.lights[i].quadratic = props.quadratic;
+            lightData.lights[idx].range = props.range;
+            lightData.lights[idx].constant = props.constant;
+            lightData.lights[idx].linear = props.linear;
+            lightData.lights[idx].quadratic = props.quadratic;
 
-            lightData.lights[i].innerCutoff = props.innerCutoff;
-            lightData.lights[i].outerCutoff = props.outerCutoff;
-            lightData.lights[i].type = (int)l->GetType();
+            lightData.lights[idx].innerCutoff = props.innerCutoff;
+            lightData.lights[idx].outerCutoff = props.outerCutoff;
+            lightData.lights[idx].type = (int)l->GetType();
+            lightData.lightCount++;
         }
         
         lightUBO->SetData(&lightData, sizeof(LightData));
